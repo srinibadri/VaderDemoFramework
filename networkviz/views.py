@@ -21,6 +21,17 @@ def medium(request):
     context = {}
     return HttpResponse(template.render(context, request))
 
+def dashboard(request):
+    template = loader.get_template('networkviz/dashboard.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
+
+
+def panels(request):
+    template = loader.get_template('networkviz/panels.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
+
 def cmu(request):
     template = loader.get_template('networkviz/cmu.html')
     context = {}
