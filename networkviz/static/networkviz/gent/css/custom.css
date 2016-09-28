@@ -594,7 +594,8 @@ a:hover, a:focus {
   background-color: transparent; }
 
 .top_search {
-  padding: 0; }
+  padding: 0;
+ z-index: 10;}
 
 .top_search .form-control {
   border-right: 0;

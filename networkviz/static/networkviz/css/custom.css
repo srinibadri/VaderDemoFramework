@@ -11,6 +11,7 @@ Main components
 
 .cd-main-content {
   text-align: center;
+  z-index: 50;
 }
 .cd-main-content h1 {
   font-size: 20px;
@@ -44,6 +45,7 @@ Main components
 }
 
 .cd-panel {
+  z-index: 50;
   position: fixed;
   top: 0;
   left: 0;
@@ -199,6 +201,8 @@ Main components
 
 .cd-panel-close {
   position: absolute;
+  color: red;
+  background-color: #666;
   top: 0;
   right: 0;
   height: 100%;
