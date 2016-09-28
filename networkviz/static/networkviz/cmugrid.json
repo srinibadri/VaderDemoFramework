@@ -1,0 +1,135 @@
+{
+    "type": "FeatureCollection",
+    "features": [{
+        "type": "Feature",
+        "id": 100,
+        "properties": {
+            "popupContent": "SLAC GISMo Lab",
+            "status": "Healthy",
+            "name": "node-34",
+            "phases": "CN",
+            "voltage_A": "2401.7771",
+            "voltage_B": "-1200.8886-2080.000j",
+            "voltage_C": "-1200.8886+2080.000j",
+            "constant_impedance_C": "115.3707+57.6853j",
+            "nominal_voltage": "2401.7771"
+        },
+        "geometry": {
+            "type": "Point",
+            "coordinates": [37.417204, -122.207612]
+        }
+    }, {
+        "type": "Feature",
+        "id": 101,
+        "properties": {
+            "popupContent": "SLAC Starbucks",
+            "status": "Healthy",
+            "name": "node-34",
+            "phases": "CN",
+            "voltage_A": "2401.7771",
+            "voltage_B": "-1200.8886-2080.000j",
+            "voltage_C": "-1200.8886+2080.000j",
+            "constant_impedance_C": "115.3707+57.6853j",
+            "nominal_voltage": "2401.7771"
+        },
+        "geometry": {
+            "type": "Point",
+            "coordinates": [37.419709, -122.202655]
+        }
+    }, {
+        "type": "Feature",
+        "id": 102,
+        "properties": {
+            "popupContent": "SLAC Main Gate",
+            "status": "Healthy",
+            "name": "node-34",
+            "phases": "CN",
+            "voltage_A": "2401.7771",
+            "voltage_B": "-1200.8886-2080.000j",
+            "voltage_C": "-1200.8886+2080.000j",
+            "constant_impedance_C": "115.3707+57.6853j",
+            "nominal_voltage": "2401.7771"
+        },
+        "geometry": {
+            "type": "Point",
+            "coordinates": [37.420191, -122.204554]
+        }
+    }, {
+        "type": "Feature",
+        "id": 103,
+        "properties": {
+            "popupContent": "SLAC Power Hub",
+            "status": "Healthy",
+            "name": "node-34",
+            "phases": "CN",
+            "voltage_A": "2401.7771",
+            "voltage_B": "-1200.8886-2080.000j",
+            "voltage_C": "-1200.8886+2080.000j",
+            "constant_impedance_C": "115.3707+57.6853j",
+            "nominal_voltage": "2401.7771"
+        },
+        "geometry": {
+            "type": "Point",
+            "coordinates": [37.417505, -122.204484]
+        }
+    }, {
+        "type": "Feature",
+        "id": 104,
+        "properties": {
+            "popupContent": "Stanford Generator",
+            "status": "Healthy",
+            "name": "node-34",
+            "phases": "CN",
+            "voltage_A": "2401.7771",
+            "voltage_B": "-1200.8886-2080.000j",
+            "voltage_C": "-1200.8886+2080.000j",
+            "constant_impedance_C": "115.3707+57.6853j",
+            "nominal_voltage": "2401.7771"
+        },
+        "geometry": {
+            "type": "Point",
+            "coordinates": [37.428096, -122.179255]
+        }
+    }],
+    "lines": [{
+        "type": "overhead_line",
+        "phases": "CN",
+        "name": "link-1-3",
+        "from": "load:1",
+        "to": "node:3",
+        "length": 250,
+        "configuration": "line_configuration:10011"
+    }, {
+        "type": "overhead_line",
+        "phases": "CN",
+        "name": "link-1-3",
+        "from": "load:1",
+        "to": "node:3",
+        "length": 250,
+        "configuration": "line_configuration:10011"
+    }, {
+        "type": "overhead_line",
+        "phases": "CN",
+        "name": "link-1-3",
+        "from": "load:1",
+        "to": "node:3",
+        "length": 250,
+        "configuration": "line_configuration:10011"
+    }, {
+        "type": "overhead_line",
+        "phases": "CN",
+        "name": "link-1-3",
+        "from": "load:1",
+        "to": "node:3",
+        "length": 250,
+        "configuration": "line_configuration:10011"
+    }, {
+        "type": "overhead_line",
+        "phases": "CN",
+        "name": "link-1-3",
+        "from": "load:1",
+        "to": "node:3",
+        "length": 250,
+        "configuration": "line_configuration:10011"
+    }]
+}

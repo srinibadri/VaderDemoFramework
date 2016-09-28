@@ -1,61 +1,191 @@
 <html>
-<head>
- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />
- <script src="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
 
-<style>
-    #mapid { height: 80%; }
-</style>
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
+    <script src="/static/networkviz/d3.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <style>
+        #mapid {
+            height: 80%;
+        }
+        .line{
+          color: grey;
+        }
+    </style>
 
 </head>
+
 <body>
 
-<h1>Map Demo</h1>
+    <h1>Map Demo</h1>
 
-<div id="mapid"></div>
+    <div id="mapid"></div>
 
-<script>
-    var mymap = L.map('mapid').setView([37.42573, -122.1896], 13);
+    <script>
+        var data;
+        var node_size = 110;
+        var mymap = L.map('mapid').setView([37.428096, -122.179255], 14);
 
-    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpandmbXliNDBjZWd2M2x6bDk3c2ZtOTkifQ._QA7i5Mpkd_m30IGElHziw', {
-			maxZoom: 18,
-			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-				'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-				'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-			id: 'mapbox.streets'
-		}).addTo(mymap);
+        L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=sk.eyJ1IjoiYmVuZHJhZmZpbiIsImEiOiJjaXRtMnM3cjUwMGY2MnRwY3loODYybm02In0.b4HQeNWffCU4Q0CE6gynMw', {
+            maxZoom: 18,
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+                '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+                'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+            id: 'mapbox.streets'
+        }).addTo(mymap);
 
-var circle = L.circle([37.42573, -122.1896], 500, {
-    color: 'green',
-    fillColor: '#ff3',
-    fillOpacity: 0.5
-}).addTo(mymap);
 
-circle.bindPopup("SLAC (power quality is good)");
 
-var circle2 = L.circle([37.42403, -122.1716], 500, {
-    color: 'green',
-    fillColor: '#f03',
-    fillOpacity: 0.5
-}).addTo(mymap);
 
-circle2.bindPopup("Lake Lag (flooding caused power outage)");
 
+        var circle = L.circle([37.425096, -122.189255], node_size, {
+            color: 'green',
+            fillColor: '#ff3',
+            fillOpacity: 0.5
+        }).addTo(mymap);
+
+        circle.bindPopup("SLAC (power quality is good)");
+
+        var circle2 = L.circle([37.428096, -122.174255], node_size, {
+            color: 'green',
+            fillColor: '#f03',
+            fillOpacity: 0.5
+        }).addTo(mymap);
+
+        circle2.bindPopup("Lake Lag (flooding caused power outage)");
+
+        d3.json("/static/networkviz/cmugrid.json", function(error, json) {
+            console.log(json);
+            data = json.features;
+
+            data.forEach(function(d) {
+              tmp = L.circle(d.geometry.coordinates, node_size, {
+                  color: 'green',
+                  fillColor: '#f03',
+                  fillOpacity: 0.5
+              }).addTo(mymap);
+
+              prop = d.properties;
+              tmp.bindPopup(prop.popupContent +
+              "<br><table style='width:90%; padding:5px; border: 1px solid black;    border-collapse: collapse;'>" +
+              "<tr><td>"+ "name"+"</td><td>"+  prop.name +"</td></tr>" +
+              "<tr><td>"+ "phases"+"</td><td>"+ prop.phases +"</td></tr>" +
+              "<tr><td>"+ "voltage_A" + "</td><td>"+ prop.voltage_A +"</td></tr>" +
+              "<tr><td>"+ "voltage_B" +"</td><td>"+ prop.voltage_B +"</td></tr>" +
+              "<tr><td>"+ "voltage_C" +"</td><td>"+ prop.voltage_C +"</td></tr>" +
+              "</table><br><br>  <button type='button' class='btn btn-info btn-sm' data-toggle='modal' data-target='#myModal'>See More</button>");
+            })
+        });
 
 
         var popup = L.popup();
 
-		function onMapClick(e) {
-			popup
-				.setLatLng(e.latlng)
-				.setContent("You clicked the map at " + e.latlng.toString())
-				.openOn(mymap);
-		}
+        function onMapClick(e) {
+            popup
+                .setLatLng(e.latlng)
+                .setContent("You clicked the map at " + e.latlng.toString())
+                .openOn(mymap);
+        }
 
-		mymap.on('click', onMapClick);
+        mymap.on('click', onMapClick);
+    </script>
+
+    <!-- Modal -->
+      <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Detailed View</h4>
+            </div>
+            <div class="modal-body">
+              <p>Element Details</p>
+              <div id="detailgraph">
+
+<table><thead><tr><th class="title">Attribute</th><th class="b">Value</th></tr></thead><tr><td>version.minor</td><td>0</td></tr><tr><td>version.patch</td><td>0</td></tr><tr><td>version.build</td><td>5589</td></tr><tr><td>version.branch</td><td>trunk:M</td></tr><tr><td>command_line</td><td>"/Users/dchassin/gridlabd/bin/gridlabd.bin ieee123.glm -o ieee123.xml"</td></tr><tr><td>environment</td><td>batch</td></tr><tr><td>quiet</td><td>FALSE</td></tr><tr><td>warn</td><td>TRUE</td></tr><tr><td>debugger</td><td>FALSE</td></tr><tr><td>gdb</td><td>FALSE</td></tr><tr><td>debug</td><td>FALSE</td></tr><tr><td>test</td><td>FALSE</td></tr><tr><td>verbose</td><td>FALSE</td></tr><tr><td>iteration_limit</td><td>100</td></tr><tr><td>workdir</td><td>/Users/dchassin/Dropbox/SLAC/VADER/gridlabd/feeder</td></tr><tr><td>dumpfile</td><td>gridlabd.xml</td></tr><tr><td>savefile</td><td>ieee123.xml</td></tr><tr><td>dumpall</td><td>FALSE</td></tr><tr><td>runchecks</td><td>FALSE</td></tr><tr><td>threadcount</td><td>1</td></tr><tr><td>profiler</td><td>FALSE</td></tr><tr><td>pauseatexit</td><td>FALSE</td></tr><tr><td>testoutputfile</td><td>test.txt</td></tr><tr><td>xml_encoding</td><td>8</td></tr><tr><td>clock</td><td>2000-01-01 00:00:00 UTC</td></tr><tr><td>starttime</td><td>2000-01-01 00:00:00 UTC</td></tr><tr><td>stoptime</td><td>NEVER</td></tr><tr><td>double_format</td><td>%+lg</td></tr><tr><td>complex_format</td><td>%+lg%+lg%c</td></tr><tr><td>object_format</td><td>%s:%d</td></tr><tr><td>object_scan</td><td>%[^:]:%d</td></tr><tr><td>object_tree_balance</td><td>FALSE</td></tr><tr><td>kmlfile</td><td>""</td></tr><tr><td>modelname</td><td>ieee123.glm</td></tr><tr><td>execdir</td><td>/Users/dchassin/gridlabd/bin</td></tr><tr><td>strictnames</td><td>TRUE</td></tr><tr><td>website</td><td>http://www.gridlabd.org/</td></tr><tr><td>urlbase</td><td>http://www.gridlabd.org/</td></tr><tr><td>randomseed</td><td>34332342</td></tr><tr><td>include</td><td>""</td></tr><tr><td>trace</td><td>""</td></tr><tr><td>gdb_window</td><td>FALSE</td></tr><tr><td>tmp</td><td>/Users/dchassin/.gridlabd/tmp</td></tr><tr><td>force_compile</td><td>0</td></tr><tr><td>nolocks</td><td>FALSE</td></tr><tr><td>skipsafe</td><td>FALSE</td></tr><tr><td>dateformat</td><td>ISO</td></tr><tr><td>init_sequence</td><td>DEFERRED</td></tr><tr><td>minimum_timestep</td><td>1</td></tr><tr><td>platform</td><td>MACOSX</td></tr><tr><td>suppress_repeat_messages</td><td>TRUE</td></tr><tr><td>maximum_synctime</td><td>60</td></tr><tr><td>run_realtime</td><td>FALSE</td></tr><tr><td>enter_realtime</td><td>NEVER</td></tr><tr><td>no_deprecate</td><td>TRUE</td></tr><tr><td>streaming_io</td><td>FALSE</td></tr><tr><td>compileonly</td><td>FALSE</td></tr><tr><td>relax_naming_rules</td><td>FALSE</td></tr><tr><td>browser</td><td>safari</td></tr><tr><td>server_portnum</td><td>0</td></tr><tr><td>server_quit_on_close</td><td>FALSE</td></tr><tr><td>autoclean</td><td>TRUE</td></tr><tr><td>technology_readiness_level</td><td>QUALIFIED</td></tr><tr><td>show_progress</td><td>TRUE</td></tr><tr><td>checkpoint_type</td><td>NONE</td></tr><tr><td>checkpoint_file</td><td>""</td></tr><tr><td>checkpoint_seqnum</td><td>0</td></tr><tr><td>checkpoint_interval</td><td>0</td></tr><tr><td>checkpoint_keepall</td><td>FALSE</td></tr><tr><td>check_version</td><td>FALSE</td></tr><tr><td>random_number_generator</td><td>RNG3</td></tr><tr><td>mainloop_state</td><td>INIT</td></tr><tr><td>pauseat</td><td>NEVER</td></tr><tr><td>infourl</td><td>http://gridlab-d.sourceforge.net/info.php?title=Special:Search/</td></tr><tr><td>hostname</td><td>localhost</td></tr><tr><td>hostaddr</td><td>127.0.0.1</td></tr><tr><td>autostart_gui</td><td>TRUE</td></tr><tr><td>master</td><td>""</td></tr><tr><td>master_port</td><td>0</td></tr><tr><td>multirun_mode</td><td>STANDALONE</td></tr><tr><td>multirun_conn</td><td>NONE</td></tr><tr><td>signal_timeout</td><td>5000</td></tr><tr><td>slave_port</td><td>6267</td></tr><tr><td>slave_id</td><td>0</td></tr><tr><td>return_code</td><td>0</td></tr><tr><td>exit_code</td><td>2</td></tr><tr><td>module_compiler_flags</td><td>NONE</td></tr><tr><td>init_max_defer</td><td>64</td></tr><tr><td>mt_analysis</td><td>FALSE</td></tr><tr><td>inline_block_size</td><td>1048576</td></tr><tr><td>validate</td><td>TSTD|RALL</td></tr><tr><td>sanitize</td><td>NAMES|POSITIONS</td></tr><tr><td>sanitize_prefix</td><td>GLD_</td></tr><tr><td>sanitize_index</td><td>.txt</td></tr><tr><td>sanitize_offset</td><td>""</td></tr><tr><td>simulation_mode</td><td>EVENT</td></tr><tr><td>deltamode_timestep</td><td>10000000</td></tr><tr><td>deltamode_maximumtime</td><td>3600000000000</td></tr><tr><td>deltaclock</td><td>0</td></tr><tr><td>delta_current_clock</td><td>+0</td></tr><tr><td>deltamode_updateorder</td><td>powerflow</td></tr><tr><td>deltamode_iteration_limit</td><td>10</td></tr><tr><td>run_powerworld</td><td>FALSE</td></tr><tr><td>bigranks</td><td>TRUE</td></tr><tr><td>exename</td><td>/Users/dchassin/gridlabd/bin/gridlabd.bin</td></tr><tr><td>wget_options</td><td>"maxsize:100MB;update:newer"</td></tr><tr><td>svnroot</td><td>http://gridlab-d.svn.sourceforge.net/svnroot/gridlab-d</td></tr><tr><td>timezone</td><td>UTC0</td></tr></table>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
 
 
-</script>
 
+
+
+    <script>
+
+    // set the dimensions and margins of the graph
+    var margin = {top: 20, right: 20, bottom: 30, left: 50},
+        width = 960 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
+
+    // parse the date / time
+    var parseTime = d3.timeParse("%d-%b-%y");
+
+    // set the ranges
+    var x = d3.scaleTime().range([0, width]);
+    var y = d3.scaleLinear().range([height, 0]);
+
+    // define the line
+    var valueline = d3.line()
+        .x(function(d) { return x(d.date); })
+        .y(function(d) { return y(d.close); });
+
+    // append the svg obgect to the body of the page
+    // appends a 'group' element to 'svg'
+    // moves the 'group' element to the top left margin
+    var svg = d3.select("body").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform",
+              "translate(" + margin.left + "," + margin.top + ")");
+
+    // Get the data
+    d3.csv("/static/networkviz/id104_v_hist.csv", function(error, data) {
+      if (error) throw error;
+
+      // format the data
+      data.forEach(function(d) {
+          d.date = parseTime(d.date);
+          d.close = +d.close;
+      });
+
+      // Scale the range of the data
+      x.domain(d3.extent(data, function(d) { return d.date; }));
+      y.domain([0, d3.max(data, function(d) { return d.close; })]);
+
+      // Add the valueline path.
+      svg.append("path")
+          .data([data])
+          .attr("class", "line")
+          .attr("fill", "#aaaaaa")
+          .attr("d", valueline);
+
+      // Add the X Axis
+      svg.append("g")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(x));
+
+      // Add the Y Axis
+      svg.append("g")
+          .call(d3.axisLeft(y));
+
+    });
+
+    </script>
 </body>
+
 </html>
