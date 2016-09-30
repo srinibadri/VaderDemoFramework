@@ -10,6 +10,10 @@ def index(request):
 
     """)
 
+def vader(request):
+    template = loader.get_template('vader/base.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
 
 def demo(request):
     template = loader.get_template('networkviz/simple.html')
