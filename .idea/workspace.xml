@@ -2,18 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2e869687-d0e9-4e61-8dd4-7a817faf395f" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/networkviz/static/font/weathericons-regular-webfont.eot" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/networkviz/static/font/weathericons-regular-webfont.ttf" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/networkviz/static/font/weathericons-regular-webfont.woff" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/networkviz/static/font/weathericons-regular-webfont.woff2" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/networkviz/static/font/weathericons-regular-webfont.svg" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/networkviz/templates/vader/_weather.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/networkviz/templates/vader/svg/city.svg" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/networkviz/static/css/main.css" afterPath="$PROJECT_DIR$/networkviz/static/css/main.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/networkviz/templates/vader/_navbar.html" afterPath="$PROJECT_DIR$/networkviz/templates/vader/_navbar.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/networkviz/templates/vader/base.html" afterPath="$PROJECT_DIR$/networkviz/templates/vader/base.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/networkviz/templates/vader/map.html" afterPath="$PROJECT_DIR$/networkviz/templates/vader/map.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/networkviz/templates/vader/_weather.html" afterPath="$PROJECT_DIR$/networkviz/templates/vader/_weather.html" />
     </list>
     <ignored path="VaderDemoFramework.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -49,8 +39,8 @@
       <file leaf-file-name="_weather.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/networkviz/templates/vader/_weather.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="48" column="51" selection-start-line="48" selection-start-column="51" selection-end-line="48" selection-end-column="51" />
+            <state relative-caret-position="227">
+              <caret line="60" column="71" selection-start-line="60" selection-start-column="71" selection-end-line="60" selection-end-column="71" />
               <folding />
             </state>
           </provider>
@@ -992,12 +982,12 @@
       <workItem from="1475110400953" duration="425000" />
       <workItem from="1475188083989" duration="2137000" />
       <workItem from="1475217574977" duration="3750000" />
-      <workItem from="1475223127298" duration="23052000" />
+      <workItem from="1475223127298" duration="23705000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="31991000" />
+    <option name="totallyTimeSpent" value="32644000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1017,10 +1007,10 @@
       <window_info id="Amazon EC2" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32776934" sideWeight="0.50333333" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26858878" sideWeight="0.34333333" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26858878" sideWeight="0.66083336" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26858878" sideWeight="0.6566667" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Remote Host" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1428,8 +1418,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/networkviz/templates/vader/_weather.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="48" column="51" selection-start-line="48" selection-start-column="51" selection-end-line="48" selection-end-column="51" />
+        <state relative-caret-position="227">
+          <caret line="60" column="71" selection-start-line="60" selection-start-column="71" selection-end-line="60" selection-end-column="71" />
           <folding />
         </state>
       </provider>
