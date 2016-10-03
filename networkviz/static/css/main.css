@@ -1,6 +1,9 @@
 #navigator {
     margin-bottom: 0px;
     background-color: #1abb9c;
+    position: fixed;
+    z-index: 1000;
+    width: 100%;
 }
 
 .navbar-login

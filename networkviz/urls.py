@@ -9,5 +9,6 @@ urlpatterns = [
     url(r'^cmu/', views.cmu, name='cmu'),
     url(r'^d3/', views.d3, name='d3'),
     url(r'^ieee123/', views.ieee123, name='ieee123'),
-    url(r'^vader/', views.vader, name='vader'),
+    url(r'^vader/map', views.vader, name='vader'),
+    url(r'^vader/dashboard', views.dashboard, name='dashboard'),
 ]
