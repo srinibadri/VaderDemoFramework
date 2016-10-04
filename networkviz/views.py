@@ -10,8 +10,8 @@ def index(request):
     <a href="networkviz/gent.html">Go here for the dashboard</a>
     """)
 
-def dashboard(request):
-    template = loader.get_template('vader/dashboard.html')
+def console(request):
+    template = loader.get_template('vader/console.html')
     context = {}
     return HttpResponse(template.render(context, request))
 
