@@ -1,0 +1,32 @@
+{% extends "vader/base.html" %}
+{% block style %}
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/toggle.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include "vader/_navbar-map.html" %}
+<div id="wrapper" class="toggled">
+    {% include "vader/_sidebar.html" %}
+    <div class="page-content-wrapper">
+        <div id="energy-map"></div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
+<script src="/static/networkviz/d3.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="{% static 'js/map.js' %}"></script>
+    <script>
+        $("#menu-toggle").click(function(e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("toggled");
+        });
+    </script>
+{% endblock %}

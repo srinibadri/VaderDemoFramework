@@ -10,6 +10,15 @@ def index(request):
 
     """)
 
+def dashboard(request):
+    template = loader.get_template('vader/dashboard.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
+
+def vader(request):
+    template = loader.get_template('vader/map.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
 
 def demo(request):
     template = loader.get_template('networkviz/simple.html')
