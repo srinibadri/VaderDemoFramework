@@ -16,7 +16,7 @@ tests/coverage_html/
 tests/.coverage
 build/
 tests/report/
-
+*.pyc
 
 # The following .gitignore configuration is prepared for JetBrains users.
 
