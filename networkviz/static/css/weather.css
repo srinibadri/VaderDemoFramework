@@ -30,9 +30,3 @@
 .weather-item:hover{
     background: #ffffff;
 }
-
-.weather-icon{
-    margin-top: 20px;
-    height: 50px;
-    width: 100px;
-}

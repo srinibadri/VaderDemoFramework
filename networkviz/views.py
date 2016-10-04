@@ -10,8 +10,8 @@ def index(request):
 
     """)
 
-def dashboard(request):
-    template = loader.get_template('vader/dashboard.html')
+def console(request):
+    template = loader.get_template('vader/console.html')
     context = {}
     return HttpResponse(template.render(context, request))
 
