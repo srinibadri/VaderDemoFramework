@@ -21,6 +21,12 @@ def medium(request):
     context = {}
     return HttpResponse(template.render(context, request))
 
+def gent(request):
+    template = loader.get_template('networkviz/gent.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
+
+
 def cmu(request):
     template = loader.get_template('networkviz/cmu.html')
     context = {}
