@@ -7,7 +7,7 @@ from django.template import loader
 def index(request):
     return HttpResponse("""
     Made it to the index!
-
+    <a href="networkviz/gent.html">Go here for the dashboard</a>
     """)
 
 def dashboard(request):

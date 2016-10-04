@@ -10,9 +10,14 @@
 
     <title>VADER Dashboard | </title>
 
+    <!-- Enable relative linking using 'static' token -->
     {% load staticfiles %}
 
+    <!-- Import CSS files for  -->
     {% block imports-css %} {% include "networkviz/_imports-css.html" %} {% endblock %}
+
+    <!-- General Theme Customizations -->
+    <link rel="stylesheet" href="/static/networkviz/css/custom.css">
 
 </head>
 
@@ -41,8 +46,8 @@
                                 <div class="input-group">
                                     <input type="text" class="form-control" placeholder="Search for...">
                                     <span class="input-group-btn">
-                      <button class="btn btn-default" type="button">Go!</button>
-                    </span>
+                                      <button class="btn btn-default" type="button">Go!</button>
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -55,10 +60,11 @@
 
                     <div class="clearfix"></div>
 
-
+                    <!-- Line Charts -->
                     <div class="row">
                         {% block linechart %} {% include "networkviz/charts/_linechart.html" %} {% endblock %}
                     </div>
+                    <!-- /line charts -->
 
                     <br />
 
@@ -123,7 +129,11 @@
 
     </div>
 
+    <!-- Javascript Imports (so many!) -->
     {% block imports-js %} {% include "networkviz/_imports-js.html" %} {% endblock %}
+    <!-- /javascript imports -->
+
+    <!-- Module Code -->
     {% block linechart-js %} {% include "networkviz/charts/_linechart.js" %} {% endblock %}
     {% block minicharts-js %} {% include "networkviz/charts/_minicharts.js" %} {% endblock %}
     {% block form-js %} {% include "networkviz/charts/_form.js" %} {% endblock %}
@@ -131,6 +141,7 @@
     {% block sliders-js %} {% include "networkviz/charts/_sliders.js" %} {% endblock %}
     {% block advanced-form-js %} {% include "networkviz/charts/_advanced-form.js" %} {% endblock %}
     {% block chart-cards-js %} {% include "networkviz/charts/_chart-cards.js" %} {% endblock %}
+    <!-- /module code -->
 
 </body>
 
