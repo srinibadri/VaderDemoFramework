@@ -1,14 +1,17 @@
 .console-container{
     padding-top: 80px;
-    padding-right: 15px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .console-panel{
-    position: absolute;
+    position: relative;
+    display: inline-block;
     background: #ffffff;
     border: 1px solid #dcdcdc;
     border-radius: 15px;
     padding: 10px 15px 10px 15px;
+    margin-bottom: 15px;
 }
 
 .console-title {
