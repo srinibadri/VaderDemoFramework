@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="2e869687-d0e9-4e61-8dd4-7a817faf395f" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/networkviz/static/css/console.css" afterPath="$PROJECT_DIR$/networkviz/static/css/console.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/networkviz/templates/vader/base.html" afterPath="$PROJECT_DIR$/networkviz/templates/vader/base.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/networkviz/templates/vader/console.html" afterPath="$PROJECT_DIR$/networkviz/templates/vader/console.html" />
     </list>
     <ignored path="VaderDemoFramework.iws" />
@@ -61,12 +59,10 @@
       <file leaf-file-name="console.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/networkviz/templates/vader/console.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="166" column="29" selection-start-line="166" selection-start-column="29" selection-end-line="166" selection-end-column="29" />
+            <state relative-caret-position="75">
+              <caret line="117" column="46" selection-start-line="117" selection-start-column="46" selection-end-line="117" selection-end-column="46" />
               <folding>
-                <element signature="n#div#0;n#div#0;n#!!top" expanded="false" />
                 <element signature="n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="false" />
-                <element signature="n#div#1;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -989,12 +985,12 @@
       <workItem from="1475217574977" duration="3750000" />
       <workItem from="1475223127298" duration="27333000" />
       <workItem from="1475565852688" duration="8904000" />
-      <workItem from="1475608449163" duration="2208000" />
+      <workItem from="1475608449163" duration="3368000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="47384000" />
+    <option name="totallyTimeSpent" value="48544000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1388,12 +1384,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/networkviz/templates/vader/console.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="166" column="29" selection-start-line="166" selection-start-column="29" selection-end-line="166" selection-end-column="29" />
+        <state relative-caret-position="75">
+          <caret line="117" column="46" selection-start-line="117" selection-start-column="46" selection-end-line="117" selection-end-column="46" />
           <folding>
-            <element signature="n#div#0;n#div#0;n#!!top" expanded="false" />
             <element signature="n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#!!top" expanded="false" />
-            <element signature="n#div#1;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="false" />
           </folding>
         </state>
       </provider>
