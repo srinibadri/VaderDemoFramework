@@ -16,3 +16,26 @@ function onMapClick(e) {
         .openOn(mymap);
 }
 mymap.on('click', onMapClick);
+
+d3.json("/static/networkviz/cmugrid.json", function(error, json) {
+    console.log(json);
+    data = json.features;
+
+    data.forEach(function(d) {
+      tmp = L.circle(d.geometry.coordinates, node_size, {
+          color: 'green',
+          fillColor: '#f03',
+          fillOpacity: 0.5
+      }).addTo(mymap);
+
+      prop = d.properties;
+      tmp.bindPopup(prop.popupContent +
+      "<br><table style='width:90%; padding:5px; border: 1px solid black;    border-collapse: collapse;'>" +
+      "<tr><td>"+ "name"+"</td><td>"+  prop.name +"</td></tr>" +
+      "<tr><td>"+ "phases"+"</td><td>"+ prop.phases +"</td></tr>" +
+      "<tr><td>"+ "voltage_A" + "</td><td>"+ prop.voltage_A +"</td></tr>" +
+      "<tr><td>"+ "voltage_B" +"</td><td>"+ prop.voltage_B +"</td></tr>" +
+      "<tr><td>"+ "voltage_C" +"</td><td>"+ prop.voltage_C +"</td></tr>" +
+      "</table><br><br>  <button type='button' class='btn btn-info btn-sm' data-toggle='modal' data-target='#myModal'>See More</button>");
+    })
+});

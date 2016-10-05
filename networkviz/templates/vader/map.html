@@ -1,7 +1,7 @@
 {% extends "vader/base.html" %}
 {% block style %}
 {% load staticfiles %}
-<link rel="stylesheet" type="text/css" href="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/leaflet.css' %}" />
 <link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}" />
 {% endblock %}
 
@@ -16,8 +16,8 @@
 {% endblock %}
 
 {% block script %}
-<script src="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
-<script src="/static/networkviz/d3.js"></script>
+<script src="{% static 'js/leaflet.js' %}"></script>
+<script src={% static 'js/d3.js' %}></script>
 <script type="text/javascript" src="{% static 'js/map.js' %}"></script>
 <script>
     $("#menu-toggle").click(function(e) {
