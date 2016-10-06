@@ -81,6 +81,24 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'ieee123_ami',
+#         'USER': 'gridlabd_ro',
+#         'PASSWORD': 'gridlabd',
+#         'HOST': 'gridlabd.slac.stanford.edu',
+#         'PORT': '3306',
+#     },
+#     'ieee123_ami': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'ieee123_ami',
+#         'USER': 'gridlabd_ro',
+#         'PASSWORD': 'gridlabd',
+#         'HOST': 'gridlabd.slac.stanford.edu',
+#         'PORT': '3306',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -119,3 +137,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# Custom Configurations
+#
+
+HOSTNAME = 'http://gridlabd.slac.stanford.edu'
+PORT = 6268
