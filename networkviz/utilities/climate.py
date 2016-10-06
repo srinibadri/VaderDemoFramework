@@ -68,8 +68,7 @@ base_url = settings.HOSTNAME + ':' + str(settings.PORT) + '/' + return_type.lowe
 
 def query_climate(args=''):
     """
-
-    :return: a Json object including all information
+    :return: a Json object including information
     """
     if args == '':
         args = 'cthlpsdg'
