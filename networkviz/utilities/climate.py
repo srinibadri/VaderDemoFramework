@@ -74,7 +74,8 @@ def query_climate(args=''):
         args = 'cthlpsdg'
     return_value = {}
     for c in args:
-        return_value[valid_key[c]['alias']] = valid_key[c]['callback']()
+        if c in valid_key:
+            return_value[valid_key[c]['alias']] = valid_key[c]['callback']()
     return_value['clock'] = clock()
     return json.dumps(return_value)
 
