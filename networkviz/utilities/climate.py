@@ -120,11 +120,11 @@ valid_key = {
     'c': {
             'alias': 'city',              'basic':        'city',
             'callback': city
-         },
+        },
     't': {
             'alias': 'temperature',       'basic':        'temperature',
             'callback': temperature,      'extended':     'temperature[degF,1f]'
-          },
+        },
     'h': {
             'alias': 'humidity',          'basic':        'humidity',
             'callback': humidity,         'extended':     'humidity[%,0f]'
@@ -132,23 +132,23 @@ valid_key = {
     'l': {
             'alias': 'clouds',            'basic':        'opq_sky_cov',
             'callback': clouds,           'extended':     'opq_sky_cov[%,0f]'
-         },
+        },
     'p': {
             'alias': 'pressure',          'basic':        'pressure',
             'callback': pressure,         'extended':     'pressure[inHg,2f]]'
-         },
+        },
     's': {
             'alias': 'wind_speed',        'basic':        'wind_speed',
             'callback': wind_speed,       'extended':     'wind_speed[mph,0f]'
-         },
+        },
     'd': {
             'alias': 'wind_heading',      'basic':        'wind_dir',
             'callback': wind_heading,     'extended':     'wind_dir[deg,0f]'
-         },
+        },
     'g': {
             'alias': 'wind_gust',         'basic':        'wind_gust',
             'callback': wind_gust,        'extended':     'wind_gust[mph,0f]'
-         },
+        },
 }
 
 
