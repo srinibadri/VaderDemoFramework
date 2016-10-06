@@ -11,14 +11,14 @@ Usage:
     e.g. print climate.city()
          Berkley
     Available callings:
-         climate.city
-         climate.temperature
-         climate.humidity
-         climate.clouds
-         climate.pressure
-         climate.wind_speed
-         climate.wind_heading
-         climate.wind_gust
+         climate.city()
+         climate.temperature()
+         climate.humidity()
+         climate.clouds()
+         climate.pressure()
+         climate.wind_speed()
+         climate.wind_heading()
+         climate.wind_gust()
 
 2. Query combined information
     e.g. query_climate()
