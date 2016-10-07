@@ -2,29 +2,15 @@
 This module provides queries for climate information.
 
 IMPORTANT!!!
-1. It's recommended to use the second method to retrieve the information, where it returns a json object that can be
+1. It's recommended to use the first method to retrieve the information, where it returns a json object that can be
 transferred directly.
 
-2. The return type can be either Json of xml.
+2. The query type from website can be either Json of xml.
 Currently Json just supports basic return value.
-XML supports return value in different units.
+XML supports return value in different units. (Default)
 
 Usage:
-1. Query single information (returns string)
-    e.g. print climate.city()
-         Berkley
-    Available callings:
-         climate.clock()
-         climate.city()
-         climate.temperature()
-         climate.humidity()
-         climate.clouds()
-         climate.pressure()
-         climate.wind_speed()
-         climate.wind_heading()
-         climate.wind_gust()
-
-2. Query combined information (returns json)
+1. Query combined information (returns json)
     e.g. query_climate()
          :returns: a Json object including all information of climate
 
@@ -53,6 +39,20 @@ Usage:
     s -- wind speed
     d -- wind heading
     g -- wind gust
+
+2. Query single information (returns string)
+    e.g. print climate.city()
+         Berkley
+    Available callings:
+         climate.clock()
+         climate.city()
+         climate.temperature()
+         climate.humidity()
+         climate.clouds()
+         climate.pressure()
+         climate.wind_speed()
+         climate.wind_heading()
+         climate.wind_gust()
 
 """
 from connection import *
