@@ -55,7 +55,8 @@ Usage:
          climate.wind_gust()
 
 """
-from connection import *
+from networkviz.utilities.connection import *
+from networkviz.utilities.simulation import clock
 
 query_category = 'weather'
 
@@ -74,10 +75,6 @@ def query_climate(args=''):
             return_value[valid_key[c]['alias']] = valid_key[c]['callback']()
     return_value['clock'] = clock()
     return json.dumps(return_value)
-
-
-def clock():
-    return query('clock')
 
 
 def city():
@@ -149,8 +146,6 @@ valid_key = {
 
 
 def query(key):
-    if key == 'clock':
-        return get_global(key)
     if return_type.lower() == 'json' or key == 'c':
         return get_property(query_category, valid_key[key]['basic'])
     else:

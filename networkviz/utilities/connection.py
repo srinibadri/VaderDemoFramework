@@ -4,6 +4,7 @@ This .py implements the connection utilities.
 import json
 import token
 import tokenize
+import urllib
 import urllib2
 from xml.dom import minidom
 from StringIO import StringIO
@@ -15,13 +16,33 @@ base_url = settings.HOSTNAME + ':' + str(settings.PORT) + '/' + return_type.lowe
 
 
 def get_global(name):
-    url = base_url + name
-    return get_data(url.replace('%', '%25'))
+    url = base_url + urllib.quote(name)
+    return get_data(url)
 
 
 def get_property(category, name):
-    url = base_url + category + '/' + name
-    return get_data(url.replace('%', '%25'))
+    url = base_url + urllib.quote(category) + '/' + urllib.quote(name)
+    return get_data(url)
+
+
+def set_global(name, value):
+    url = base_url + urllib.quote(name) + '=' + urllib.quote(value)
+    set_data(url)
+
+
+def set_property(category, name, value):
+    url = base_url + urllib.quote(category) + '/' + urllib.quote(name) + '=' + urllib.quote(value)
+    return set_data(url)
+
+
+def set_data(url):
+    connection = urllib2.urlopen(url)
+    connection.read()
+    connection.close()
+    if connection.code == '200':
+        return True
+    else:
+        return False
 
 
 def get_data(url):
