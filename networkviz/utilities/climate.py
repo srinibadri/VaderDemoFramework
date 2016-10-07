@@ -44,7 +44,6 @@ Usage:
     e.g. print climate.city()
          Berkley
     Available callings:
-         climate.clock()
          climate.city()
          climate.temperature()
          climate.humidity()
