@@ -2,12 +2,15 @@
 This module provides queries for climate information.
 
 IMPORTANT!!!
-The return type can be either Json of xml.
+1. It's recommended to use the second method to retrieve the information, where it returns a json object that can be
+transferred directly.
+
+2. The return type can be either Json of xml.
 Currently Json just supports basic return value.
 XML supports return value in different units.
 
 Usage:
-1. Query single information
+1. Query single information (returns string)
     e.g. print climate.city()
          Berkley
     Available callings:
@@ -21,7 +24,7 @@ Usage:
          climate.wind_heading()
          climate.wind_gust()
 
-2. Query combined information
+2. Query combined information (returns json)
     e.g. query_climate()
          :returns: a Json object including all information of climate
 
