@@ -28,11 +28,13 @@ def get_property(category, name):
 def set_global(name, value):
     url = base_url + urllib.quote(name) + '=' + urllib.quote(value)
     set_data(url)
+    return get_global(name)
 
 
 def set_property(category, name, value):
     url = base_url + urllib.quote(category) + '/' + urllib.quote(name) + '=' + urllib.quote(value)
-    return set_data(url)
+    set_data(url)
+    return get_property(category, name)
 
 
 def set_data(url):
