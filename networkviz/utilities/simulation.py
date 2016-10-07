@@ -39,7 +39,19 @@ Usage:
     w -- warn
     i -- server_info
 
-2. Query single information (returns string)
+2. Status Change
+    e.g.  simulation.verbose_off()
+          simulation.verbose_on()
+    Supports:
+        verbose
+        debug
+        dumpall
+        quiet
+        show_progress
+        suppress_repeat_message
+        warn
+
+3. Query single information (returns string)
     e.g. print simulation.clock()
 
     Available callings:
@@ -58,8 +70,6 @@ Usage:
 from networkviz.utilities.connection import *
 from vaderviz import settings
 
-
-#TODO: Modify the simulation status
 
 def query_status(args=''):
     """
