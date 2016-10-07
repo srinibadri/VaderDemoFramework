@@ -27,8 +27,6 @@ Usage:
          "debug": "FALSE"
     }
 
-
-mrvdaqsuwi
     c -- clock
     m -- model name
     r -- realtime metric
@@ -77,6 +75,62 @@ def query_status(args=''):
             return_value[valid_key[c]['alias']] = valid_key[c]['callback']()
     return_value['clock'] = clock()
     return json.dumps(return_value)
+
+
+def verbose_off():
+    return set_global(valid_key['v']['basic'], '0')
+
+
+def verbose_on():
+    return set_global(valid_key['v']['basic'], '1')
+
+
+def debug_off():
+    return set_global(valid_key['d']['basic'], '0')
+
+
+def debug_on():
+    return set_global(valid_key['d']['basic'], '1')
+
+
+def dumpall_off():
+    return set_global(valid_key['a']['basic'], '0')
+
+
+def dumpall_on():
+    return set_global(valid_key['a']['basic'], '1')
+
+
+def quiet_off():
+    return set_global(valid_key['q']['basic'], '0')
+
+
+def quiet_on():
+    return set_global(valid_key['q']['basic'], '1')
+
+
+def show_progress_off():
+    return set_global(valid_key['s']['basic'], '0')
+
+
+def show_progress_on():
+    return set_global(valid_key['s']['basic'], '1')
+
+
+def suppress_repeat_messages_off():
+    return set_global(valid_key['u']['basic'], '0')
+
+
+def suppress_repeat_messages_on():
+    return set_global(valid_key['u']['basic'], '1')
+
+
+def warn_off():
+    return set_global(valid_key['w']['basic'], '0')
+
+
+def warn_on():
+    return set_global(valid_key['w']['basic'], '1')
 
 
 def clock():
