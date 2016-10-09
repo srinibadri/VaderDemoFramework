@@ -9,7 +9,7 @@ transferred directly.
 Usage:
 1. Query combined information (returns json)
     e.g. query_status()
-         :returns: a Json object including all information of climate
+         :returns: a Json object including all information of simulation control
 
     example return json:
 
