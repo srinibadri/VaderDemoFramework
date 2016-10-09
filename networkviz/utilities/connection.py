@@ -1,5 +1,12 @@
 """
 This .py implements the connection utilities.
+Besides, the following functions implements the same functionalities used in .js file:
+
+GLDSetProperty => set_property
+GLDGetProperty => get_property
+GLDSetGlobal => get_global
+GLDGetGlobal => set_global
+
 """
 import json
 import token
