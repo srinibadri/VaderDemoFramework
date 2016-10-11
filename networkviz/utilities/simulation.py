@@ -14,7 +14,7 @@ Usage:
     example return json:
 
     {
-        "dumpall": "FALSE",
+         "dumpall": "FALSE",
          "warn": "TRUE",
          "show_progress": "FALSE",
          "modelname": "model-6268.glm",
