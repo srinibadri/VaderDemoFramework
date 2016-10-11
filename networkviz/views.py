@@ -10,6 +10,11 @@ def index(request):
 
     """)
 
+def graphTest(request):
+    template = loader.get_template('vader/graphTest.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
+
 def console(request):
     template = loader.get_template('vader/console.html')
     context = {}
