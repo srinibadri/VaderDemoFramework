@@ -1,6 +1,8 @@
+var geo_json_data = "";
+
 var data;
 var node_size = 110;
-var mymap = L.map('energy-map').setView([37.428096, -122.179255], 14);
+var mymap = L.map('energy-map').setView([35.38881, -118.99131], 15.5);
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=sk.eyJ1IjoiYmVuZHJhZmZpbiIsImEiOiJjaXRtMnM3cjUwMGY2MnRwY3loODYybm02In0.b4HQeNWffCU4Q0CE6gynMw', {
     maxZoom: 18,
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
@@ -16,6 +18,8 @@ function onMapClick(e) {
         .openOn(mymap);
 }
 mymap.on('click', onMapClick);
+
+console.log("Done");
 
 d3.json("/static/networkviz/cmugrid.json", function(error, json) {
     console.log(json);
@@ -39,3 +43,35 @@ d3.json("/static/networkviz/cmugrid.json", function(error, json) {
       "</table><br><br>  <button type='button' class='btn btn-info btn-sm' data-toggle='modal' data-target='#myModal'>See More</button>");
     })
 });
+console.log("Done");
+
+var myStyle = {
+    "color": "#ff7800",
+    "weight": 5,
+    "opacity": 0.65
+};
+
+var geojsonMarkerOptions = {
+    radius: 2,
+    fillColor: "#ee5400",
+    color: "#000",
+    weight: 1,
+    opacity: 1,
+    fillOpacity: 0.8
+};
+
+
+$.getJSON( "/static/data/model.geo.json", function( datar) {
+  geo_json_data = datar;
+  var myLayer = L.geoJSON(geo_json_data, {
+      style: myStyle,
+      pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, geojsonMarkerOptions);
+      }
+  }).addTo(mymap);
+
+});
+
+
+// myLayer.addData(geo_json_data);
+console.log("Dofdsfsdne");
