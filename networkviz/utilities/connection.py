@@ -44,6 +44,13 @@ def set_property(category, name, value):
     return get_property(category, name)
 
 
+#TODO: Add XML support
+def get_object(object_name):
+    url = base_url.replace('xml', 'json') + object_name + "/*"
+    info = get_raw_data_from_connection(url)
+    return json.loads(info)
+
+
 def set_data(url):
     connection = urllib2.urlopen(url)
     connection.read()
@@ -54,10 +61,15 @@ def set_data(url):
         return False
 
 
-def get_data(url):
+def get_raw_data_from_connection(url):
     connection = urllib2.urlopen(url)
     info = connection.read()
     connection.close()
+    return info
+
+
+def get_data(url):
+    info = get_raw_data_from_connection(url)
     if return_type.lower() == 'json':
         try:
             return json.loads(info)['value']
