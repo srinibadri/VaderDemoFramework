@@ -8,15 +8,20 @@ import untangle, requests, json
 def index(request):
     return HttpResponse("""
     Made it to the index!
-    <a href="networkviz/gent.html">Go here for the dashboard</a>
+    <a href="networkviz/board.html">Go here for the dashboard</a>
     """)
+
+def dashboard(request):
+    template = loader.get_template('vader/board.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
 
 def console(request):
     template = loader.get_template('vader/console.html')
     context = {}
     return HttpResponse(template.render(context, request))
 
-def vader(request):
+def map(request):
     template = loader.get_template('vader/map.html')
     context = {}
     return HttpResponse(template.render(context, request))
@@ -32,7 +37,7 @@ def medium(request):
     return HttpResponse(template.render(context, request))
 
 def gent(request):
-    template = loader.get_template('networkviz/gent.html')
+    template = loader.get_template('networkviz/board.html')
     context = {}
     return HttpResponse(template.render(context, request))
 

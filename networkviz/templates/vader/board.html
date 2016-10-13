@@ -1,0 +1,75 @@
+{% extends "vader/base.html" %}
+{% block style %}
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/dashboard.css' %}">
+    {% block imports-css %} {% include "networkviz/_imports-css.html" %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+{% include "vader/_navbar.html" %}
+<div class="dashboard-container">
+    <div class="row">
+        <!-- page content -->
+        <div class="col-md-12 right_col" role="main">
+            <div class="">
+                <div class="page-title">
+                    <div class="title_left">
+                        <h3>'<span id="model_name_title">IEEE123</span>' Live Dashboard
+                            <small><a href="#">(<u>Change Model</u>)</a></small></h3>
+                    </div>
+                </div>
+
+                <!-- top tiles -->
+                {% block tiles %} {% include "networkviz/charts/_tiles.html" %} {% endblock %}
+                <!-- /top tiles -->
+
+
+                <div class="clearfix"></div>
+
+                <!-- Line Charts -->
+                <div class="row">
+                    {% block linechart %} {% include "networkviz/charts/_linechart.html" %} {% endblock %}
+                </div>
+                <!-- /line charts -->
+
+                <br />
+
+                <!-- Basic Cards -->
+                <div class="row">
+                    {% block cards %} {% include "networkviz/charts/_cards.html" %} {% endblock %}
+                </div>
+                <!-- /Basic Cards -->
+
+                <!-- Mini Charts -->
+                <div class="row">
+                    <div class="col-md-12">
+                        {% block minicharts %} {% include "networkviz/charts/_minicharts.html" %} {% endblock %}
+                    </div>
+                </div>
+                <!-- /Mini Charts -->
+
+
+                <!-- Knobs -->
+                <div class="row">
+                    {% block inputknob %} {% include "networkviz/charts/_inputknob.html" %} {% endblock %}
+                </div>
+                <!-- /Knobs -->
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+<!-- Javascript Imports (so many!) -->
+{% block imports-js %} {% include "networkviz/_imports-js.html" %} {% endblock %}
+<!-- Module Code -->
+{% block linechart-js %} {% include "networkviz/charts/_linechart.js" %} {% endblock %}
+{% block minicharts-js %} {% include "networkviz/charts/_minicharts.js" %} {% endblock %}
+{% block form-js %} {% include "networkviz/charts/_form.js" %} {% endblock %}
+{% block inputknob-js %} {% include "networkviz/charts/_inputknob.js" %} {% endblock %}
+{% block sliders-js %} {% include "networkviz/charts/_sliders.js" %} {% endblock %}
+{% block advanced-form-js %} {% include "networkviz/charts/_advanced-form.js" %} {% endblock %}
+{% block chart-cards-js %} {% include "networkviz/charts/_chart-cards.js" %} {% endblock %}
+{% endblock %}
+
