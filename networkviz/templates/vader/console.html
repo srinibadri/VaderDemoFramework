@@ -2,6 +2,7 @@
 {% block style %}
 {% load staticfiles %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/console.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/graph.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -137,37 +138,37 @@
                                 <div class="col-md-3 col-sm-3 col-xs-12 console-item">
                                     <label class="switch"><input type="checkbox"><div class="slider round"></div></label>
                                 </div>
-                                <div class="col-md-3 col-sm-3 col-xs-12 console-item">2.4V</div>
+                                <div class="col-md-3 col-sm-3 col-xs-12 console-item"><a href="" onclick="graphConfig(20, 100, '83 A', 'line', 'Voltage (V)')" data-toggle="modal" data-target="#graph"><i class="fa fa-line-chart" aria-hidden="true"></i></a></div>
                                 <div class="col-md-3 col-sm-3 col-xs-12 console-item">83 B</div>
                                 <div class="col-md-3 col-sm-3 col-xs-12 console-item">closed</div>
                                 <div class="col-md-3 col-sm-3 col-xs-12 console-item">
                                     <label class="switch"><input type="checkbox"><div class="slider round"></div></label>
                                 </div>
-                                <div class="col-md-3 col-sm-3 col-xs-12 console-item">2.4V</div>
+                                <div class="col-md-3 col-sm-3 col-xs-12 console-item"><a href="" onclick="graphConfig(40, 100, '83 B', 'line', 'Voltage (V)')" data-toggle="modal" data-target="#graph"><i class="fa fa-line-chart" aria-hidden="true"></i></a></div>
                                 <div class="col-md-3 col-sm-3 col-xs-12 console-item">83 C</div>
                                 <div class="col-md-3 col-sm-3 col-xs-12 console-item">closed</div>
                                 <div class="col-md-3 col-sm-3 col-xs-12 console-item">
                                     <label class="switch"><input type="checkbox"><div class="slider round"></div></label>
                                 </div>
-                                <div class="col-md-3 col-sm-3 col-xs-12 console-item">2.4V</div>
+                                <div class="col-md-3 col-sm-3 col-xs-12 console-item"><a href="" onclick="graphConfig(10, 100, '83 C','line', 'Voltage (V)')" data-toggle="modal" data-target="#graph"><i class="fa fa-line-chart" aria-hidden="true"></i></a></div>
                                 <div class="col-md-3 col-sm-3 col-xs-12 console-item">88 A</div>
                                 <div class="col-md-3 col-sm-3 col-xs-12 console-item">closed</div>
                                 <div class="col-md-3 col-sm-3 col-xs-12 console-item">
                                     <label class="switch"><input type="checkbox"><div class="slider round"></div></label>
                                 </div>
-                                <div class="col-md-3 col-sm-3 col-xs-12 console-item">2.4V</div>
+                                <div class="col-md-3 col-sm-3 col-xs-12 console-item"><a href="" onclick="graphConfig(20, 100, '88 A', 'line', 'Voltage (V)')" data-toggle="modal" data-target="#graph"><i class="fa fa-line-chart" aria-hidden="true"></i></a></div>
                                 <div class="col-md-3 col-sm-3 col-xs-12 console-item">90 B</div>
                                 <div class="col-md-3 col-sm-3 col-xs-12 console-item">closed</div>
                                 <div class="col-md-3 col-sm-3 col-xs-12 console-item">
                                     <label class="switch"><input type="checkbox"><div class="slider round"></div></label>
                                 </div>
-                                <div class="col-md-3 col-sm-3 col-xs-12 console-item">2.4V</div>
+                                <div class="col-md-3 col-sm-3 col-xs-12 console-item"><a href="" onclick="graphConfig(30, 100, '90 B', 'line', 'Voltage (V)')" data-toggle="modal" data-target="#graph"><i class="fa fa-line-chart" aria-hidden="true"></i></a></div>
                                 <div class="col-md-3 col-sm-3 col-xs-12 console-item">92 C</div>
                                 <div class="col-md-3 col-sm-3 col-xs-12 console-item">closed</div>
                                 <div class="col-md-3 col-sm-3 col-xs-12 console-item">
                                     <label class="switch"><input type="checkbox"><div class="slider round"></div></label>
                                 </div>
-                                <div class="col-md-3 col-sm-3 col-xs-12 console-item">2.4V</div>
+                                <div class="col-md-3 col-sm-3 col-xs-12 console-item"><a href="" onclick="graphConfig(40, 100, '92 C', 'line', 'Voltage (V)')" data-toggle="modal" data-target="#graph"><i class="fa fa-line-chart" aria-hidden="true"></i></a></div>
                             </div>
                         </div>
 
@@ -212,10 +213,10 @@
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-12 console-item">
                             <div class="row">
-                                <div class="col-md-3 col-sm-3 col-xs-12">9.1kW</div>
-                                <div class="col-md-3 col-sm-3 col-xs-12">41.7kWh</div>
-                                <div class="col-md-3 col-sm-3 col-xs-12">118.9V</div>
-                                <div class="col-md-3 col-sm-3 col-xs-12">119.0V</div>
+                                <div class="col-md-3 col-sm-3 col-xs-12"><a href="" onclick="graphConfig(10, 100, 'Demand', 'line', 'demand(kW)')" data-toggle="modal" data-target="#graph">9.1kW</a></div>
+                                <div class="col-md-3 col-sm-3 col-xs-12"><a href="" onclick="graphConfig(40, 500, 'Energy', 'area','energy(kWh)')" data-toggle="modal" data-target="#graph">41.7kWh</a></div>
+                                <div class="col-md-3 col-sm-3 col-xs-12"><a href="" onclick="graphConfig(120, 100, 'Voltage1', 'line', 'Voltage1(V)')" data-toggle="modal" data-target="#graph">118.9V</a></div>
+                                <div class="col-md-3 col-sm-3 col-xs-12"><a href="" onclick="graphConfig(120, 100, 'Voltage2', 'line', 'Voltage2(V)')" data-toggle="modal" data-target="#graph">119.0V</a></div>
                             </div>
                         </div>
 
@@ -226,10 +227,10 @@
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-12 console-item">
                             <div class="row">
-                                <div class="col-md-3 col-sm-3 col-xs-12">9.1kW</div>
-                                <div class="col-md-3 col-sm-3 col-xs-12">41.7kWh</div>
-                                <div class="col-md-3 col-sm-3 col-xs-12">118.9V</div>
-                                <div class="col-md-3 col-sm-3 col-xs-12">119.0V</div>
+                                <div class="col-md-3 col-sm-3 col-xs-12"><a href="" onclick="graphConfig(10, 100, 'Demand', 'line', 'demand(kW)')" data-toggle="modal" data-target="#graph">9.1kW</a></div>
+                                <div class="col-md-3 col-sm-3 col-xs-12"><a href="" onclick="graphConfig(40, 500, 'Energy', 'area','energy(kWh)')" data-toggle="modal" data-target="#graph">41.7kWh</a></div>
+                                <div class="col-md-3 col-sm-3 col-xs-12"><a href="" onclick="graphConfig(120, 100, 'Voltage1', 'line', 'Voltage1(V)')" data-toggle="modal" data-target="#graph">118.9V</a></div>
+                                <div class="col-md-3 col-sm-3 col-xs-12"><a href="" onclick="graphConfig(120, 100, 'Voltage2', 'line', 'Voltage2(V)')" data-toggle="modal" data-target="#graph">119.0V</a></div>
                             </div>
                         </div>
 
@@ -240,10 +241,10 @@
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-12 console-item">
                             <div class="row">
-                                <div class="col-md-3 col-sm-3 col-xs-12">9.1kW</div>
-                                <div class="col-md-3 col-sm-3 col-xs-12">41.7kWh</div>
-                                <div class="col-md-3 col-sm-3 col-xs-12">118.9V</div>
-                                <div class="col-md-3 col-sm-3 col-xs-12">119.0V</div>
+                                <div class="col-md-3 col-sm-3 col-xs-12"><a href="" onclick="graphConfig(10, 100, 'Demand', 'line', 'demand(kW)')" data-toggle="modal" data-target="#graph">9.1kW</a></div>
+                                <div class="col-md-3 col-sm-3 col-xs-12"><a href="" onclick="graphConfig(40, 500, 'Energy', 'area','energy(kWh)')" data-toggle="modal" data-target="#graph">41.7kWh</a></div>
+                                <div class="col-md-3 col-sm-3 col-xs-12"><a href="" onclick="graphConfig(120, 100, 'Voltage1', 'line', 'Voltage1(V)')" data-toggle="modal" data-target="#graph">118.9V</a></div>
+                                <div class="col-md-3 col-sm-3 col-xs-12"><a href="" onclick="graphConfig(120, 100, 'Voltage2', 'line', 'Voltage2(V)')" data-toggle="modal" data-target="#graph">119.0V</a></div>
                             </div>
                         </div>
 
@@ -254,10 +255,10 @@
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-12 console-item">
                             <div class="row">
-                                <div class="col-md-3 col-sm-3 col-xs-12">9.1kW</div>
-                                <div class="col-md-3 col-sm-3 col-xs-12">41.7kWh</div>
-                                <div class="col-md-3 col-sm-3 col-xs-12">118.9V</div>
-                                <div class="col-md-3 col-sm-3 col-xs-12">119.0V</div>
+                                <div class="col-md-3 col-sm-3 col-xs-12"><a href="" onclick="graphConfig(10, 100, 'Demand', 'line', 'demand(kW)')" data-toggle="modal" data-target="#graph">9.1kW</a></div>
+                                <div class="col-md-3 col-sm-3 col-xs-12"><a href="" onclick="graphConfig(40, 500, 'Energy', 'area','energy(kWh)')" data-toggle="modal" data-target="#graph">41.7kWh</a></div>
+                                <div class="col-md-3 col-sm-3 col-xs-12"><a href="" onclick="graphConfig(120, 100, 'Voltage1', 'line', 'Voltage1(V)')" data-toggle="modal" data-target="#graph">118.9V</a></div>
+                                <div class="col-md-3 col-sm-3 col-xs-12"><a href="" onclick="graphConfig(120, 100, 'Voltage2', 'line', 'Voltage2(V)')" data-toggle="modal" data-target="#graph">119.0V</a></div>
                             </div>
                         </div>
 
@@ -268,10 +269,10 @@
                         </div>
                         <div class="col-md-6 col-sm-6 col-xs-12 console-item">
                             <div class="row">
-                                <div class="col-md-3 col-sm-3 col-xs-12">9.1kW</div>
-                                <div class="col-md-3 col-sm-3 col-xs-12">41.7kWh</div>
-                                <div class="col-md-3 col-sm-3 col-xs-12">118.9V</div>
-                                <div class="col-md-3 col-sm-3 col-xs-12">119.0V</div>
+                                <div class="col-md-3 col-sm-3 col-xs-12"><a href="" onclick="graphConfig(10, 100, 'Demand', 'line', 'demand(kW)')" data-toggle="modal" data-target="#graph">9.1kW</a></div>
+                                <div class="col-md-3 col-sm-3 col-xs-12"><a href="" onclick="graphConfig(40, 500, 'Energy', 'area','energy(kWh)')" data-toggle="modal" data-target="#graph">41.7kWh</a></div>
+                                <div class="col-md-3 col-sm-3 col-xs-12"><a href="" onclick="graphConfig(120, 100, 'Voltage1', 'line', 'Voltage1(V)')" data-toggle="modal" data-target="#graph">118.9V</a></div>
+                                <div class="col-md-3 col-sm-3 col-xs-12"><a href="" onclick="graphConfig(120, 100, 'Voltage2', 'line', 'Voltage2(V)')" data-toggle="modal" data-target="#graph">119.0V</a></div>
                             </div>
                         </div>
                     </div>
@@ -280,7 +281,10 @@
         </div>
     </div>
 </div>
+{% include "vader/graph.html" %}
 {% endblock %}
 {% block script %}
+<script type="text/javascript" src="http://d3js.org/d3.v3.js"></script>
 <script type="text/javascript" src="{% static 'js/custom.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/graph.js' %}"></script>
 {% endblock %}
