@@ -81,25 +81,6 @@ DATABASES = {
     }
 }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'ieee123_ami',
-#         'USER': 'gridlabd_ro',
-#         'PASSWORD': 'gridlabd',
-#         'HOST': 'gridlabd.slac.stanford.edu',
-#         'PORT': '3306',
-#     },
-#     'ieee123_ami': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'ieee123_ami',
-#         'USER': 'gridlabd_ro',
-#         'PASSWORD': 'gridlabd',
-#         'HOST': 'gridlabd.slac.stanford.edu',
-#         'PORT': '3306',
-#     }
-# }
-
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
 
@@ -144,3 +125,25 @@ STATIC_URL = '/static/'
 
 HOSTNAME = 'http://gridlabd.slac.stanford.edu'
 PORT = 6268
+
+DATABASES_BASIC_CONFIG = {
+    'user': 'gridlabd_ro',
+    'password': 'gridlabd',
+    'host': 'gridlabd.slac.stanford.edu',
+    'raise_on_warnings': True,
+}
+
+DATABASES_CONFIGURATIONS = {
+    'ieee123s': {
+        'ami', 'model', 'scada', 'data'
+    },
+    'ieee123z': {
+        'ami', 'model', 'scada', 'data'
+    },
+    'ieee123': {
+        'ami', 'model', 'scada', 'data'
+    },
+    'ieee123zs': {
+        'ami', 'model', 'scada', 'data'
+    }
+}
