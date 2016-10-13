@@ -9,7 +9,7 @@ function fakeData(scale, oldData) {
         return data;
 }
 function graphConfig(scale, dotNum, title, style, ylabel) {
-    $('#graghLabel').replaceWith(title)
+    document.getElementById('graghLabel').innerHTML = title;
     var dataset = [{x:0, y: scale*0.1}]
     var i = 1;
     for (; i < dotNum; i++) {
