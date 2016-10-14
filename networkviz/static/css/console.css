@@ -1,0 +1,43 @@
+.console-container{
+    padding-top: 80px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.console-panel{
+    width: 100%;
+    position: relative;
+    display: inline-block;
+    background: #ffffff;
+    border: 1px solid #dcdcdc;
+    border-radius: 15px;
+    padding: 10px 15px 10px 15px;
+    margin-bottom: 15px;
+}
+
+.console-title {
+    padding: 1px 5px 6px 5px;
+    border-bottom: 2px solid #9fedc4;
+}
+
+.console-content{
+    padding: 1px 5px 6px 5px;
+    margin-top: 15px;
+    font-size: 16px;
+}
+
+.console-item{
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    height: 40px;
+}
+
+.console-header {
+    text-align: center;
+}
+
+.graph-icon {
+    font-size: 20px;
+}

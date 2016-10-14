@@ -2,6 +2,7 @@
 # $GIT_DIR/info/exclude or the core.excludesFile configuration variable as
 # described in https://git-scm.com/docs/gitignore
 
+*.iml
 *.egg-info
 *.pot
 *.py[co]
@@ -15,7 +16,7 @@ tests/coverage_html/
 tests/.coverage
 build/
 tests/report/
-
+*.pyc
 
 # The following .gitignore configuration is prepared for JetBrains users.
 
@@ -73,3 +74,7 @@ fabric.properties
 # modules.xml
 # .idea/misc.xml
 # *.ipr
+=======
+.idea/
+=======
+.idea/*

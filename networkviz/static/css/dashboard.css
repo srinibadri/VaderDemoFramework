@@ -1,0 +1,14 @@
+.dashboard-container{
+    padding-top: 60px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+body{
+    background: #00b3ee;
+}
+
+.dashboard_graph{
+    border: 1px solid #dcdcdc;
+    border-radius: 15px;
+}
