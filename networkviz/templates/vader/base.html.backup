@@ -1,7 +1,8 @@
 <html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <title>VADER</title>
+    <!-- load files -->
     {% load staticfiles %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
@@ -11,39 +12,10 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/toggle.css' %}">
     {% block style %}{% endblock %}
 </head>
-
-<style type="text/css">
-
-    .header_logo{
-    padding-left: 20px;
-    }
-
-    header{
-    padding-top: 20px;
-    padding-bottom: 20px;
-    background-color: #8C1515;
-    border-bottom: 10px solid $light-gray;
-    }
-
-</style>
-
-<body>   
-    <header>
-          <div id="logo-title" class="header_logo">
-            <a href="https://www6.slac.stanford.edu/" title="SLAC" rel="SLAC" id="logo">
-              <img src="https://www6.slac.stanford.edu/sites/all/themes/slac_www/logo.png" alt="SLAC">
-            </a>
-          </div> <!-- /logo-title -->
-    </header> <!-- /logo-title -->   
-
+<body>
     {% block content %}{% endblock %}
     <script src="{% static 'js/jquery.min.js' %} "></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
-
     {% block script %}{% endblock %}
-
 </body>
 </html>
-
-

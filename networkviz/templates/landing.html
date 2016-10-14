@@ -1,0 +1,20 @@
+{% extends "vader/base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+<div class="jumbotron text-center">
+  <p>Visualization and Analytics of Distributed Energy Resurces (VADER) is a unified data analytics platform that enables the integration of massive and heterogeneous data streams for granular real-time monitoring, visualization, and control of Distributed Energy Resources (DER) in distribution networks.</p> 
+</div>
+<div class="container"
+>  <div class="col-md-12">
+	<img src="{% static 'images/Vader_Outline.svg' %}" width="806" align="middle" height="442" alt="vader" usemap="#vaderpagemap" >
+	<map name="vaderpagemap">
+	  <area shape="rect" coords="0,50,150,450" href="/networkviz/gent/" alt="Input Data Visualization">
+	  <area shape="rect" coords="230,170,380,300" href="https://vaderio.slac.stanford.edu:8443" alt="Data Plug">
+	  <area shape="rect" coords="650,0,800,150" href="/networkviz/vader/map" alt="Operational Planning">
+	  <area shape="rect" coords="650,280,800,450" href="/networkviz/vader/PVDisagg/" alt="Real Time Analytics">
+	</map>
+  </div>
+</div>
+
+{% endblock %}

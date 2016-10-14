@@ -13,4 +13,5 @@ urlpatterns = [
     url(r'^ieee123/', views.ieee123, name='ieee123'),
     url(r'^vader/map', views.vader, name='vader'),
     url(r'^vader/console', views.console, name='console'),
+    url(r'^vader/PVDisagg', views.pvdisagg, name='PVDisagg'),
 ]

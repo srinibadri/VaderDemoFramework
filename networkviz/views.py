@@ -6,10 +6,7 @@ import untangle, requests, json
 # Create your views here.
 
 def index(request):
-    return HttpResponse("""
-    Made it to the index!
-    <a href="networkviz/gent.html">Go here for the dashboard</a>
-    """)
+    return render(request,'landing.html')
 
 def console(request):
     template = loader.get_template('vader/console.html')
@@ -128,3 +125,7 @@ def dummyapi(request, element_name="meter"):
     # print(respon)
     except:
         return;
+def pvdisagg(request):
+    #js_data=wrangleCSV('./solardisaggregation/gen_data.csv','gen')
+    # my_dict={str(datetime.datetime(2013, 3, 17, 18, 19)): {'t2': 400, 't1': 1000}, str(datetime.datetime(2013, 3, 17, 18, 20)): {'t2': 300, 't1': 3000}}
+    return render(request,'disagg.html')
