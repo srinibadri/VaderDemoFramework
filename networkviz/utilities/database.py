@@ -50,3 +50,8 @@ def query_database(simulation_name, database, query):
         res.append(info)
     cursor.close()
     return res
+
+
+def query_encapsulation(table_name, query_type):
+    query = 'select ' + table_name + '';
+    return query
