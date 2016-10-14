@@ -13,13 +13,20 @@
 </head>
 
 <style type="text/css">
-
-    .header_logo{
+    .header_vader_logo{
+    float: left;
+    padding-top: 5px;
     padding-left: 20px;
+
+    }
+    .header_slac_logo{
+    float: right;
+    padding-top: 30px;
+    padding-right: 20px;
     }
 
     header{
-    padding-top: 20px;
+    height:100px;
     padding-bottom: 20px;
     background-color: #8C1515;
     border-bottom: 10px solid $light-gray;
@@ -29,11 +36,16 @@
 
 <body>   
     <header>
-          <div id="logo-title" class="header_logo">
+          <div id="logo-title" class="header_slac_logo">
             <a href="https://www6.slac.stanford.edu/" title="SLAC" rel="SLAC" id="logo">
               <img src="https://www6.slac.stanford.edu/sites/all/themes/slac_www/logo.png" alt="SLAC">
             </a>
-          </div> <!-- /logo-title -->
+          </div> 
+        <div id="logo-title" class="header_vader_logo">
+            <a href="/networkviz" title="VADER" rel="VADER" id="logo2">
+              <img src="{% static 'images/VaderLogo.png' %}" alt="Vader Landing" width=90%>
+            </a>
+          </div><!-- /logo-title -->
     </header> <!-- /logo-title -->   
 
     {% block content %}{% endblock %}
