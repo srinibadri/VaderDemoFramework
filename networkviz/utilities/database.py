@@ -1,4 +1,5 @@
 import mysql.connector
+
 from vaderviz import settings
 
 connections = {}
@@ -37,11 +38,11 @@ def close_all():
     connections.clear()
 
 
-def query_database(simulation, database, query):
+def query_database(simulation_name, database, query):
     if query == '':
         raise KeyError("Query is empty")
     global connections
-    database_name = simulation + '_' + database
+    database_name = simulation_name + '_' + database
     cursor = connections[database_name].cursor()
     cursor.execute(query)
     res = []
