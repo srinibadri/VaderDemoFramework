@@ -75,7 +75,6 @@ def query_database(simulation_name, database, fields='', table='', conditions=''
         query = generate_query(fields, table, conditions)
     else:
         query = raw_query
-    print query
     database_name = simulation_name + '_' + database
     try:
         cursor = connections[database_name].cursor()
