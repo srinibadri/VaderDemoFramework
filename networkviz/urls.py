@@ -11,10 +11,10 @@ urlpatterns = [
     url(r'^d3/', views.d3, name='d3'),
     url(r'^api/(?P<element_name>[a-zA-Z0-9_]+)', views.dummyapi, name='dummyapi'),
     url(r'^ieee123/', views.ieee123, name='ieee123'),
-    url(r'^vader/map', views.vader, name='vader'),
+    url(r'^vader/map', views.map, name='map'),
     url(r'^vader/console', views.console, name='console'),
+    url(r'^vader/dashboard', views.dashboard, name='dashboard'),
     url(r'^vader/PVDisagg', views.pvdisagg, name='PVDisagg'),
     url(r'^vader/planning', views.planning, name='planning'),
     url(r'^vader/real-time', views.realtime, name='real-time'),
-
 ]

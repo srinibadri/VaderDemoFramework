@@ -2,18 +2,28 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
 import untangle, requests, json
+from utilities import *
 
 # Create your views here.
 
+
 def index(request):
-    return render(request,'landing.html')
+    return HttpResponse("""
+    Made it to the index!
+    <a href="networkviz/board.html">Go here for the dashboard</a>
+    """)
+
+def dashboard(request):
+    template = loader.get_template('vader/board.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
 
 def console(request):
     template = loader.get_template('vader/console.html')
     context = {}
     return HttpResponse(template.render(context, request))
 
-def vader(request):
+def map(request):
     template = loader.get_template('vader/map.html')
     context = {}
     return HttpResponse(template.render(context, request))
@@ -23,13 +33,15 @@ def demo(request):
     context = {}
     return HttpResponse(template.render(context, request))
 
+
 def medium(request):
     template = loader.get_template('networkviz/medium.html')
     context = {}
     return HttpResponse(template.render(context, request))
 
+
 def gent(request):
-    template = loader.get_template('networkviz/gent.html')
+    template = loader.get_template('networkviz/board.html')
     context = {}
     return HttpResponse(template.render(context, request))
 
@@ -39,10 +51,12 @@ def cmu(request):
     context = {}
     return HttpResponse(template.render(context, request))
 
+
 def d3(request):
     template = loader.get_template('networkviz/d3.js')
     context = {}
     return HttpResponse(template.render(context, request))
+
 
 def ieee123(request):
     template = loader.get_template('networkviz/ieee123.xml')
@@ -125,6 +139,7 @@ def dummyapi(request, element_name="meter"):
     # print(respon)
     except:
         return;
+        
 def pvdisagg(request):
     return render(request,'disagg.html')
 
