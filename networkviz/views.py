@@ -2,16 +2,13 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
 import untangle, requests, json
-from utilities import *
+#from utilities import *
 
 # Create your views here.
 
 
 def index(request):
-    return HttpResponse("""
-    Made it to the index!
-    <a href="networkviz/board.html">Go here for the dashboard</a>
-    """)
+    return render(request,'landing.html')
 
 def dashboard(request):
     template = loader.get_template('vader/board.html')
@@ -139,10 +136,9 @@ def dummyapi(request, element_name="meter"):
     # print(respon)
     except:
         return;
-        
+
 def pvdisagg(request):
     return render(request,'disagg.html')
-
 def planning(request):
     return render(request,'planning.html')
 def realtime(request):

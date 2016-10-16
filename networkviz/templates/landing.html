@@ -2,6 +2,12 @@
 {% load staticfiles %}
 
 {% block style %}
+<style type="text/css">
+  .col-half-offset{
+    margin-left:4.166666667%
+}
+</style>
+
 {% endblock %}
 
 {% block content %}
@@ -25,21 +31,23 @@
 <div class="container">
 <h2>Project Partners and Sponsors</h2>
 <footer>
-    <div class="row" style="padding:15px">
-         <div class="col-sm-3">
+    <div class="row" style="padding:15px; background:#fff">
+         <div class="col-md-2 col-sm-2">
                 <img src="{% static 'images/sunshot.jpg' %}" alt="sunshot" width=100%/> 
          </div>
-         <div class="col-sm-3">
+         <div class="col-md-2 col-sm-2 col-half-offset">
                <img src="{% static 'images/s3lab.png' %}" alt="s3lab" width=100%/>
          </div>
-         <div class="col-sm-3">
+         <div class="col-md-2 col-sm-2 col-half-offset">
                <img src="{% static 'images/bw-logo.jpg' %}" alt="bits and watts" width=100% /> 
          </div>
-         <div class="col-sm-3">
+         <div class="col-md-2 col-sm-2 col-half-offset">
                 <img src="{% static 'images/sce.jpg' %}" alt="sce" width=100% />
           </div>
-        </div> 
-    </div>
+          <div class="col-md-2 col-sm-2 col-half-offset">
+                <img src="{% static 'images/tomkat.jpg' %}" alt="tomkat" width=100% />
+          </div>
+    </div> 
 </footer>
 </div>
 {% endblock %}
