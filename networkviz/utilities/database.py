@@ -2,7 +2,7 @@
 This module provides queries for querying database.
 
 IMPORTANT!!!
-It should be strictly follows the steps:
+The steps should be strictly followed:
 1. `connect_to_database`
 2. `query_database`
 3. (optional if needed) `close_connection` or `close_all`
