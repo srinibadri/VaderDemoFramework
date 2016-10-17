@@ -30,6 +30,8 @@ def connect_to_database(simulation_name, database):
     if database not in settings.DATABASES_CONFIGURATIONS[simulation_name]:
         raise LookupError("There is no such database name.")
     database_name = simulation_name + '_' + database
+    if database_name in connections:
+        return
     connections[database_name] = mysql.connector.connect(database=database_name,
                                                          **settings.DATABASES_BASIC_CONFIG)
 
