@@ -1,4 +1,7 @@
 """
+
+# THIS FILE IS DISCARDED!!!!!!
+
 Unlike climate.py and simulation.py, there is no abbreviation in this module.
 This is because the names here (e.g. sw13to152, sw18to135) cannot be easily abbreviated.
 
