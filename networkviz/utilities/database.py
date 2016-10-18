@@ -47,7 +47,7 @@ def close_connection(simulation_name, database):
 def close_all():
     global connections
     for database in connections:
-        print 'closing ' + database
+        print('closing ' + database)
         connections[database].close()
     connections.clear()
 
