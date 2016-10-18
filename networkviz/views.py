@@ -8,10 +8,12 @@ from utilities import *
 
 
 def index(request):
-    return HttpResponse("""
-    Made it to the index!
-    <a href="networkviz/board.html">Go here for the dashboard</a>
-    """)
+    return render(request,'landing.html')
+
+def dashboard(request):
+    template = loader.get_template('vader/board.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
 
 def dashboard(request):
     template = loader.get_template('vader/board.html')
@@ -88,3 +90,10 @@ def multiapi(request, element_names=["meter"]):
     # print(respon)
     except:
         return;
+
+def pvdisagg(request):
+    return render(request,'disagg.html')
+def planning(request):
+    return render(request,'planning.html')
+def realtime(request):
+    return render(request,'real-time.html')

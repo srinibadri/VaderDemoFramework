@@ -1,0 +1,21 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VADER</title>
+    <!-- load files -->
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/weather.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/weather-icons.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/toggle.css' %}">
+    {% block style %}{% endblock %}
+</head>
+<body>
+    {% block content %}{% endblock %}
+    <script src="{% static 'js/jquery.min.js' %} "></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    {% block script %}{% endblock %}
+</body>
+</html>

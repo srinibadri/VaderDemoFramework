@@ -14,4 +14,7 @@ urlpatterns = [
     url(r'^vader/map', views.map, name='map'),
     url(r'^vader/console', views.console, name='console'),
     url(r'^vader/dashboard', views.dashboard, name='dashboard'),
+    url(r'^vader/PVDisagg', views.pvdisagg, name='PVDisagg'),
+    url(r'^vader/planning', views.planning, name='planning'),
+    url(r'^vader/real-time', views.realtime, name='real-time'),
 ]
