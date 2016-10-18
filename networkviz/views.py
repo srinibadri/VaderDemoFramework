@@ -1,7 +1,13 @@
+from __future__ import division
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
 import untangle, requests, json
+import pickle
+import pandas as pd
+import time
+from SolarDisaggregation import *
+import datetime
 #from utilities import *
 
 # Create your views here.
@@ -137,9 +143,66 @@ def dummyapi(request, element_name="meter"):
     except:
         return;
 
-def pvdisagg(request):
-    return render(request,'disagg.html')
+def pvdisagg(request,region_id):
+    data=disaggregateRegion(region_id)
+    return render(request,'disagg.html', {'data': data})
 def planning(request):
     return render(request,'planning.html')
 def realtime(request):
     return render(request,'real-time.html')
+
+def disaggregateRegion(region):
+        #Generates random values to send via websocket
+        ## Need to turn this into the message we will be appending to each visualization
+        static_loc='/home/eckara/Desktop/CMU_Practicum/VADER/VaderDemoFramework/networkviz/static/data/'
+        #with open(static_loc+'objs.pickle') as f:  # Python 3: open(..., 'rb')
+        agg_netload, predictors, alphas, model_names,models, solar_true, minute_of_day = pickle.load(open(static_loc+'objs.pickle','rb'))
+        
+        tt=int(time.time())*1000
+        now = datetime.datetime.now()-datetime.timedelta(hours=7)
+        current_minute=now.hour*60+now.minute
+        if current_minute< minute_of_day[0]:
+            ix=False
+        elif current_minute> minute_of_day[1]:
+            ix= minute_of_day
+        else:
+            ix=current_minute-minute_of_day[0]
+
+        i=ix
+        ### read netload, disaggrregate and send
+        # print(get_till_ith_element_of_dict(predictors,i))
+        # print([agg_netload[0:i]])
+        model_names_per_region={}
+        #model_names_per_region=
+        disaggSignal=realtimeDisaggInvdSol(alphas,get_till_ith_element_of_dict(predictors,i),model_names,[[agg_netload[elem]] for elem in range(0,i)],models)
+        # print(disaggSignal)
+        overall={}
+        ctr=0
+
+        ### Come up with a seperation of houses based on model names
+        ### Display aggregate net_load as an input. 
+        print(current_minute)
+
+        for elem in model_names[1:]:
+            msg_list=[]
+            message={}
+            message['label']=elem+'_estimated'
+            vals=list(disaggSignal[elem])
+            times=list([t/60 for t in range(minute_of_day[0],current_minute)])
+            message['data']=[list(a) for a in zip(times,vals) ]
+            msg_list.append(message)
+
+            message={}
+            message['label']=elem+'_true'
+
+            vals=list(solar_true[elem])
+            times=list([t/60 for t in range(minute_of_day[0],current_minute)])
+            message['data']=[list(a) for a in zip(times,vals) ]
+            msg_list.append(message)
+
+            overall[str(ctr)]=msg_list
+            ctr=ctr+1
+        i=i+1
+        ### rewrite
+
+        return json.dumps(overall)

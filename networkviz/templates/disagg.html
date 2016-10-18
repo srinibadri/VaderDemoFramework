@@ -3,11 +3,16 @@
 
 {% block style %}
 <style type="text/css">
-#map {
-	height: 500px;
-	width: 80%;
-	padding-right: 10px;
-
+#map
+{
+    width: 100%;
+    height:100%;
+    display: block;
+}
+#map-holder
+{
+    height:50%;
+    width:50%;
 }
 #graph0{
 	height: 250px;
@@ -29,16 +34,14 @@
   <p>This demo presents results of a disaggregation scheme that uses measurements obtained at the top of the feeder to disaggregate solar generation in each household.</p> 
 </div>
 <div class="container">
-  <div class="col-md-12">
-    <div class="col-md-6">
-    	<div class="container" id="map"></div>
-    </div>
+	  <div class="col-md-6 fill" id="map-holder">
+	    <div id="map"></div>
+	  </div>
     <div class="col-md-6">
     	<div class="container" id="graph0"></div>
     	<div class="container" id="graph1"></div>
     	<div class="container" id="graph2"></div>
     </div>
-  </div>
 </div>
 {% endblock %}
 
@@ -47,25 +50,103 @@
 <script type="text/javascript" src="{% static 'js/jquery.flot.time.js' %}"></script>
 <script language="javascript" type="text/javascript">
 // MAP to bind
-var mymap = L.map('map').setView([37.42573, -122.1896], 13);
+var map = L.map('map').setView([37.42573, -122.1896], 13);
 
-    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpandmbXliNDBjZWd2M2x6bDk3c2ZtOTkifQ._QA7i5Mpkd_m30IGElHziw', {
-			maxZoom: 18,
-			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-				'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-				'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-			id: 'mapbox.streets'
-		}).addTo(mymap);
+L.tileLayer(
+    'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', 
+    {maxZoom: 18}).addTo(map);
 
 
-// SOCKET COMMUNICATION BETWEEN PYTHON AND VISUALIZATION
-var port = 9000;
-var host = "ws://127.0.0.1:"+port; // No need to change this if using localhost
+//Handle click on polygon
+// var onPolyClick = function(event){
+//     //callFancyboxIframe('flrs.html')
+//     var label = event.target.options.label;
+//     //var content = event.target.options.popup;
+//     //var otherStuff = event.target.options.otherStuff;
+//     //alert("Clicked on polygon with label:" +label +" and content:" +content +". Also otherStuff set to:" +otherStuff);
+//     window.location.href = '/networkviz/vader/PVDisagg/'+label
+
+// };
 
 
-//Declare Variables
-var socket;
-var totalLength=60;
+var regions = [{
+    "type": "Feature",
+    "properties": {"region": "1"},
+    "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+        [-122.1896, 37.42181], 
+        [-122.3896, 37.42348], 
+        [-122.4896, 37.53261], 
+        [-122.1896, 37.42181]
+        ]]
+    }
+}, {
+    "type": "Feature",
+    "properties": {"region": "2"},
+    "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+        [-122.1896, 37.32181], 
+        [-122.3896, 37.32348], 
+        [-122.4896, 37.43261], 
+        [-122.1896, 37.32181]
+        ]]
+    }
+}];
+
+L.geoJSON(regions, {
+    style: function(feature) {
+        switch (feature.properties.region) {
+            case '1': return {color: "#ff0000"};
+            case '2':   return {color: "#0000ff"};
+        }
+    },
+    onEachFeature: function onEachFeature(feature, layer) {
+
+	layer.on('click', function (e) {
+	  // e = event
+	  console.log(feature.properties.region);
+	  // You can make your ajax call declaration here
+	  //$.ajax(... 
+	  window.location.href = '/networkviz/vader/PVDisagg/'+feature.properties.region
+	  });
+	},
+    }).addTo(map);
+
+
+
+
+//poly.on('click', onPolyClick);
+
+
+
+
+// //Create polygon
+// var popup_flor ="5";
+// var content_flor ="MyContent";
+// var poly = new L.Polygon([
+//         [37.42181, -122.1896], 
+//         [37.42348, -122.3896], 
+//         [37.53261, -122.4896], 
+//         [37.42181, -122.1896]
+//   ], {'label': popup_flor, 'popup': content_flor, 'otherStuff': 'abc123'});
+// poly.on('click', onPolyClick);
+
+// //Add polygon to map
+// poly.addTo(map);    
+
+
+console.log("{{ data }}")
+
+// // SOCKET COMMUNICATION BETWEEN PYTHON AND VISUALIZATION
+// var port = 9000;
+// var host = "ws://127.0.0.1:"+port; // No need to change this if using localhost
+
+
+// //Declare Variables
+// var socket;
+// var totalLength=60;
 
 
 function drawChart(dat,graphName) {
@@ -73,7 +154,7 @@ function drawChart(dat,graphName) {
    	
 
     $.plot( plotarea , dat, { xaxis: {
-					mode: "time",
+					//mode: "time",
 				}
 			});
 
@@ -96,71 +177,79 @@ function updateData(existingData,newData,totalLength) {
 	return existingData;
 
 };
+var receivedData={{ data|safe }};
+console.log(receivedData)
+//receivedData = JSON.parse(data)
+   //dat['label']
+   //console.log(msg.data)
+   //console.log("Message Received: "+msg.data);
+   for(var i=0; i<2; i++){
+		dat=receivedData[i]
+   		drawChart(dat,String(i))
+   }
 
 
-
-
-function init() {
-	try {
-		socket = new WebSocket(host);
-		console.log('WebSocket status '+socket.readyState);
-		socket.onopen    = function(msg) { 
-							   console.log("Welcome - status "+this.readyState); 
-						   };
-		socket.onmessage = function(msg) { 
-							   receivedData = JSON.parse(msg.data)
-							   //dat['label']
-							   //console.log(msg.data)
-							   //console.log("Message Received: "+msg.data);
-							   for(var i=0; i<2; i++){
-								existingData=$("#graph"+String(i)).data()['plot']
-								if(existingData==null){
-									console.log('gotcha!')
-							   		dat=receivedData[i]
-								} else {
-									//Get existing data, update and redraw
-									existingData=$("#graph"+String(i)).data()['plot'].getData()
-									dat=updateData(existingData,receivedData[i],totalLength)
+// function init() {
+// 	try {
+// 		socket = new WebSocket(host);
+// 		console.log('WebSocket status '+socket.readyState);
+// 		socket.onopen    = function(msg) { 
+// 							   console.log("Welcome - status "+this.readyState); 
+// 						   };
+// 		socket.onmessage = function(msg) { 
+// 							   receivedData = JSON.parse(msg.data)
+// 							   //dat['label']
+// 							   //console.log(msg.data)
+// 							   //console.log("Message Received: "+msg.data);
+// 							   for(var i=0; i<2; i++){
+// 								existingData=$("#graph"+String(i)).data()['plot']
+// 								if(existingData==null){
+// 									console.log('gotcha!')
+// 							   		dat=receivedData[i]
+// 								} else {
+// 									//Get existing data, update and redraw
+// 									existingData=$("#graph"+String(i)).data()['plot'].getData()
+// 									dat=updateData(existingData,receivedData[i],totalLength)
 
 						
-								}
-							   	drawChart(dat,String(i))
+// 								}
+// 							   	drawChart(dat,String(i))
 
-							   }
-							 //  console.log(dat[0]);
-							//   dat=dat[0]
-							//console.log("Separate Values: "+explodedValues);
-							//	drawChart("0")
+// 							   }
+// 							 //  console.log(dat[0]);
+// 							//   dat=dat[0]
+// 							//console.log("Separate Values: "+explodedValues);
+// 							//	drawChart("0")
 
-							//convert strings to numbers
-							//for(var i=0; i<explodedValues.length; i++) { explodedValues[i] = +explodedValues[i]; } 
+// 							//convert strings to numbers
+// 							//for(var i=0; i<explodedValues.length; i++) { explodedValues[i] = +explodedValues[i]; } 
 							
-							//drawVisualization();
+// 							//drawVisualization();
 							
-						   };
-		socket.onclose   = function(msg) { 
-							   console.log("Disconnected - status "+this.readyState); 
-						   };
-	}
-	catch(ex){ 
-		console.log(ex); 
-	}
+// 						   };
+// 		socket.onclose   = function(msg) { 
+// 							   console.log("Disconnected - status "+this.readyState); 
+// 						   };
+// 	}
+// 	catch(ex){ 
+// 		console.log(ex); 
+// 	}
 	
-}
-init()
+// }
+// init()
 
-function quit(){
-	if (socket != null) {
-		console.log("Close Socket");
-		socket.close();
-		socket=null;
-	}
-}
+// function quit(){
+// 	if (socket != null) {
+// 		console.log("Close Socket");
+// 		socket.close();
+// 		socket=null;
+// 	}
+// }
 
-function reconnect() {
-	quit();
-	init();
-}
+// function reconnect() {
+// 	quit();
+// 	init();
+// }
 
 </script>
 {% endblock %}
