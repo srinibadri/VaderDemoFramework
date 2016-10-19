@@ -130,7 +130,7 @@ DATABASES_BASIC_CONFIG = {
     'user': 'gridlabd_ro',
     'password': 'gridlabd',
     'host': 'gridlabd.slac.stanford.edu',
-    'raise_on_warnings': True,
+    'raise_on_warnings': False,
 }
 
 DATABASES_CONFIGURATIONS = {

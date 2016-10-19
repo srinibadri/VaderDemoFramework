@@ -32,6 +32,7 @@ def connect_to_database(simulation_name, database):
     database_name = simulation_name + '_' + database
     if database_name in connections:
         return
+    print database_name
     connections[database_name] = mysql.connector.connect(database=database_name,
                                                          **settings.DATABASES_BASIC_CONFIG)
 
@@ -84,9 +85,13 @@ def query_database(simulation_name, database, fields='', table='', conditions=''
         raise KeyError("Connection to " + database_name + " has not been established")
     cursor.execute(query)
     res = []
-    for info in cursor:
-        res.append(info)
+    try:
+        for info in cursor:
+            res.append(info)
+    except:
+        print 'GG'
     cursor.close()
+    print res
     return res
 
 

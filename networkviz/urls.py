@@ -1,6 +1,7 @@
 from django.conf.urls import url
 
 from . import views
+from . import utilities
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
@@ -14,4 +15,5 @@ urlpatterns = [
     url(r'^vader/map', views.map, name='map'),
     url(r'^vader/console', views.console, name='console'),
     url(r'^vader/dashboard', views.dashboard, name='dashboard'),
+    url(r'^vader/getData', views.getData, name='getData'),
 ]

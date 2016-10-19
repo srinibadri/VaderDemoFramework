@@ -3,9 +3,9 @@ from django.http import HttpResponse
 from django.template import loader
 import untangle, requests, json
 from utilities import *
-
+from utilities.database import *
 # Create your views here.
-
+import json
 
 def index(request):
     return HttpResponse("""
@@ -62,6 +62,20 @@ def ieee123(request):
     template = loader.get_template('networkviz/ieee123.xml')
     context = {}
     return HttpResponse(template.render(context, request))
+
+
+def getData(request):
+    fieldName = request.GET.get('field')
+    tableName = request.GET.get('table')
+    condition = request.GET.get('condition')
+    print condition
+    simulation_name = 'ieee123'
+    database = 'scada'
+    connect_to_database(simulation_name, database)
+    context = query_database(simulation_name, database, fieldName, tableName, condition, '')
+    print context
+    return HttpResponse(json.dumps(context), content_type='application/json')
+
 
 def dummyapi(request, element_name="meter"):
     print("api")
