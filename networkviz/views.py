@@ -97,15 +97,15 @@ def dummyapi(request, element_name="meter"):
         return JsonResponse("{}");
     # print(respon)
 
-def pvdisagg(request,region_id):
-    data=disaggregateRegion(region_id)
-    return render(request,'disagg.html', {'data': data})
+def pvdisagg(request):
+    ##data=disaggregateRegion(region_id)
+    return render(request,'disagg.html')
 def planning(request):
     return render(request,'planning.html')
 def realtime(request):
     return render(request,'real-time.html')
 
-def disaggregateRegion(region):
+def disaggregateRegion(request, region_id):
         #Generates random values to send via websocket
         ## Need to turn this into the message we will be appending to each visualization
         static_loc='/home/eckara/Desktop/CMU_Practicum/VADER/VaderDemoFramework/networkviz/static/data/'
@@ -116,13 +116,12 @@ def disaggregateRegion(region):
         now = datetime.datetime.now()-datetime.timedelta(hours=7)
         current_minute=now.hour*60+now.minute
         if current_minute< minute_of_day[0]:
-            ix=False
+            i=False
         elif current_minute> minute_of_day[1]:
-            ix= minute_of_day
+            i= minute_of_day
         else:
-            ix=current_minute-minute_of_day[0]
+            i=current_minute-minute_of_day[0]
 
-        i=ix
         ### read netload, disaggrregate and send
         # print(get_till_ith_element_of_dict(predictors,i))
         # print([agg_netload[0:i]])
@@ -136,6 +135,27 @@ def disaggregateRegion(region):
         ### Come up with a seperation of houses based on model names
         ### Display aggregate net_load as an input.
         print(current_minute)
+        # ### AGGREGATE LOAD
+        # msg_list=[]
+        # message={}
+        # message['label']="Aggregate Net Load"
+        # vals=[agg_netload[elem] for elem in range(0,i)]
+        # times=list([t/60 for t in range(minute_of_day[0],current_minute)])
+        # message['data']=[list(a) for a in zip(times,vals) ]
+        # msg_list.append(message)
+        # overall["AggregateLoad"]=msg_list
+
+        # ### SOLAR PROXY
+        # msg_list=[]
+        # message={}
+        # message['label']="Aggregate Net Load"
+        # vals=[agg_netload[elem] for elem in range(0,i)]
+        # times=list([t/60 for t in range(minute_of_day[0],current_minute)])
+        # message['data']=[list(a) for a in zip(times,vals) ]
+        # msg_list.append(message)
+        # overall["SolarProxy"]=msg_list
+
+
 
         for elem in model_names[1:]:
             msg_list=[]
@@ -148,7 +168,6 @@ def disaggregateRegion(region):
 
             message={}
             message['label']=elem+'_true'
-
             vals=list(solar_true[elem])
             times=list([t/60 for t in range(minute_of_day[0],current_minute)])
             message['data']=[list(a) for a in zip(times,vals) ]
@@ -156,7 +175,6 @@ def disaggregateRegion(region):
 
             overall[str(ctr)]=msg_list
             ctr=ctr+1
-        i=i+1
         ### rewrite
 
-        return json.dumps(overall)
+        return JsonResponse(json.dumps(overall),safe=False)

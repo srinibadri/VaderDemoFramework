@@ -11,20 +11,29 @@
 }
 #map-holder
 {
+    margin-top:50px;
     height:50%;
-    width:50%;
+    width:100%;
 }
 #graph0{
-	height: 250px;
-	width: 80%;
+	height: 33%;
+	width: 100%;
 }
-#graph1{
-	height: 250px;
-	width: 80%;
+#graph1
+{	height: 33%;
+    width: 100%;
 }
 #graph2{
-	height: 250px;
-	width: 80%;
+	height: 33%;
+	width: 100%;
+}
+#graph3{
+    height: 33%;
+    width: 100%;
+}
+#graph4{
+    height: 33%;
+    width: 100%;
 }
 </style>
 {% endblock %}
@@ -33,14 +42,39 @@
 <div class="jumbotron text-center" style="padding: 35px">
   <p>This demo presents results of a disaggregation scheme that uses measurements obtained at the top of the feeder to disaggregate solar generation in each household.</p>
 </div>
+<div class="container-fluid">
+    <div class="col-lg-12 fill" id="map-holder">
+        <div id="map"></div>
+    </div>
+</div>
 <div class="container">
-	  <div class="col-md-6 fill" id="map-holder">
-	    <div id="map"></div>
-	  </div>
-    <div class="col-md-6">
-    	<div class="container" id="graph0"></div>
-    	<div class="container" id="graph1"></div>
-    	<div class="container" id="graph2"></div>
+         <div class=" col-lg-6 col-md-6 col-sm-6 ">
+        <h2>Inputs</h2>
+
+            <div class="card text-center" style="background-color: #fff; padding: 15px; border-radius: 15px;">
+            <p>Aggregate Net Load Measurement</p>
+              <div class="container" id=graph1 width="100%"></div>
+            </div>
+            <div class="card text-center" style="background-color: #fff; padding: 15px; border-radius: 15px;">
+             <p><span class="glyphicon glyphicon-sunglasses"></span> Solar Proxy</p> 
+              <div class="container" id=graph2 width="100%"></div>
+            </div>
+        </div>
+
+    <div class="col-lg-6 col-md-6 col-sm-6">
+        <h2>Outputs</h2>
+        <div class="card text-center" style="background-color: #fff; padding: 15px; border-radius: 15px;">
+            <p><span class="glyphicon glyphicon-home"></span> Home 1</p>
+    	   <div class="container" id="graph0"></div>
+        </div>
+        <div class="card text-center" style="background-color: #fff; padding: 15px; border-radius: 15px;">
+        <p><span class="glyphicon glyphicon-home"></span> Home 2</p>
+    	<div class="container" id="graph3"></div>
+        </div>
+        <div class="card text-center" style="background-color: #fff; padding: 15px; border-radius: 15px;">
+        <p><span class="glyphicon glyphicon-home"></span> Home 3</p>
+    	<div class="container" id="graph4"></div>
+        </div>
     </div>
 </div>
 {% endblock %}
@@ -48,6 +82,7 @@
 {% block script %}
 <script type="text/javascript" src="{% static 'js/jquery.flot.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/jquery.flot.time.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.flot.resize.js' %}"></script>
 <script language="javascript" type="text/javascript">
 // MAP to bind
 var map = L.map('map').setView([37.42573, -122.1896], 13);
@@ -109,7 +144,21 @@ L.geoJSON(regions, {
 	  console.log(feature.properties.region);
 	  // You can make your ajax call declaration here
 	  //$.ajax(...
-	  window.location.href = '/vader/PVDisagg/'+feature.properties.region
+        $.ajax({ 
+            type: 'GET', 
+            url: 'http://127.0.0.1:8000/vader/PVAPI/'+feature.properties.region, 
+            dataType: 'json',
+            success: function (data) { 
+                //console.log(data); // do anything you want with your parsed data
+                      for(var i=0; i<2; i++){
+                            dat_json=JSON.parse(data)
+                            dat=dat_json[i]
+                            console.log(dat)
+                            drawChart(dat,String(i))
+                            }
+            }
+        });
+	  //window.location.href = '/vader/PVDisagg/'+feature.properties.region
 	  });
 	},
     }).addTo(map);
@@ -137,8 +186,7 @@ L.geoJSON(regions, {
 // poly.addTo(map);
 
 
-console.log("{{ data }}")
-
+//
 // // SOCKET COMMUNICATION BETWEEN PYTHON AND VISUALIZATION
 // var port = 9000;
 // var host = "ws://127.0.0.1:"+port; // No need to change this if using localhost
@@ -160,33 +208,31 @@ function drawChart(dat,graphName) {
 
 };
 
-function updateData(existingData,newData,totalLength) {
-	for(var i=0; i<existingData.length; i++){
-		//console.log(existingData[i].data)
-		//console.log(newData[i].data)
-		for(elem in newData[i].data){
-			console.log(existingData[i].data.length)
-			if(existingData[i].data.length==totalLength) {
-				existingData[i].data.shift()
-			}
-			existingData[i].data.push(newData[i].data[elem])
-		}
-		//console.log(existingData[i].data)
-	}
+// function updateData(existingData,newData,totalLength) {
+// 	for(var i=0; i<existingData.length; i++){
+// 		//console.log(existingData[i].data)
+// 		//console.log(newData[i].data)
+// 		for(elem in newData[i].data){
+// 			console.log(existingData[i].data.length)
+// 			if(existingData[i].data.length==totalLength) {
+// 				existingData[i].data.shift()
+// 			}
+// 			existingData[i].data.push(newData[i].data[elem])
+// 		}
+// 		//console.log(existingData[i].data)
+// 	}
 
-	return existingData;
+// 	return existingData;
 
-};
-var receivedData={{ data|safe }};
-console.log(receivedData)
+// };
+
+//var receivedData={{ data|safe }};
+//console.log(receivedData)
 //receivedData = JSON.parse(data)
    //dat['label']
    //console.log(msg.data)
    //console.log("Message Received: "+msg.data);
-   for(var i=0; i<2; i++){
-		dat=receivedData[i]
-   		drawChart(dat,String(i))
-   }
+
 
 
 // function init() {
