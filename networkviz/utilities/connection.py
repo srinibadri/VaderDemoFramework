@@ -64,6 +64,50 @@ def get_object(object_name, useJson=True):
         eprint("%s not found" % (object_name))
     return obj
 
+def get_objects(element_prefix, func_get_elements, element_query="list"):
+    '''
+
+    Single handler method for gathering lists of elements (meters, switches, nodes, houses, etc).
+    Arguments:
+        request             -- Django Request object
+        element_prefix      -- Element name prefix (so that meter/meter_1 and meter/1 both work)
+        func_get_elements   -- A function object that can be used to retrieve a list of all the elements of that type in the simulation
+        element_query       -- Which collection of data requested. See below.
+
+    Note: You can replace 'meter' with switch, load, node, house, etc.
+    Handles a few types of queries in the "element_query" field:
+
+    /           --> Returns list of element names of that type
+    /list       --> Returns list of element names of that type
+    /meter_1    --> Returns data about single element with name 'meter_1'
+    /1          --> Returns data about single element with name 'meter_1'. More specifically, with the name (element_prefix+'1')
+    /*          --> Returns a list containing full data on each of the elements in the /list
+
+    If it fails, it will return None
+    '''
+    print("Element name requested: %s" % (element_query))
+    # List all of the names of the elements
+    if element_query == "list":
+        return func_get_elements()
+    # Provide all details of all of the elements
+    elif element_query == "*":
+        list_elements = []
+        for element in func_get_elements():
+            obj = connection.get_object(element)
+            if not obj:
+                return None
+            list_elements.append(obj)
+        return list_elements
+    # Attempt to get details of a single element
+    else:
+        if element_prefix not in element_query:
+            element_query = element_prefix + element_query
+        obj = connection.get_object(element_query)
+        if not obj:
+            return None
+        return obj
+
+
 
 def set_data(url):
     connection = urllib2.urlopen(url)

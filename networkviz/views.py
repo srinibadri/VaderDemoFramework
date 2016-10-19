@@ -204,29 +204,22 @@ def api_houses(request, element_query="list"):
 
 
 def api_switch_state(request, actual='actual'):
-    # switch_state = {"states":[True,False,True,True,False,True]}
+    '''
+    Get list of all switch states (Actual or Predicted)
+    Returns something like this:
+
+    [{"sw13to152": {"phase_C_state": "CLOSED", "phase_B_state": "CLOSED", "phase_A_state": "CLOSED"}}, {"sw61to6101": {"phase_C_state": "CLOSED", "phase_B_state": "CLOSED", "phase_A_state": "CLOSED"}}, {"sw18to135": {"phase_C_state": "CLOSED", "phase_B_state": "CLOSED", "phase_A_state": "CLOSED"}}]
+    '''
     switch_state = {}
-    #{"states":[{"sw0":False},{"sw1":False},{"sw2":False},{"sw3":True},{"sw4":False},{"sw5":True},{"sw6":False},{"sw7":True},{"sw8":False},{"sw9":False}]}
-
-    print(switch_state)
+    switches = simulation.get_list_switches()
     if actual.lower() == 'actual':
-        switch_state = analyze.get_actual_switch_states()
-        return JsonResponse(switch_state)
+        switch_state = analyze.get_actual_switch_states(switches)
+        return JsonResponse(switch_state, safe=False)
     elif actual.lower() == 'predicted':
-        switch_state = analyze.get_predicted_switch_states()
-        return JsonResponse(switch_state)
+        switch_state = analyze.get_predicted_switch_states(switches)
+        return JsonResponse(switch_state, safe=False)
     else:
-        return JsonResponse({})
-
-def dummyapi(request, element_query="meter"):
-    print("api")
-    url = "http://gridlabd.slac.stanford.edu:6267/json/%s/*" % (element_query)
-    r = requests.get(url, timeout=0.5)
-    if r:
-        return JsonResponse({element_query:r.json()});
-    else:
-        return JsonResponse("{}");
-    # print(respon)
+        return JsonResponse({'status':'false','message':'Unknown state type: \'%s\'. Must be \'actual\' or \'predicted\'' % actual}, status=500)
 
 
 # Helper methods
