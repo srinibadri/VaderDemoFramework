@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from django.template import loader
 import untangle, requests, json
-from utilities import analyze
+from utilities import analyze, connection, database, simulation, climate
 import pickle
 import pandas as pd
 import time
@@ -26,31 +26,6 @@ def console(request):
     template = loader.get_template('vader/console.html')
     context = {}
     return HttpResponse(template.render(context, request))
-
-def map(request):
-    template = loader.get_template('vader/map.html')
-    context = {}
-    return HttpResponse(template.render(context, request))
-
-def dualmap(request):
-    template = loader.get_template('vader/dualmap.html')
-    context = {}
-    return HttpResponse(template.render(context, request))
-
-def dualmap_api(request, actual='actual'):
-    # switch_state = {"states":[True,False,True,True,False,True]}
-    switch_state = {}
-    #{"states":[{"sw0":False},{"sw1":False},{"sw2":False},{"sw3":True},{"sw4":False},{"sw5":True},{"sw6":False},{"sw7":True},{"sw8":False},{"sw9":False}]}
-
-    print(switch_state)
-    if actual.lower() == 'actual':
-        switch_state = analyze.get_actual_switch_states()
-        return JsonResponse(switch_state)
-    elif actual.lower() == 'predicted':
-        switch_state = analyze.get_predicted_switch_states()
-        return JsonResponse(switch_state)
-    else:
-        return JsonResponse({})
 
 def demo(request):
     template = loader.get_template('networkviz/simple.html')
@@ -87,15 +62,7 @@ def ieee123(request):
     context = {}
     return HttpResponse(template.render(context, request))
 
-def dummyapi(request, element_name="meter"):
-    print("api")
-    url = "http://gridlabd.slac.stanford.edu:6267/json/%s/*" % (element_name)
-    r = requests.get(url, timeout=0.5)
-    if r:
-        return JsonResponse({element_name:r.json()});
-    else:
-        return JsonResponse("{}");
-    # print(respon)
+
 
 def pvdisagg(request,region_id):
     data=disaggregateRegion(region_id)
@@ -160,3 +127,112 @@ def disaggregateRegion(region):
         ### rewrite
 
         return json.dumps(overall)
+
+
+################### APIs for Maps ###################
+
+# HTML Serving
+def dualmap(request):
+    template = loader.get_template('vader/dualmap.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
+
+def map(request):
+    template = loader.get_template('vader/map.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
+
+# API Serving
+
+def api_objects(request, element_prefix, func_get_elements, element_query="list"):
+    '''
+
+    Single handler method for gathering lists of elements (meters, switches, nodes, houses, etc).
+    Arguments:
+        request             -- Django Request object
+        element_prefix      -- Element name prefix (so that meter/meter_1 and meter/1 both work)
+        func_get_elements   -- A function object that can be used to retrieve a list of all the elements of that type in the simulation
+        element_query       -- Which collection of data requested. See below.
+
+    Note: You can replace 'meter' with switch, load, node, house, etc.
+    Handles a few types of queries in the "element_query" field:
+
+    /           --> Returns list of element names of that type
+    /list       --> Returns list of element names of that type
+    /meter_1    --> Returns data about single element with name 'meter_1'
+    /1          --> Returns data about single element with name 'meter_1'. More specifically, with the name (element_prefix+'1')
+    /*          --> Returns a list containing full data on each of the elements in the /list
+
+    If it fails, it will return a 500 error and a "<element_query> not found" message
+    '''
+    print("Element name requested: %s" % (element_query))
+    # List all of the names of the elements
+    if element_query == "list":
+        return JsonResponse(func_get_elements(), safe=False)
+    # Provide all details of all of the elements
+    elif element_query == "*":
+        list_elements = []
+        for element in func_get_elements():
+            obj = connection.get_object(element)
+            if not obj:
+                return JsonResponse({'status':'false','message':'%s not found' % element}, status=500)
+            list_elements.append(obj)
+        return JsonResponse(list_elements, safe=False)
+    # Attempt to get details of a single element
+    else:
+        if element_prefix not in element_query:
+            element_query = element_prefix + element_query
+        obj = connection.get_object(element_query)
+        if not obj:
+            return JsonResponse({'status':'false','message':'%s not found' % element_query}, status=500)
+        return JsonResponse(obj)
+
+def api_meters(request, element_query="list"):
+    return api_objects(request, "meter_", simulation.get_list_meters, element_query)
+
+def api_switches(request, element_query="list"):
+    return api_objects(request, "sw", simulation.get_list_switches, element_query)
+
+def api_loads(request, element_query="list"):
+    return api_objects(request, "load_", simulation.get_list_loads, element_query)
+
+def api_nodes(request, element_query="list"):
+    return api_objects(request, "node_", simulation.get_list_nodes, element_query)
+
+def api_houses(request, element_query="list"):
+    return api_objects(request, "house_", simulation.get_list_houses, element_query)
+
+
+def api_switch_state(request, actual='actual'):
+    # switch_state = {"states":[True,False,True,True,False,True]}
+    switch_state = {}
+    #{"states":[{"sw0":False},{"sw1":False},{"sw2":False},{"sw3":True},{"sw4":False},{"sw5":True},{"sw6":False},{"sw7":True},{"sw8":False},{"sw9":False}]}
+
+    print(switch_state)
+    if actual.lower() == 'actual':
+        switch_state = analyze.get_actual_switch_states()
+        return JsonResponse(switch_state)
+    elif actual.lower() == 'predicted':
+        switch_state = analyze.get_predicted_switch_states()
+        return JsonResponse(switch_state)
+    else:
+        return JsonResponse({})
+
+def dummyapi(request, element_query="meter"):
+    print("api")
+    url = "http://gridlabd.slac.stanford.edu:6267/json/%s/*" % (element_query)
+    r = requests.get(url, timeout=0.5)
+    if r:
+        return JsonResponse({element_query:r.json()});
+    else:
+        return JsonResponse("{}");
+    # print(respon)
+
+
+# Helper methods
+def to_number(s):
+    try:
+        int(s)
+        return int(s)
+    except ValueError:
+        return False
