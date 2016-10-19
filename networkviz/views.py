@@ -211,7 +211,7 @@ def api_switch_state(request, actual='actual'):
     [{"sw13to152": {"phase_C_state": "CLOSED", "phase_B_state": "CLOSED", "phase_A_state": "CLOSED"}}, {"sw61to6101": {"phase_C_state": "CLOSED", "phase_B_state": "CLOSED", "phase_A_state": "CLOSED"}}, {"sw18to135": {"phase_C_state": "CLOSED", "phase_B_state": "CLOSED", "phase_A_state": "CLOSED"}}]
     '''
     switch_state = {}
-    switches = simulation.get_list_switches()
+    switches = database.get_list_switches()
     if actual.lower() == 'actual':
         switch_state = analyze.get_actual_switch_states(switches)
         return JsonResponse(switch_state, safe=False)
