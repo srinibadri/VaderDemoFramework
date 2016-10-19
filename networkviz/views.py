@@ -1,9 +1,10 @@
 from __future__ import division
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.http import JsonResponse
 from django.template import loader
 import untangle, requests, json
-from utilities import *
+from utilities import analyze
 import pickle
 import pandas as pd
 import time
@@ -35,6 +36,26 @@ def map(request):
     template = loader.get_template('vader/map.html')
     context = {}
     return HttpResponse(template.render(context, request))
+
+def dualmap(request):
+    template = loader.get_template('vader/dualmap.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
+
+def dualmap_api(request, actual='actual'):
+    # switch_state = {"states":[True,False,True,True,False,True]}
+    switch_state = {}
+    #{"states":[{"sw0":False},{"sw1":False},{"sw2":False},{"sw3":True},{"sw4":False},{"sw5":True},{"sw6":False},{"sw7":True},{"sw8":False},{"sw9":False}]}
+
+    print(switch_state)
+    if actual.lower() == 'actual':
+        switch_state = analyze.get_actual_switch_states()
+        return JsonResponse(switch_state)
+    elif actual.lower() == 'predicted':
+        switch_state = analyze.get_predicted_switch_states()
+        return JsonResponse(switch_state)
+    else:
+        return JsonResponse({})
 
 def demo(request):
     template = loader.get_template('networkviz/simple.html')
@@ -77,22 +98,9 @@ def dummyapi(request, element_name="meter"):
         url = "http://gridlabd.slac.stanford.edu:6267/json/%s/*" % (element_name)
         r = requests.get(url, timeout=0.5)
         if r:
-            return HttpResponse(r);
+            return JsonResponse(r.json());
         else:
-            return HttpResponse({});
-    # print(respon)
-    except:
-        return;
-
-def multiapi(request, element_names=["meter"]):
-    print("api")
-    try:
-        url = "http://gridlabd.slac.stanford.edu:6267/json/%s/*" % (element_name)
-        r = requests.get(url, timeout=0.5)
-        if r:
-            return HttpResponse(r);
-        else:
-            return HttpResponse({});
+            return JsonResponse({});
     # print(respon)
     except:
         return;
