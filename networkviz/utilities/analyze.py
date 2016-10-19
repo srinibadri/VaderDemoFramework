@@ -80,6 +80,10 @@ def obtain_object_name_raw(simulation_name):
     return res
 
 
+
+
+#### For the 'Switch Configuration Detection' research
+
 def get_predicted_switch_states(switches, simulation_name="ieee123"):
     """
 
