@@ -22,11 +22,6 @@ def dashboard(request):
     context = {}
     return HttpResponse(template.render(context, request))
 
-def dashboard(request):
-    template = loader.get_template('vader/board.html')
-    context = {}
-    return HttpResponse(template.render(context, request))
-
 def console(request):
     template = loader.get_template('vader/console.html')
     context = {}

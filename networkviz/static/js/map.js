@@ -86,12 +86,6 @@ mymap.on('popupopen', function(e) {
   var marker = e.popup._source;
   poppop = marker;
   pop_name = marker.feature.properties.name;
-  // $.getJSON( "http://gridlabd.slac.stanford.edu:6267/json/"+pop_name+"/voltage_1", function( datar) {
-  //   e.popup.setContent(datar).update();
-  //
-  // });
-
-  // contents = "<br><br><h3>"+marker.feature.properties.name+"</h3><br><table id=\"element_table\"></table>";
 
   $.getJSON( "http://localhost:8000/vader/api/"+pop_name+"", function( datar) {
     // e.popup.setContent(datar).update();
@@ -134,46 +128,6 @@ mymap.on('popupopen', function(e) {
     });
 
   });
-
-
-
-
-  //
-  // contents = "<br><br><h3>meter_198</h3><br>\
-  //   <TABLE>\
-  //   <CAPTION>triplex_meter #1056</CAPTION>\
-  //   <TR><TH WIDTH=\"35\" ALIGN=LEFT>Property<HR></TH>\
-  //   <TH WIDTH=\"35\" COLSPAN=2 ALIGN=CENTER><NOBR>Line 1</NOBR><HR></TH>\
-  //   <TH WIDTH=\"35\" COLSPAN=2 ALIGN=CENTER><NOBR>Line 2</NOBR><HR></TH>\
-  //   <TH WIDTH=\"35\" COLSPAN=2 ALIGN=CENTER><NOBR>Neutral</NOBR><HR></TH>\
-  //   </TR>\
-  //   <TR><TH ALIGN=LEFT>Voltage</TH>\
-  //   <TD ALIGN=RIGHT ><NOBR>0.122</NOBR></TD><TD ALIGN=LEFT>kV</TD>\
-  //   <TD ALIGN=RIGHT ><NOBR>0.122</NOBR></TD><TD ALIGN=LEFT>kV</TD>\
-  //   <TD ALIGN=RIGHT ><NOBR>0.000</NOBR></TD><TD ALIGN=LEFT>kV</TD>\
-  //   </TR>\
-  //   <TR><TH ALIGN=LEFT>&nbsp</TH>\
-  //   <TD ALIGN=RIGHT ><NOBR>-2.663</NOBR></TD><TD ALIGN=LEFT>&deg;</TD>\
-  //   <TD ALIGN=RIGHT ><NOBR>-2.660</NOBR></TD><TD ALIGN=LEFT>&deg;</TD>\
-  //   <TD ALIGN=RIGHT ><NOBR>0.000</NOBR></TD><TD ALIGN=LEFT>&deg;</TD>\
-  //   </TR>\
-  //   <TR><TH ALIGN=LEFT>Power</TH>\
-  //   <TD ALIGN=RIGHT ><NOBR>4.230</NOBR</TD><TD ALIGN=LEFT>kW</TD>\
-  //   <TD ALIGN=RIGHT ><NOBR>4.062</NOBR</TD><TD ALIGN=LEFT>kW</TD>\
-  //   <TD ALIGN=RIGHT ><NOBR>-0.000</NOBR</TD><TD ALIGN=LEFT>kW</TD>\
-  //   </TR>\
-  //   <TR><TH ALIGN=LEFT>Power</TH>\
-  //   <TD ALIGN=RIGHT ><NOBR>0.708</NOBR</TD><TD ALIGN=LEFT>kVAR</TD>\
-  //   <TD ALIGN=RIGHT ><NOBR>0.718</NOBR</TD><TD ALIGN=LEFT>kVAR</TD>\
-  //   <TD ALIGN=RIGHT ><NOBR>0.000</NOBR</TD><TD ALIGN=LEFT>kVAR</TD>\
-  //   </TR>\
-  //   <TR><TH>&nbsp;</TH><TH ALIGN=CENTER COLSPAN=6>Total<HR/></TH></TR><TR><TH ALIGN=LEFT>Power</TH>\
-  //   <TD ALIGN=CENTER COLSPAN=6 ><NOBR>8.293&nbsp;kW</NOBR</TD>\
-  //   </TR>\
-  //   <TR><TH ALIGN=LEFT>Energy</TH><TD ALIGN=CENTER COLSPAN=6 ><NOBR>2.729&nbsp;kWh</NOBR</TD>\
-  //   </TR>\
-  //   </TABLE>";
-
 
 });
 
