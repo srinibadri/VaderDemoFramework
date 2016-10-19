@@ -89,16 +89,13 @@ def ieee123(request):
 
 def dummyapi(request, element_name="meter"):
     print("api")
-    try:
-        url = "http://gridlabd.slac.stanford.edu:6267/json/%s/*" % (element_name)
-        r = requests.get(url, timeout=0.5)
-        if r:
-            return JsonResponse(r.json());
-        else:
-            return JsonResponse({});
+    url = "http://gridlabd.slac.stanford.edu:6267/json/%s/*" % (element_name)
+    r = requests.get(url, timeout=0.5)
+    if r:
+        return JsonResponse({element_name:r.json()});
+    else:
+        return JsonResponse("{}");
     # print(respon)
-    except:
-        return;
 
 def pvdisagg(request,region_id):
     data=disaggregateRegion(region_id)

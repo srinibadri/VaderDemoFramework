@@ -1,54 +1,55 @@
 
+var maps = [];
+var center = [35.38781, -118.99631];
+var zoom = 15.5;
 
-
-var geo_json_data = "";
-
-var data;
-var node_size = 110;
-var mymap = L.map('energy-map').setView([35.38881, -118.99131], 15.5);
-L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYmVuZHJhZmZpbiIsImEiOiJjaXRtMmx1NGwwMGE5MnhsNG9kZGJ4bG9xIn0.trghQwlKFrdvueMDquqkJA', {
+var layer1 = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYmVuZHJhZmZpbiIsImEiOiJjaXRtMmx1NGwwMGE5MnhsNG9kZGJ4bG9xIn0.trghQwlKFrdvueMDquqkJA', {
     maxZoom: 18,
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
         '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
         'Imagery © <a href="http://mapbox.com">Mapbox</a>',
     id: 'mapbox.streets'
-}).addTo(mymap);
+});
+
+// var layer2 = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYmVuZHJhZmZpbiIsImEiOiJjaXRtMmx1NGwwMGE5MnhsNG9kZGJ4bG9xIn0.trghQwlKFrdvueMDquqkJA', {
+//     maxZoom: 18,
+//     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+//         '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+//         'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+//     id: 'mapbox.streets'
+// });
+
+var map1 = L.map('map1', {
+    layers: [layer1],
+    center: center,
+    zoom: zoom
+});
+map1.attributionControl.setPrefix('');
+// var map2 = L.map('map2', {
+//     layers: [layer2],
+//     center: center,
+//     zoom: zoom,
+//     zoomControl: false
+// });
+
+// Add each map to the map array. This will be useful for scalable calling later
+maps.push(map1);
+// maps.push(map2);
+// maps.push(map3);
+
 var popup = L.popup();
-function onMapClick(e) {
+
+function onMapClick(e, map) {
     popup
         .setLatLng(e.latlng)
         .setContent("You clicked the map at " + e.latlng.toString())
-        .openOn(mymap);
+        .openOn(map);
 }
-mymap.on('click', onMapClick);
-
-d3.json("/static/networkviz/cmugrid.json", function(error, json) {
-    console.log(json);
-    data = json.features;
-
-    data.forEach(function(d) {
-      tmp = L.circle(d.geometry.coordinates, node_size, {
-          color: 'green',
-          fillColor: '#f03',
-          fillOpacity: 0.5
-      }).addTo(mymap);
-
-      prop = d.properties;
-      tmp.bindPopup(prop.popupContent +
-      "<br><table style='width:90%; padding:5px; border: 1px solid black;    border-collapse: collapse;'>" +
-      "<tr><td>"+ "name"+"</td><td>"+  prop.name +"</td></tr>" +
-      "<tr><td>"+ "phases"+"</td><td>"+ prop.phases +"</td></tr>" +
-      "<tr><td>"+ "voltage_A" + "</td><td>"+ prop.voltage_A +"</td></tr>" +
-      "<tr><td>"+ "voltage_B" +"</td><td>"+ prop.voltage_B +"</td></tr>" +
-      "<tr><td>"+ "voltage_C" +"</td><td>"+ prop.voltage_C +"</td></tr>" +
-      "</table><br><br>  <button type='button' class='btn btn-info btn-sm' data-toggle='modal' data-target='#myModal'>See More</button>");
-    })
-});
 
 var myStyle = {
     "color": "#ff7800",
     "weight": 5,
-    "opacity": 0.65
+    "opacity": 1
 };
 
 var geojsonMarkerOptions = {
@@ -67,27 +68,14 @@ function onEachFeature(feature, layer) {
     }
 }
 
-// Create an element to hold all your text and markup
-var container = $('#energy-map');
-
-// Delegate all event handling for the container itself and its contents to the container
-container.on('click', '.seeDetailsLink', function() {
-    alert("clicked");
-});
-
-
-// Delegate all event handling for the container itself and its contents to the container
-container.on('ready', '.seeDetailsLink', function() {
-    alert();
-});
-
-var poppop;
-mymap.on('popupopen', function(e) {
+function pop_up(e) {
   var marker = e.popup._source;
-  poppop = marker;
+  if(!marker) {
+    return;
+  }
   pop_name = marker.feature.properties.name;
 
-  $.getJSON( "http://localhost:8000/vader/api/"+pop_name+"", function( datar) {
+  $.getJSON( "http://localhost:8000/vader/api/"+pop_name+"", function(datar) {
     // e.popup.setContent(datar).update();
     // alert(JSON.stringify(datar));
     contents = "<br><br><h3>"+marker.feature.properties.name+"</h3><br><TABLE>\
@@ -112,10 +100,8 @@ mymap.on('popupopen', function(e) {
     sparkline_contents="<br><br><div class=\"sparkline_one\">\
                   <canvas width=\"200\" height=\"60\" ></canvas></div>";
 
-    // alert("Popup: " + marker);
     e.popup.setContent(contents + sparkline_contents).update();
-    // $("#element_table").appendChild(tbl_body);
-    // e.popup.update();
+
     $(".sparkline_one").sparkline([2, 4, 3, 4, 5, 4, 5, 4, 3, 4, 5, 6, 7, 5, 4, 3, 5, 6], {
       type: 'bar',
       height: '40',
@@ -129,23 +115,36 @@ mymap.on('popupopen', function(e) {
 
   });
 
+}
+
+maps.forEach(function(map){
+  map.on('click', function(e) {
+    onMapClick(e, map);
+  });
+  map.on('popupopen', function(e) {
+    pop_up(e);
+  });
+  // maps.forEach(function(syncMapTo){
+  //   map.sync(syncMapTo);
+  // });
+
 });
 
+maps.forEach(function(map){
 
-$.getJSON( "/static/data/model.geo.json", function( datar) {
-  geo_json_data = datar;
-  var myLayer = L.geoJSON(geo_json_data, {
-      style: myStyle,
-      onEachFeature: onEachFeature,
-      pointToLayer: function (feature, latlng) {
-        element_num = parseInt(feature.properties.name.split("_")[1]);
-        console.log(element_num);
-        hexString = "#"+element_num.toString(16) +"5400";
-        geojsonMarkerOptions.fillColor = hexString;
-        return L.circleMarker(latlng, geojsonMarkerOptions);
-      }
-  }).addTo(mymap);
+  $.getJSON( "/static/data/model.geo.json", function(geo_json_data) {
+    var myLayer = L.geoJSON(geo_json_data, {
+        style: myStyle,
+        onEachFeature: onEachFeature,
+        pointToLayer: function (feature, latlng) {
+          element_num = parseInt(feature.properties.name.split("_")[1]);
+          hexString = "#"+Math.min(element_num,255).toString(16) +"5400";
+          geojsonMarkerOptions.fillColor = hexString;
+          return L.circleMarker(latlng, geojsonMarkerOptions);
+        }
+    }).addTo(map);
 
+  });
 });
 
 
