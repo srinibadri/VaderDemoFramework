@@ -13,33 +13,6 @@
     {% block style %}{% endblock %}
 </head>
 
-<style type="text/css">
-    .header_vader_logo{
-    float: left;
-    padding-top: 5px;
-    padding-left: 20px;
-
-    }
-    .header_slac_logo{
-    float: right;
-    padding-top: 30px;
-    padding-right: 20px;
-    }
-
-    #stan_logo{
-    width: 150px;
-    padding-top: 5px;
-    padding-right: 20px;
-    }
-    header{
-    height:100px;
-    padding-bottom: 20px;
-    background-color: #8C1515;
-    border-bottom: 10px solid $light-gray;
-    }
-
-</style>
-
 <body>
     <header>
             <div id="logo-title" class="header_slac_logo">
@@ -62,7 +35,6 @@
     <script src="{% static 'js/jquery.min.js' %} "></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/leaflet.js' %}"></script>
-
     {% block script %}{% endblock %}
 
 </body>

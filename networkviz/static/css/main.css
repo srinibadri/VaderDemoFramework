@@ -29,3 +29,26 @@ body{
 {
     font-size: 87px;
 }
+
+.header_vader_logo{
+    float: left;
+    padding-top: 5px;
+    padding-left: 20px;
+
+}
+.header_slac_logo{
+    float: right;
+    padding-top: 30px;
+    padding-right: 20px;
+}
+
+#stan_logo{
+    width: 150px;
+    padding-top: 5px;
+    padding-right: 20px;
+}
+header{
+    height:100px;
+    padding-bottom: 20px;
+    background-color: #8C1515;
+}
