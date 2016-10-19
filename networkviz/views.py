@@ -203,7 +203,7 @@ def api_houses(request, element_query="list"):
     return api_objects(request, "house_", database.get_list_houses, element_query)
 
 
-def api_switch_state(request, actual='actual'):
+def api_switch_state(request, actual=''):
     '''
     Get list of all switch states (Actual or Predicted)
     Returns something like this:

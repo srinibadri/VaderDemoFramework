@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^api/meter/(?P<element_query>[a-zA-Z0-9_\*]+)$', views.api_meters),
 
     url(r'^api/switch/$', views.api_switches),
+    url(r'^api/switch/state/$', views.api_switch_state),
     url(r'^api/switch/state/(?P<actual>[a-zA-Z0-9_]+)$', views.api_switch_state),
     url(r'^api/switch/(?P<element_query>[a-zA-Z0-9_\*]+)$', views.api_switches),
 
