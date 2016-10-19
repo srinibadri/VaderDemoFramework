@@ -188,19 +188,19 @@ def api_objects(request, element_prefix, func_get_elements, element_query="list"
         return JsonResponse(obj)
 
 def api_meters(request, element_query="list"):
-    return api_objects(request, "meter_", simulation.get_list_meters, element_query)
+    return api_objects(request, "meter_", database.get_list_meters, element_query)
 
 def api_switches(request, element_query="list"):
-    return api_objects(request, "sw", simulation.get_list_switches, element_query)
+    return api_objects(request, "sw", database.get_list_switches, element_query)
 
 def api_loads(request, element_query="list"):
-    return api_objects(request, "load_", simulation.get_list_loads, element_query)
+    return api_objects(request, "load_", database.get_list_loads, element_query)
 
 def api_nodes(request, element_query="list"):
-    return api_objects(request, "node_", simulation.get_list_nodes, element_query)
+    return api_objects(request, "node_", database.get_list_nodes, element_query)
 
 def api_houses(request, element_query="list"):
-    return api_objects(request, "house_", simulation.get_list_houses, element_query)
+    return api_objects(request, "house_", database.get_list_houses, element_query)
 
 
 def api_switch_state(request, actual='actual'):
