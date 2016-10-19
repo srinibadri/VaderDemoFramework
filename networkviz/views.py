@@ -144,7 +144,7 @@ def map(request):
 
 # API Serving
 
-def api_objects(request, element_prefix, func_get_elements, element_query="list"):
+def api_objects(request, element_prefix, elements_list, element_query="list"):
     '''
 
     Single handler method for gathering lists of elements (meters, switches, nodes, houses, etc).
@@ -168,11 +168,11 @@ def api_objects(request, element_prefix, func_get_elements, element_query="list"
     print("Element name requested: %s" % (element_query))
     # List all of the names of the elements
     if element_query == "list":
-        return JsonResponse(func_get_elements(), safe=False)
+        return JsonResponse(elements_list, safe=False)
     # Provide all details of all of the elements
     elif element_query == "*":
         list_elements = []
-        for element in func_get_elements():
+        for element in elements_list:
             obj = connection.get_object(element)
             if not obj:
                 return JsonResponse({'status':'false','message':'%s not found' % element}, status=500)
@@ -188,19 +188,24 @@ def api_objects(request, element_prefix, func_get_elements, element_query="list"
         return JsonResponse(obj)
 
 def api_meters(request, element_query="list"):
-    return api_objects(request, "meter_", database.get_list_meters, element_query)
+    elements_list = analyze.categorize_object_name("ieee123")['meter']
+    return api_objects(request, "meter_", elements_list, element_query)
 
 def api_switches(request, element_query="list"):
-    return api_objects(request, "sw", database.get_list_switches, element_query)
+    elements_list = analyze.categorize_object_name("ieee123")['sw']
+    return api_objects(request, "sw", elements_list, element_query)
 
 def api_loads(request, element_query="list"):
-    return api_objects(request, "load_", database.get_list_loads, element_query)
+    elements_list = analyze.categorize_object_name("ieee123")['load']
+    return api_objects(request, "load_", elements_list, element_query)
 
 def api_nodes(request, element_query="list"):
-    return api_objects(request, "node_", database.get_list_nodes, element_query)
+    elements_list = analyze.categorize_object_name("ieee123")['node']
+    return api_objects(request, "node_", elements_list, element_query)
 
 def api_houses(request, element_query="list"):
-    return api_objects(request, "house_", database.get_list_houses, element_query)
+    elements_list = analyze.categorize_object_name("ieee123")['house']
+    return api_objects(request, "house_", elements_list, element_query)
 
 
 def api_switch_state(request, actual=''):
@@ -211,12 +216,12 @@ def api_switch_state(request, actual=''):
     [{"sw13to152": {"phase_C_state": "CLOSED", "phase_B_state": "CLOSED", "phase_A_state": "CLOSED"}}, {"sw61to6101": {"phase_C_state": "CLOSED", "phase_B_state": "CLOSED", "phase_A_state": "CLOSED"}}, {"sw18to135": {"phase_C_state": "CLOSED", "phase_B_state": "CLOSED", "phase_A_state": "CLOSED"}}]
     '''
     switch_state = {}
-    switches = database.get_list_switches()
+    elements_list = analyze.categorize_object_name("ieee123")['sw']
     if actual.lower() == 'actual':
-        switch_state = analyze.get_actual_switch_states(switches)
+        switch_state = analyze.get_actual_switch_states(elements_list)
         return JsonResponse(switch_state, safe=False)
     elif actual.lower() == 'predicted':
-        switch_state = analyze.get_predicted_switch_states(switches)
+        switch_state = analyze.get_predicted_switch_states(elements_list)
         return JsonResponse(switch_state, safe=False)
     else:
         return JsonResponse({'status':'false','message':'Unknown state type: \'%s\'. Must be \'actual\' or \'predicted\'' % actual}, status=500)
