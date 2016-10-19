@@ -93,7 +93,7 @@ mymap.on('popupopen', function(e) {
 
   // contents = "<br><br><h3>"+marker.feature.properties.name+"</h3><br><table id=\"element_table\"></table>";
 
-  $.getJSON( "http://localhost:8000/networkviz/api/"+pop_name+"", function( datar) {
+  $.getJSON( "http://localhost:8000/vader/api/"+pop_name+"", function( datar) {
     // e.popup.setContent(datar).update();
     // alert(JSON.stringify(datar));
     contents = "<br><br><h3>"+marker.feature.properties.name+"</h3><br><TABLE>\

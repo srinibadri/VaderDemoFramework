@@ -31,7 +31,7 @@
 
 {% block content %}
 <div class="jumbotron text-center" style="padding: 35px">
-  <p>This demo presents results of a disaggregation scheme that uses measurements obtained at the top of the feeder to disaggregate solar generation in each household.</p> 
+  <p>This demo presents results of a disaggregation scheme that uses measurements obtained at the top of the feeder to disaggregate solar generation in each household.</p>
 </div>
 <div class="container">
 	  <div class="col-md-6 fill" id="map-holder">
@@ -53,7 +53,7 @@
 var map = L.map('map').setView([37.42573, -122.1896], 13);
 
 L.tileLayer(
-    'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', 
+    'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
     {maxZoom: 18}).addTo(map);
 
 
@@ -64,7 +64,7 @@ L.tileLayer(
 //     //var content = event.target.options.popup;
 //     //var otherStuff = event.target.options.otherStuff;
 //     //alert("Clicked on polygon with label:" +label +" and content:" +content +". Also otherStuff set to:" +otherStuff);
-//     window.location.href = '/networkviz/vader/PVDisagg/'+label
+//     window.location.href = '/vader/PVDisagg/'+label
 
 // };
 
@@ -75,9 +75,9 @@ var regions = [{
     "geometry": {
         "type": "Polygon",
         "coordinates": [[
-        [-122.1896, 37.42181], 
-        [-122.3896, 37.42348], 
-        [-122.4896, 37.53261], 
+        [-122.1896, 37.42181],
+        [-122.3896, 37.42348],
+        [-122.4896, 37.53261],
         [-122.1896, 37.42181]
         ]]
     }
@@ -87,9 +87,9 @@ var regions = [{
     "geometry": {
         "type": "Polygon",
         "coordinates": [[
-        [-122.1896, 37.32181], 
-        [-122.3896, 37.32348], 
-        [-122.4896, 37.43261], 
+        [-122.1896, 37.32181],
+        [-122.3896, 37.32348],
+        [-122.4896, 37.43261],
         [-122.1896, 37.32181]
         ]]
     }
@@ -108,8 +108,8 @@ L.geoJSON(regions, {
 	  // e = event
 	  console.log(feature.properties.region);
 	  // You can make your ajax call declaration here
-	  //$.ajax(... 
-	  window.location.href = '/networkviz/vader/PVDisagg/'+feature.properties.region
+	  //$.ajax(...
+	  window.location.href = '/vader/PVDisagg/'+feature.properties.region
 	  });
 	},
     }).addTo(map);
@@ -126,15 +126,15 @@ L.geoJSON(regions, {
 // var popup_flor ="5";
 // var content_flor ="MyContent";
 // var poly = new L.Polygon([
-//         [37.42181, -122.1896], 
-//         [37.42348, -122.3896], 
-//         [37.53261, -122.4896], 
+//         [37.42181, -122.1896],
+//         [37.42348, -122.3896],
+//         [37.53261, -122.4896],
 //         [37.42181, -122.1896]
 //   ], {'label': popup_flor, 'popup': content_flor, 'otherStuff': 'abc123'});
 // poly.on('click', onPolyClick);
 
 // //Add polygon to map
-// poly.addTo(map);    
+// poly.addTo(map);
 
 
 console.log("{{ data }}")
@@ -151,7 +151,7 @@ console.log("{{ data }}")
 
 function drawChart(dat,graphName) {
     var plotarea = $('#graph'+graphName);
-   	
+
 
     $.plot( plotarea , dat, { xaxis: {
 					//mode: "time",
@@ -173,7 +173,7 @@ function updateData(existingData,newData,totalLength) {
 		}
 		//console.log(existingData[i].data)
 	}
-	
+
 	return existingData;
 
 };
@@ -193,10 +193,10 @@ console.log(receivedData)
 // 	try {
 // 		socket = new WebSocket(host);
 // 		console.log('WebSocket status '+socket.readyState);
-// 		socket.onopen    = function(msg) { 
-// 							   console.log("Welcome - status "+this.readyState); 
+// 		socket.onopen    = function(msg) {
+// 							   console.log("Welcome - status "+this.readyState);
 // 						   };
-// 		socket.onmessage = function(msg) { 
+// 		socket.onmessage = function(msg) {
 // 							   receivedData = JSON.parse(msg.data)
 // 							   //dat['label']
 // 							   //console.log(msg.data)
@@ -211,7 +211,7 @@ console.log(receivedData)
 // 									existingData=$("#graph"+String(i)).data()['plot'].getData()
 // 									dat=updateData(existingData,receivedData[i],totalLength)
 
-						
+
 // 								}
 // 							   	drawChart(dat,String(i))
 
@@ -222,19 +222,19 @@ console.log(receivedData)
 // 							//	drawChart("0")
 
 // 							//convert strings to numbers
-// 							//for(var i=0; i<explodedValues.length; i++) { explodedValues[i] = +explodedValues[i]; } 
-							
+// 							//for(var i=0; i<explodedValues.length; i++) { explodedValues[i] = +explodedValues[i]; }
+
 // 							//drawVisualization();
-							
+
 // 						   };
-// 		socket.onclose   = function(msg) { 
-// 							   console.log("Disconnected - status "+this.readyState); 
+// 		socket.onclose   = function(msg) {
+// 							   console.log("Disconnected - status "+this.readyState);
 // 						   };
 // 	}
-// 	catch(ex){ 
-// 		console.log(ex); 
+// 	catch(ex){
+// 		console.log(ex);
 // 	}
-	
+
 // }
 // init()
 
@@ -253,7 +253,3 @@ console.log(receivedData)
 
 </script>
 {% endblock %}
-
-
-
-
