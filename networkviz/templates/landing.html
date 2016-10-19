@@ -1,0 +1,53 @@
+{% extends "vader/base.html" %}
+{% load staticfiles %}
+
+{% block style %}
+<style type="text/css">
+  .col-half-offset{
+    margin-left:4.166666667%
+}
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="jumbotron text-center" style="padding: 35px">
+  <p>VADER is a unified data analytics platform that enables the integration of massive and heterogeneous data streams for granular real-time monitoring, visualization, and control of Distributed Energy Resources (DER) in distribution networks.</p>
+</div>
+<div class="container">
+
+<div class="card text-center" style="background-color: #fff; padding: 15px; border-radius: 15px;">
+        <img class="card-img-top" src="{% static 'images/Vader_Outline.svg' %}" alt="ML Power Flow" width="806px" height="442px" alt="vader" usemap="#Map" >
+      	<map name="Map">
+      	  <area shape="rect" coords="0,50,150,450" href="/vader/dashboard/" alt="Input Data Visualization">
+      	  <area shape="rect" coords="230,170,380,300" href="https://vaderio.slac.stanford.edu:8443/jhub/user/vadertest/notebooks/2.%20Data%20Ingestion%20Tutorial.ipynb" alt="Data Plug">
+      	  <area shape="rect" coords="650,0,800,150" href="/vader/planning" alt="Operational Planning">
+      	  <area shape="rect" coords="650,280,800,450" href="/vader/real-time" alt="Real Time Analytics">
+      	</map>
+  </div>
+</div>
+
+<div class="container">
+<h2>Project Partners and Sponsors</h2>
+<footer>
+    <div class="row" style="padding:15px; background:#fff">
+         <div class="col-md-2 col-sm-2">
+                <img src="{% static 'images/sunshot.jpg' %}" alt="sunshot" width=100%/>
+         </div>
+         <div class="col-md-2 col-sm-2 col-half-offset">
+               <img src="{% static 'images/s3lab.png' %}" alt="s3lab" width=100%/>
+         </div>
+         <div class="col-md-2 col-sm-2 col-half-offset">
+               <img src="{% static 'images/bw-logo.jpg' %}" alt="bits and watts" width=100% />
+         </div>
+         <div class="col-md-2 col-sm-2 col-half-offset">
+                <img src="{% static 'images/sce.jpg' %}" alt="sce" width=100% />
+          </div>
+          <div class="col-md-2 col-sm-2 col-half-offset">
+                <img src="{% static 'images/tomkat.jpg' %}" alt="tomkat" width=100% />
+          </div>
+    </div>
+</footer>
+</div>
+{% endblock %}

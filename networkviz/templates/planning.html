@@ -1,0 +1,45 @@
+{% extends "vader/base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+<div class="container">
+<h2>Operational Planning Demos</h2>
+
+<div class="row" style="padding: 15px">
+         <div class=" col-lg-6 col-md-6 col-sm-6 ">
+            <div class="card text-center" style="background-color: #fff; padding: 15px; border-radius: 15px;">
+			  <img class="card-img-top" src="{% static 'images/ML_PowerFlow.png' %}" alt="ML Power Flow" width="100%">
+			  <div class="card-block">
+			    <h4 class="card-title">Machine Learning Based Power Flow</h4>
+			    <p class="card-text">Inferring a mapping between Voltage and Power to replace power flow calculations.</p>
+			    <a href="#" class="btn btn-primary">Launch Demo</a>
+			  </div>
+			</div>
+		</div>
+
+        <div class=" col-lg-6 col-md-6 col-sm-6 ">
+            <div class="card text-center" style="background-color: #fff; padding: 15px; border-radius: 15px;">
+              <img class="card-img-top" src="{% static 'images/Forecasting.png' %}" alt="Forecasting" width="100%">
+              <div class="card-block">
+                <h4 class="card-title">Day-Ahead Current and Load Forecasting </h4>
+                <p class="card-text"> Current load forecasting using 10 different models.</p>
+                <a href="#" class="btn btn-primary">Launch Demo</a>
+            </div>
+        </div>
+</div>
+</div>
+
+<div class="row" style="padding: 15px">
+        <div class=" col-lg-6 col-md-6 col-sm-6 ">
+            <div class="card text-center" style="background-color: #fff; padding: 15px; border-radius: 15px;">
+              <img class="card-img-top" src="{% static 'images/TopologyDetect.png' %}" alt="ML Power Flow" width="100%">
+              <div class="card-block">
+                <h4 class="card-title">Data-Driven Topology Estimation</h4>
+                <p class="card-text">Topology detection using hisorical data.</p>
+                <a href="#" class="btn btn-primary">Launch Demo</a>
+              </div>
+            </div>
+        </div>
+</div>
+</div>
+{% endblock %}

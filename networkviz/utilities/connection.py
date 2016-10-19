@@ -8,6 +8,8 @@ GLDSetGlobal => get_global
 GLDGetGlobal => set_global
 
 """
+from __future__ import print_function
+import sys
 import json
 import token
 import tokenize
@@ -45,10 +47,22 @@ def set_property(category, name, value):
 
 
 #TODO: Add XML support
-def get_object(object_name):
+def get_object(object_name, useJson=True):
+    obj = {}
     url = base_url.replace('xml', 'json') + object_name + "/*"
-    info = get_raw_data_from_connection(url)
-    return json.loads(info)
+    print(url)
+    try:
+        info = get_raw_data_from_connection(url)
+
+        # Fix the list of objects that GridlabD returns
+        if useJson:
+            badObj = json.loads(info)
+            obj = merge_dicts(*badObj)
+        else:
+            obj = {}
+    except ValueError:
+        eprint("%s not found" % (object_name))
+    return obj
 
 
 def set_data(url):
@@ -80,6 +94,16 @@ def get_data(url):
         item_list = xml_doc.getElementsByTagName('value')
         return item_list[0].childNodes[0].data
 
+def merge_dicts(*dict_args):
+    '''
+    Given any number of dicts, shallow copy and merge into a new dict,
+    precedence goes to key value pairs in latter dicts.
+    '''
+    result = {}
+    for dictionary in dict_args:
+        result.update(dictionary)
+    return result
+
 
 def fix_lazy_json(in_text):
     token_gen = tokenize.generate_tokens(StringIO(in_text).readline)
@@ -108,3 +132,6 @@ def fix_lazy_json(in_text):
 
         result.append((tok_id, tok_val))
     return tokenize.untokenize(result)
+
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)

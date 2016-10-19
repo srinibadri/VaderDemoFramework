@@ -1,0 +1,33 @@
+{% extends "vader/base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+<div class="container">
+<h2>Real-Time Analytics Demos</h2>
+
+<div class="row" style="padding: 15px">
+        <div class=" col-lg-6 col-md-6 col-sm-6 ">
+			<div class="card text-center" style="background-color: #fff; padding: 15px; border-radius: 15px;">
+			  <img class="card-img-top" src="{% static 'images/SolarDisagg.png' %}" alt="ML Power Flow" width="100%">
+			  <div class="card-block">
+			    <h4 class="card-title">Gaining Visibility into Behind-the-meter Solar</h4>
+			    <p class="card-text">Data-driven estimation of behind-the-meter solar generation from measuremnets optained at the feeder head.</p>
+			    <a href="/vader/PVDisagg" class="btn btn-primary">Launch Demo</a>
+			  </div>
+			</div>
+		</div>
+
+        <div class=" col-lg-6 col-md-6 col-sm-6 ">
+            <div class="card text-center" style="background-color: #fff; padding: 15px; border-radius: 15px;">
+              <img class="card-img-top" src="{% static 'images/SwitchConfig.png' %}" alt="Forecasting" width="100%">
+              <div class="card-block">
+                <h4 class="card-title">Switch Configuration Detection</h4>
+                <p class="card-text"> Detection of switch configurations.</p>
+                <a href="#" class="btn btn-primary">Launch Demo</a>
+            </div>
+        </div>
+	</div>
+</div>
+</div>
+
+{% endblock %}

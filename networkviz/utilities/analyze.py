@@ -78,3 +78,22 @@ def obtain_object_name_raw(simulation_name):
                                   raw_query='select name from objects where name is not NULL')
     database.close_connection(simulation_name, 'model')
     return res
+
+
+def get_predicted_switch_states(simulation_name="ieee123"):
+    """
+
+    :param simulation_name: e.g., "ieee123", "ieee123s", "ieee123z", "ieee123zs"
+    :return: a list of predicted switch states
+    """
+    switch_state = [{"sw0":True},{"sw1":True},{"sw2":False},{"sw3":True},{"sw4":False},{"sw5":True},{"sw6":False},{"sw7":True},{"sw8":False},{"sw9":False}]
+    return {"switches":switch_state}
+
+def get_actual_switch_states(simulation_name="ieee123"):
+    """
+
+    :param simulation_name: e.g., "ieee123", "ieee123s", "ieee123z", "ieee123zs"
+    :return: a list of predicted switch states
+    """
+    switch_state = [{"sw0":False},{"sw1":False},{"sw2":False},{"sw3":True},{"sw4":False},{"sw5":True},{"sw6":False},{"sw7":True},{"sw8":False},{"sw9":False}]
+    return {"switches":switch_state}

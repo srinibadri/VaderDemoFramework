@@ -186,6 +186,21 @@ def warn():
 def server_info():
     return settings.HOSTNAME + ':' + str(settings.PORT)
 
+def get_list_meters():
+    return ["meter_1","meter_2","meter_3"]
+
+def get_list_switches():
+    return ["sw13to152","sw61to6101","sw18to135"]
+
+def get_list_loads():
+    return ["load_1","load_2","load_4"]
+
+def get_list_nodes():
+    return ["node_150","node_151","node_152"]
+
+def get_list_houses():
+    return ["house_1","house_2","house_3"]
+
 
 valid_key = {
     'm': {

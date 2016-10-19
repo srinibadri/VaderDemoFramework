@@ -1,7 +1,7 @@
 
 var maps = [];
-var center = [35.38781, -118.99631];
-var zoom = 15.5;
+var center = [35.38881, -118.99631];
+var zoom = 15;
 
 var layer1 = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYmVuZHJhZmZpbiIsImEiOiJjaXRtMmx1NGwwMGE5MnhsNG9kZGJ4bG9xIn0.trghQwlKFrdvueMDquqkJA', {
     maxZoom: 18,
@@ -11,13 +11,13 @@ var layer1 = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?a
     id: 'mapbox.streets'
 });
 
-// var layer2 = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYmVuZHJhZmZpbiIsImEiOiJjaXRtMmx1NGwwMGE5MnhsNG9kZGJ4bG9xIn0.trghQwlKFrdvueMDquqkJA', {
-//     maxZoom: 18,
-//     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-//         '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-//         'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-//     id: 'mapbox.streets'
-// });
+var layer2 = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYmVuZHJhZmZpbiIsImEiOiJjaXRtMmx1NGwwMGE5MnhsNG9kZGJ4bG9xIn0.trghQwlKFrdvueMDquqkJA', {
+    maxZoom: 18,
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+        '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+        'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+    id: 'mapbox.streets'
+});
 
 var map1 = L.map('map1', {
     layers: [layer1],
@@ -25,16 +25,16 @@ var map1 = L.map('map1', {
     zoom: zoom
 });
 map1.attributionControl.setPrefix('');
-// var map2 = L.map('map2', {
-//     layers: [layer2],
-//     center: center,
-//     zoom: zoom,
-//     zoomControl: false
-// });
+var map2 = L.map('map2', {
+    layers: [layer2],
+    center: center,
+    zoom: zoom,
+    zoomControl: false
+});
 
 // Add each map to the map array. This will be useful for scalable calling later
 maps.push(map1);
-// maps.push(map2);
+maps.push(map2);
 // maps.push(map3);
 
 var popup = L.popup();
@@ -124,9 +124,9 @@ maps.forEach(function(map){
   map.on('popupopen', function(e) {
     pop_up(e);
   });
-  // maps.forEach(function(syncMapTo){
-  //   map.sync(syncMapTo);
-  // });
+  maps.forEach(function(syncMapTo){
+    map.sync(syncMapTo);
+  });
 
 });
 
