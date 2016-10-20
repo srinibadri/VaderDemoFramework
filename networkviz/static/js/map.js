@@ -6,6 +6,19 @@ var maps = [];
 var center = [35.38781, -118.99631];
 var zoom = 15.5;
 
+var meterApiEndpoint = "/static/data/cache/meters.json",
+    switchApiEndpoint = "/static/data/cache/switches.json",
+    loadApiEndpoint = "/static/data/cache/load.json",
+    nodeApiEndpoint = "/static/data/cache/node.json",
+    feederApiEndpoint = "/static/data/cache/feeder.json";
+//
+// var meterApiEndpoint = "/vader/api/meter/\*",
+//     switchApiEndpoint = "/vader/api/switch/\*",
+//     loadApiEndpoint = "/vader/api/load/\*",
+//     nodeApiEndpoint = "/vader/api/node/\*",
+//     feederApiEndpoint = "/vader/api/feeder/\*";
+
+
 var myStyle = {
     "color": "#ff7800",
     "weight": 5,
@@ -120,56 +133,68 @@ var popup = L.popup();
 function onMapClick(e, map) {
     popup
         .setLatLng(e.latlng)
-        .setContent("You clicked the map at " + e.latlng.toString())
+        .setContent("You clicked the map at <br>" + e.latlng.toString())
         .openOn(map);
 }
 
+var temp, deets;
 function pop_up(e) {
-  var marker = e.popup._source;
-  if(!marker) {
+  if(!e) {
     return;
   }
-  pop_name = marker.feature.properties.name;
+  if(!e.popup._source) {
+    return;
+  }
+  temp = e;
+  element_details = JSON.parse(e.popup._source.getElement()['alt']);
+  e.popup.setContent("Loading...").update();
 
-  $.getJSON( "http://localhost:8000/vader/api/"+pop_name+"", function(datar) {
-    // e.popup.setContent(datar).update();
-    // alert(JSON.stringify(datar));
-    contents = "<br><br><h3>"+marker.feature.properties.name+"</h3><br><TABLE>\
-      <CAPTION>triplex_meter #1056</CAPTION>\
-      <TR><TH WIDTH=\"35\" ALIGN=LEFT>Property<HR></TH>\
-      <TH WIDTH=\"135\" COLSPAN=2 ALIGN=LEFT><NOBR>Line 1</NOBR><HR></TH>\
-      <TH WIDTH=\"135\" COLSPAN=2 ALIGN=LEFT><NOBR>Line 2</NOBR><HR></TH>\
-      <TH WIDTH=\"135\" COLSPAN=2 ALIGN=LEFT><NOBR>Neutral</NOBR><HR></TH>\
-      </TR>\
-      <TR><TH ALIGN=LEFT>Voltage</TH>\
-      <TD ALIGN=RIGHT ><NOBR>"+datar.voltage_1+"</NOBR></TD>\
-      <TD ALIGN=RIGHT ><NOBR>"+datar.voltage_2+"</NOBR></TD>\
-      <TD ALIGN=RIGHT ><NOBR>"+datar.voltage_3+"</NOBR></TD>\
-      <TR><TH ALIGN=LEFT>Power</TH>\
-      <TD ALIGN=RIGHT ><NOBR>"+datar.power_1+"</NOBR</TD>\
-      <TD ALIGN=RIGHT ><NOBR>"+datar.power_2+"</NOBR</TD>\
-      <TD ALIGN=RIGHT ><NOBR>"+datar.power_3+"</NOBR</TD>\
-      </TR>\
-      </TABLE>";
-
-
-    sparkline_contents="<br><br><div class=\"sparkline_one\">\
-                  <canvas width=\"200\" height=\"60\" ></canvas></div>";
-
-    e.popup.setContent(contents + sparkline_contents).update();
-
-    $(".sparkline_one").sparkline([2, 4, 3, 4, 5, 4, 5, 4, 3, 4, 5, 6, 7, 5, 4, 3, 5, 6], {
-      type: 'bar',
-      height: '40',
-      barWidth: 9,
-      colorMap: {
-        '7': '#a1a1a1'
-      },
-      barSpacing: 2,
-      barColor: '#26B99A'
-    });
-
+  $.getJSON( "http://localhost:8000/vader/api/"+element_details['type']+"/"+element_details['name']+"", function(data) {
+    e.popup.setContent(JSON.stringify(data['name'])).update();
   });
+
+  // e.popup.setContent(marker + "Updated").update();
+  // pop_name = marker.feature.properties.name;
+  //
+  // $.getJSON( "http://localhost:8000/vader/api/"+pop_name+"", function(datar) {
+  //   // e.popup.setContent(datar).update();
+  //   // alert(JSON.stringify(datar));
+  //   contents = "<br><br><h3>"+marker.feature.properties.name+"</h3><br><TABLE>\
+  //     <CAPTION>triplex_meter #1056</CAPTION>\
+  //     <TR><TH WIDTH=\"35\" ALIGN=LEFT>Property<HR></TH>\
+  //     <TH WIDTH=\"135\" COLSPAN=2 ALIGN=LEFT><NOBR>Line 1</NOBR><HR></TH>\
+  //     <TH WIDTH=\"135\" COLSPAN=2 ALIGN=LEFT><NOBR>Line 2</NOBR><HR></TH>\
+  //     <TH WIDTH=\"135\" COLSPAN=2 ALIGN=LEFT><NOBR>Neutral</NOBR><HR></TH>\
+  //     </TR>\
+  //     <TR><TH ALIGN=LEFT>Voltage</TH>\
+  //     <TD ALIGN=RIGHT ><NOBR>"+datar.voltage_1+"</NOBR></TD>\
+  //     <TD ALIGN=RIGHT ><NOBR>"+datar.voltage_2+"</NOBR></TD>\
+  //     <TD ALIGN=RIGHT ><NOBR>"+datar.voltage_3+"</NOBR></TD>\
+  //     <TR><TH ALIGN=LEFT>Power</TH>\
+  //     <TD ALIGN=RIGHT ><NOBR>"+datar.power_1+"</NOBR</TD>\
+  //     <TD ALIGN=RIGHT ><NOBR>"+datar.power_2+"</NOBR</TD>\
+  //     <TD ALIGN=RIGHT ><NOBR>"+datar.power_3+"</NOBR</TD>\
+  //     </TR>\
+  //     </TABLE>";
+  //
+  //
+  //   sparkline_contents="<br><br><div class=\"sparkline_one\">\
+  //                 <canvas width=\"200\" height=\"60\" ></canvas></div>";
+  //
+  //   e.popup.setContent(contents + sparkline_contents).update();
+  //
+  //   $(".sparkline_one").sparkline([2, 4, 3, 4, 5, 4, 5, 4, 3, 4, 5, 6, 7, 5, 4, 3, 5, 6], {
+  //     type: 'bar',
+  //     height: '40',
+  //     barWidth: 9,
+  //     colorMap: {
+  //       '7': '#a1a1a1'
+  //     },
+  //     barSpacing: 2,
+  //     barColor: '#26B99A'
+  //   });
+  //
+  // });
 
 }
 
@@ -264,19 +289,29 @@ console.log("Controls Finished");
 var el = [];
 maps.forEach(function(map){
 
-  $.getJSON( "/vader/api/switch/\*", function(selements, error) {
+  $.getJSON( switchApiEndpoint, function(selements, error) {
     selements.forEach(function(element) {
-      latlong = [parseFloat(element['latitude']), parseFloat(element['longitude'])];
-      switchLayer.addLayer(L.marker(latlong, {icon: switchIcon}).bindPopup(element['name']));
+      if (('latitude' in element) && ('longitude' in element)) {
+        latlong = [parseFloat(element['latitude']), parseFloat(element['longitude'])];
+        switchLayer.addLayer(L.marker(latlong, {
+          icon: switchIcon,
+          alt:JSON.stringify({"type":"switch","name":element['name']})
+        }).bindPopup(element['name'] + " loading..."));
+      } else {
+        console.log(element['name'] + " Does Not Have Location Coordinates!!");
+      }
     });
   });
-  //
-  // $.getJSON( "/vader/api/meter/\*", function(elements, error) {
-  //   elements.forEach(function(element) {
-  //     latlong = [parseFloat(element['latitude']), parseFloat(element['longitude'])];
-  //     meterLayer.addLayer(L.marker(latlong, {icon: meterIcon}).bindPopup(element['name']));
-  //   });
-  // });
+
+  $.getJSON( meterApiEndpoint, function(elements, error) {
+    elements.forEach(function(element) {
+      latlong = [parseFloat(element['latitude']), parseFloat(element['longitude'])];
+      meterLayer.addLayer(L.marker(latlong, {
+        icon: meterIcon,
+        alt:JSON.stringify({"type":"meter","name":element['name']})
+      }).bindPopup(element['name'] + " loading..."));
+    });
+  });
 
 
 
