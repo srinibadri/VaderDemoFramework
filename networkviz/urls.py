@@ -36,5 +36,11 @@ urlpatterns = [
     url(r'^api/house/$', views.api_houses),
     url(r'^api/house/(?P<element_query>[a-zA-Z0-9_\*]+)', views.api_houses),
 
+    # Also you should check for Line Sensors
+    url(r'^api/line/$', views.api_lines),
+    url(r'^api/line/(?P<element_query>[a-zA-Z0-9_\*]+)', views.api_lines),
+    url(r'^api/sensor/$', views.api_sensors),
+    url(r'^api/sensor/(?P<element_query>[a-zA-Z0-9_\*]+)', views.api_sensors),
+
 
 ]
