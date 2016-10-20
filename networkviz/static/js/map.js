@@ -2,15 +2,25 @@
 
 //##################### General Settings #####################
 
+//---- Map Constants
 var maps = [];
 var center = [35.38781, -118.99631];
 var zoom = 15.5;
 
+
+//---- Data and API
 var meterApiEndpoint = "/static/data/cache/meters.json",
     switchApiEndpoint = "/static/data/cache/switches.json",
     loadApiEndpoint = "/static/data/cache/load.json",
     nodeApiEndpoint = "/static/data/cache/node.json",
+    houseApiEndpoint = "/static/data/cache/house.json",
+    lineApiEndpoint = "/static/data/model.geo.json",
     feederApiEndpoint = "/static/data/cache/feeder.json";
+
+var sensorApiEndpoint = "/vader/api/sensor/";
+var sensor_list = [];
+
+
 //
 // var meterApiEndpoint = "/vader/api/meter/\*",
 //     switchApiEndpoint = "/vader/api/switch/\*",
@@ -18,7 +28,7 @@ var meterApiEndpoint = "/static/data/cache/meters.json",
 //     nodeApiEndpoint = "/vader/api/node/\*",
 //     feederApiEndpoint = "/vader/api/feeder/\*";
 
-
+//---- Styles
 var myStyle = {
     "color": "#ff7800",
     "weight": 5,
@@ -38,7 +48,7 @@ var normalIconSize = 20,
     bigIconSize = 30;
 var normalIconDimens = [normalIconSize, normalIconSize],
     normalIconAnchor = [normalIconSize/2, normalIconSize/2],
-    normalIconPopup  = [0, normalIconSize/2 - 3];
+    normalIconPopup  = [0, -normalIconSize/2 + 3];
 var bigIconDimens = [bigIconSize, bigIconSize],
     bigIconAnchor = [bigIconSize/2, bigIconSize/2],
     bigIconPopup  = [0, -bigIconSize/2 + 3];
@@ -67,6 +77,9 @@ var BigGridIcon = L.Icon.extend({
 });
 
 var meterIcon = new NormalGridIcon({iconUrl: '/static/images/icons/meter.png'}),
+    nodeIcon = new NormalGridIcon({iconUrl: '/static/images/icons/node.png'}),
+    loadIcon = new NormalGridIcon({iconUrl: '/static/images/icons/load.png'}),
+    houseIcon = new NormalGridIcon({iconUrl: '/static/images/icons/house.png'}),
     switchIcon = new BigGridIcon({iconUrl: '/static/images/icons/switch.png'});
 
 console.log("General Settings Finished");
@@ -75,7 +88,7 @@ console.log("General Settings Finished");
 
 // Base Map Layers
 
-var layer1 = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYmVuZHJhZmZpbiIsImEiOiJjaXRtMmx1NGwwMGE5MnhsNG9kZGJ4bG9xIn0.trghQwlKFrdvueMDquqkJA', {
+var Mapbox_Theme = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYmVuZHJhZmZpbiIsImEiOiJjaXRtMmx1NGwwMGE5MnhsNG9kZGJ4bG9xIn0.trghQwlKFrdvueMDquqkJA', {
     maxZoom: 18,
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
         '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
@@ -83,19 +96,54 @@ var layer1 = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?a
     id: 'mapbox.streets'
 });
 
-var layer2 = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYmVuZHJhZmZpbiIsImEiOiJjaXRtMmx1NGwwMGE5MnhsNG9kZGJ4bG9xIn0.trghQwlKFrdvueMDquqkJA', {
-    maxZoom: 18,
-    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-        '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-        'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-    id: 'mapbox.streets'
+// var Thunderforest_TransportDark = L.tileLayer('http://{s}.tile.thunderforest.com/transport-dark/{z}/{x}/{y}.png?apikey={apikey}', {
+// 	attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+// 	maxZoom: 19,
+// 	apikey: '7eaba955146e49abba3989008a4d373d'
+// });
+//
+// var Thunderforest_Landscape = L.tileLayer('http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey={apikey}', {
+// 	attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+// 	apikey: '7eaba955146e49abba3989008a4d373d'
+// });
+
+var Esri_WorldStreetMap = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
 });
 
+var OpenMapSurfer_Grayscale = L.tileLayer('http://korona.geog.uni-heidelberg.de/tiles/roadsg/x={x}&y={y}&z={z}', {
+	maxZoom: 19,
+	attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+});
+
+// Theme Layers
+var baseLayers = {
+    "Mapbox Theme": Mapbox_Theme,
+    "Esri Theme": Esri_WorldStreetMap,
+    // "Thunderforest": Thunderforest_Landscape,
+    // "Thunderforest 2": Thunderforest_TransportDark,
+    "OpenMap Theme": OpenMapSurfer_Grayscale
+};
 
 
 var meterLayer = L.layerGroup([]);
+var nodeLayer = L.layerGroup([]);
+var loadLayer = L.layerGroup([]);
+var houseLayer = L.layerGroup([]);
 var switchLayer = L.layerGroup([]);
 var lineLayer = L.layerGroup([]);
+var lineSensorLayer = L.layerGroup([]);
+
+// Overlay Layers
+var overlayLayers = {
+    "Meters": meterLayer,
+    "Switches": switchLayer,
+    "Nodes": nodeLayer,
+    "Loads": loadLayer,
+    "Lines": lineLayer,
+    "Line Sensors": lineSensorLayer
+};
+
 
 console.log("Layers Finished");
 
@@ -103,7 +151,7 @@ console.log("Layers Finished");
 
 
 var map1 = L.map('map1', {
-    layers: [layer1, meterLayer, switchLayer, lineLayer],
+    layers: [Mapbox_Theme, meterLayer, nodeLayer, loadLayer, switchLayer, lineSensorLayer, lineLayer],
     center: center,
     zoom: zoom
 });
@@ -162,6 +210,15 @@ function pop_up(e) {
              element_details = {"type":"line", "name": value};
              break;
          }
+         if (value.substring(0, 4) === "sens") {
+              // You've found it, the full text is in `value`.
+              // So you might grab it and break the loop, although
+              // really what you do having found it depends on
+              // what you need.
+              element_details = {"type":"sensor", "name": value};
+              break;
+          }
+
       }
     }
   } else {
@@ -171,7 +228,7 @@ function pop_up(e) {
   e.popup.setContent("Loading...").update();
 
   $.getJSON( "http://localhost:8000/vader/api/"+element_details['type']+"/"+element_details['name']+"", function(data) {
-    e.popup.setContent(JSON.stringify(data['name'])).update();
+    e.popup.setContent(JSON.stringify(data)).update();
   });
 
   // e.popup.setContent(marker + "Updated").update();
@@ -219,12 +276,12 @@ function pop_up(e) {
 
 }
 
-function onEachFeature(feature, layer) {
-    // does this feature have a property named popupContent?
-    if (feature.properties){// && feature.properties.popupContent) {
-        layer.bindPopup("<div id=\"" + feature.properties.name + "\">" + feature.properties.name + ". This is a link: <a href='#' class='seeDetailsLink'>Click me</a></div>", {className: feature.properties.name, minWidth:500});
-    }
-}
+// function onEachFeature(feature, layer) {
+//     // does this feature have a property named popupContent?
+//     if (feature.properties){// && feature.properties.popupContent) {
+//         layer.bindPopup("<div id=\"" + feature.properties.name + "\">" + feature.properties.name + ". This is a link: <a href='#' class='seeDetailsLink'>Click me</a></div>", {className: feature.properties.name, minWidth:500});
+//     }
+// }
 
 
 //---- Layers Related
@@ -283,18 +340,7 @@ console.log("Handlers Finished");
 // });
 
 
-var baseLayers = {
-    "Layer 1": layer1,
-    "Layer 2": layer2
-};
 
-// Overlay Layers
-
-var overlayLayers = {
-    "Meters": meterLayer,
-    "Switches": switchLayer,
-    "Lines": lineLayer
-};
 
 
 
@@ -303,6 +349,26 @@ console.log("Controls Finished");
 
 //##################### Adding to Maps #####################
 
+function populateLayer(endpoint, layerGroup, iconPath, element_type, priority=0) {
+  $.getJSON( endpoint, function(elements, error) {
+    elements.forEach(function(element) {
+      if (('latitude' in element) && ('longitude' in element)) {
+        latlong = [parseFloat(element['latitude']), parseFloat(element['longitude'])];
+        marker = L.marker(latlong, {
+          icon: iconPath,
+          alt:JSON.stringify({"type":element_type,"name":element['name']})
+        }).bindPopup(element['name'] + " loading..."); //.bindTooltip(element['name']);
+        if (priority > 1) {
+          marker.setZIndexOffset(800);
+        }
+        layerGroup.addLayer(marker);
+      } else {
+        // console.log(element['name'] + " Does Not Have Location Coordinates!!");
+      }
+    });
+  });
+}
+
 
 // L.Map.addInitHook('addHandler', '', L.ClickWindowHandler);
 // function al(name) {
@@ -310,67 +376,64 @@ console.log("Controls Finished");
 // }
 
 var el = [];
+
+
 maps.forEach(function(map){
-  // Lines
-  $.getJSON( "/static/data/model.geo.json", function(geo_json_data) {
-    lineLayer.addLayer(L.geoJSON(geo_json_data,
-        {filter: function(feature, layer) {return feature.geometry.type == "LineString";},
-            onEachFeature: function(feature, layer) {
-                  layer.bindPopup(feature.properties.name);
-                  // layer.bindTooltip(feature.properties.name);
-            },
-            style: function(feature) {
-              return {className:(feature.properties.name)};
-            }
-            // classname: function(feature, layer) {
-            //   JSON.stringify({"type":"line","name":feature.properties.name})
-            // }
-      })//.bindPopup("hi")
-    )//addTo(map);
-  });
 
+  // Lines sometimes have sensors. Get this list first
+  $.getJSON( sensorApiEndpoint, function(sensorData) {
+    if (!sensorData) { return; }
+    if (sensorData['status'] == "False") { return; }
+    sensor_list = sensorData;
+    sensor_layers = [];
+    sensor_layers_names = [];
+    console.log(sensor_list);
 
-  $.getJSON( switchApiEndpoint, function(selements, error) {
-    selements.forEach(function(element) {
-      if (('latitude' in element) && ('longitude' in element)) {
-        latlong = [parseFloat(element['latitude']), parseFloat(element['longitude'])];
-        switchLayer.addLayer(L.marker(latlong, {
-          icon: switchIcon,
-          alt:JSON.stringify({"type":"switch","name":element['name']})
-        }).bindPopup(element['name'] + " loading..."));
-        //.bindTooltip(element['name']);
-      } else {
-        console.log(element['name'] + " Does Not Have Location Coordinates!!");
+    // Then get the list of lines
+    $.getJSON( lineApiEndpoint, function(geo_json_data) {
+      lineLayer.addLayer(L.geoJSON(geo_json_data,
+          {filter: function(feature, layer) {return feature.geometry.type == "LineString";},
+              onEachFeature: function(feature, layer) {
+                  sensorName = (feature.properties.name).replace("line","sensor");
+                  // console.log(sensorName);
+                  if (sensor_list.indexOf(sensorName) > -1) {
+                    // console.log(sensorName);
+                    // layer.setStyle(myStyle);
+                    sensor_layers.push(layer.toGeoJSON());
+                    sensor_layers_names.push(sensorName);
+                  }
+                    layer.bindPopup(feature.properties.name);
+                    // layer.bindTooltip(feature.properties.name);
+              },
+              style: function(feature) {
+                return {className:(feature.properties.name)};
+              }
+              // classname: function(feature, layer) {
+              //   JSON.stringify({"type":"line","name":feature.properties.name})
+              // }
+        })//.bindPopup("hi")
+      )//addTo(map);
+      for (i = 0; i < sensor_layers.length; ++i) {
+        lineSensorLayer.addLayer(L.geoJson(sensor_layers[i], {style: function(feature) {
+          return {color: "#ff7800", className:(sensor_layers_names[i])}
+        }}).bindPopup(sensor_layers_names[i]));
+
       }
-    });
-  });
 
-  $.getJSON( meterApiEndpoint, function(elements, error) {
-    elements.forEach(function(element) {
-      latlong = [parseFloat(element['latitude']), parseFloat(element['longitude'])];
-      meterLayer.addLayer(L.marker(latlong, {
-        icon: meterIcon,
-        alt:JSON.stringify({"type":"meter","name":element['name']})
-      }).bindPopup(element['name'] + " loading..."));
     });
   });
 
 
 
 
+  populateLayer(switchApiEndpoint, switchLayer, switchIcon, "switch", priority=2);
+  populateLayer(meterApiEndpoint, meterLayer, meterIcon, "meter");
+  populateLayer(nodeApiEndpoint, nodeLayer, nodeIcon, "node");
+  populateLayer(loadApiEndpoint, loadLayer, loadIcon, "load");
 
-  // $.getJSON( "/static/data/model.geo.json", function(geo_json_data) {
-  //   var myLayer = L.geoJSON(geo_json_data, {
-  //       style: myStyle,
-  //       onEachFeature: onEachFeature,
-  //       pointToLayer: function (feature, latlng) {
-  //         element_num = parseInt(feature.properties.name.split("_")[1]);
-  //         hexString = "#"+Math.min(element_num,255).toString(16) +"5400";
-  //         geojsonMarkerOptions.fillColor = hexString;
-  //         return L.circleMarker(latlng, geojsonMarkerOptions);
-  //       }
-  //   }).addTo(map);
-  // });
+  // Houses do not have location information
+  // populateLayer(houseApiEndpoint, houseLayer, houseIcon, "house");
+
 });
 
 

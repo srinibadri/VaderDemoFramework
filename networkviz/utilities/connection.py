@@ -56,7 +56,6 @@ def get_object(object_name, useJson=True):
         info = get_raw_data_from_connection(url)
         # Fix the trailing comma in some of the lists
         info = clean_json(info)
-        print (info)
         # Fix the list of objects that GridlabD returns
         if useJson:
             badObj = json.loads(info)
@@ -88,7 +87,7 @@ def get_objects(element_prefix, func_get_elements, element_query="list"):
 
     If it fails, it will return None
     '''
-    print("Element name requested: %s" % (element_query))
+    print("%s query requested: %s" % (element_prefix, element_query))
     # List all of the names of the elements
     if element_query == "list":
         return func_get_elements()

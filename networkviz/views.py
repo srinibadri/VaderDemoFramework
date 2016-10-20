@@ -165,7 +165,7 @@ def api_objects(request, element_prefix, elements_list, element_query="list"):
 
     If it fails, it will return a 500 error and a "<element_query> not found" message
     '''
-    print("Element name requested: %s" % (element_query))
+    print("%s query requested: %s" % (element_prefix, element_query))
     # List all of the names of the elements
     if element_query == "list":
         return JsonResponse(elements_list, safe=False)
@@ -211,6 +211,10 @@ def api_houses(request, element_query="list"):
 def api_lines(request, element_query="list"):
     elements_list = analyze.categorize_object_name("ieee123")['line']
     return api_objects(request, "line", elements_list, element_query)
+
+def api_sensors(request, element_query="list"):
+    elements_list = analyze.categorize_object_name("ieee123")['sensor']
+    return api_objects(request, "sensor", elements_list, element_query)
 
 
 def api_switch_state(request, actual=''):

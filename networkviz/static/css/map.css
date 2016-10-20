@@ -123,3 +123,9 @@
         margin-right: 0;
     }
 }
+
+.leaflet-control-layers-toggle {
+	background-image: url(../images/layers-icon.png);
+	width: 5em;
+	height: 5em;
+	}
