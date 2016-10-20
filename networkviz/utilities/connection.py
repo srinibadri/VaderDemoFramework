@@ -9,6 +9,7 @@ GLDGetGlobal => set_global
 
 """
 from __future__ import print_function
+import re
 import sys
 import json
 import token
@@ -53,7 +54,9 @@ def get_object(object_name, useJson=True):
     print(url)
     try:
         info = get_raw_data_from_connection(url)
-
+        # Fix the trailing comma in some of the lists
+        info = clean_json(info)
+        print (info)
         # Fix the list of objects that GridlabD returns
         if useJson:
             badObj = json.loads(info)
@@ -148,6 +151,12 @@ def merge_dicts(*dict_args):
         result.update(dictionary)
     return result
 
+
+def clean_json(string):
+    string = re.sub(",[ \t\r\n]+}", "}", string)
+    string = re.sub(",[ \t\r\n]+\]", "]", string)
+
+    return string
 
 def fix_lazy_json(in_text):
     token_gen = tokenize.generate_tokens(StringIO(in_text).readline)

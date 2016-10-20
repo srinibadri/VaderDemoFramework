@@ -145,8 +145,29 @@ function pop_up(e) {
   if(!e.popup._source) {
     return;
   }
+  element_details = {}
+  // Check if it is a path
+  if('_path' in e.popup._source) {
+    console.log("Path");
+    if ('classList' in e.popup._source._path) {
+      console.log("Path " + e.popup._source._path.classList);
+      classes = e.popup._source._path.classList;
+      for (index = 0; index < classes.length; ++index) {
+        value = classes[index];
+        if (value.substring(0, 4) === "line") {
+             // You've found it, the full text is in `value`.
+             // So you might grab it and break the loop, although
+             // really what you do having found it depends on
+             // what you need.
+             element_details = {"type":"line", "name": value};
+             break;
+         }
+      }
+    }
+  } else {
+    element_details = JSON.parse(e.popup._source.getElement()['alt']);
+  }
   temp = e;
-  element_details = JSON.parse(e.popup._source.getElement()['alt']);
   e.popup.setContent("Loading...").update();
 
   $.getJSON( "http://localhost:8000/vader/api/"+element_details['type']+"/"+element_details['name']+"", function(data) {
@@ -284,10 +305,30 @@ console.log("Controls Finished");
 
 
 // L.Map.addInitHook('addHandler', '', L.ClickWindowHandler);
-
+// function al(name) {
+//   alert(name);
+// }
 
 var el = [];
 maps.forEach(function(map){
+  // Lines
+  $.getJSON( "/static/data/model.geo.json", function(geo_json_data) {
+    lineLayer.addLayer(L.geoJSON(geo_json_data,
+        {filter: function(feature, layer) {return feature.geometry.type == "LineString";},
+            onEachFeature: function(feature, layer) {
+                  layer.bindPopup(feature.properties.name);
+                  // layer.bindTooltip(feature.properties.name);
+            },
+            style: function(feature) {
+              return {className:(feature.properties.name)};
+            }
+            // classname: function(feature, layer) {
+            //   JSON.stringify({"type":"line","name":feature.properties.name})
+            // }
+      })//.bindPopup("hi")
+    )//addTo(map);
+  });
+
 
   $.getJSON( switchApiEndpoint, function(selements, error) {
     selements.forEach(function(element) {
@@ -297,6 +338,7 @@ maps.forEach(function(map){
           icon: switchIcon,
           alt:JSON.stringify({"type":"switch","name":element['name']})
         }).bindPopup(element['name'] + " loading..."));
+        //.bindTooltip(element['name']);
       } else {
         console.log(element['name'] + " Does Not Have Location Coordinates!!");
       }
@@ -312,6 +354,8 @@ maps.forEach(function(map){
       }).bindPopup(element['name'] + " loading..."));
     });
   });
+
+
 
 
 

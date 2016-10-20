@@ -133,15 +133,11 @@ maps.forEach(function(map){
 maps.forEach(function(map){
 
   $.getJSON( "/static/data/model.geo.json", function(geo_json_data) {
-    var myLayer = L.geoJSON(geo_json_data, {
+    var myLayer = L.geoJSON(geo_json_data, {filter: function(feature, layer) {
+                 return feature.geometry.type == "LineString";
+             }}, {
         style: myStyle,
-        onEachFeature: onEachFeature,
-        pointToLayer: function (feature, latlng) {
-          element_num = parseInt(feature.properties.name.split("_")[1]);
-          hexString = "#"+Math.min(element_num,255).toString(16) +"5400";
-          geojsonMarkerOptions.fillColor = hexString;
-          return L.circleMarker(latlng, geojsonMarkerOptions);
-        }
+        onEachFeature: onEachFeature
     }).addTo(map);
 
   });
