@@ -11,6 +11,7 @@ import time
 from SolarDisaggregation import *
 import datetime
 from vaderviz.settings import PICKLE_FOLDER
+import numpy as np
 
 # Create your views here.
 
@@ -236,12 +237,14 @@ def dualmap(request):
     context = {}
     return HttpResponse(template.render(context, request))
 
+
 def map(request):
     template = loader.get_template('vader/map.html')
     context = {}
     return HttpResponse(template.render(context, request))
 
 # API Serving
+
 
 def api_objects(request, element_prefix, elements_list, element_query="list"):
     '''
@@ -285,6 +288,7 @@ def api_objects(request, element_prefix, elements_list, element_query="list"):
         if not obj:
             return JsonResponse({'status':'false','message':'%s not found' % element_query}, status=500)
         return JsonResponse(obj)
+
 
 def api_meters(request, element_query="list"):
     elements_list = analyze.categorize_object_name("ieee123")['meter']
@@ -361,3 +365,14 @@ def is_int(s):
     except ValueError:
         return False
 
+def query_for_dataTable(request):
+    simulation_name = request.GET.get('simulation_name')
+    database_name = request.GET.get('database')
+    field = request.GET.get('field')
+    table = request.GET.get('table')
+    print simulation_name, database_name, field, table
+    database.connect_to_database(simulation_name, database_name)
+    #meters = analyze.categorize_object_name(simulation_name)['meter']
+    meters = database.query_database(simulation_name, database_name, field, table)
+    print meters
+    return HttpResponse(json.dumps(meters), content_type="application/json")

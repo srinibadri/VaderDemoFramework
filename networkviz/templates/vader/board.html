@@ -6,6 +6,8 @@
 
     {% block imports-css %} {% include "networkviz/_imports-css.html" %}{% endblock %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/graph.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -55,35 +57,57 @@
                     {% block inputknob %} {% include "networkviz/charts/_inputknob.html" %} {% endblock %}
                 </div>
 
-                <!-- Sliders -->
-                <div class="row">
-                    <div class="col-md-12">
-                    {% block sliders %} {% include "networkviz/charts/_sliders.html" %} {% endblock %}
-                    </div>
-                </div>
-
                 </div>
             </div>
         </div>
     </div>
+{% include "vader/graph.html" %}
 {% endblock %}
 
 {% block script %}
 <script>
     $(document).ready(function(){
-    console.log($('#meter-table'));
-    $('#meter-table').DataTable();
-});
+    console.log("in");
+    $.ajax({
+            "url" : "/vader/datatable",
+            "contentType" : "application/json",
+            "type" : "GET",
+            "data" : {
+                    "simulation_name": 'ieee123',
+                    "database": 'data',
+                    "field": 'DISTINCT name',
+                    "table": 'meter'
+                },
+                success : function(data){
+                    console.log('hear');
+                button = ' <label class="switch"><input type="checkbox"><div class="slider round"></div></label>';
+                icon = '<a onclick="graphConfig(30, 100, "90 B", "line", "Voltage (V)")" data-toggle="modal" data-target="#graph"><i class="fa fa-line-chart graph-icon" aria-hidden="true"></i></a>';
+                for (i = 0; i < data.length; i++) {
+                    data[i].push('IN_SERVICE');
+                    data[i].push(button);
+                    data[i].push(icon);
+                    data[i].push(icon)
+                    data[i].push(icon);
+                }
+                console.log(data);
+                $('#meter-table').DataTable(
+                    {
+                        data: data
+                    });
+                }
+        });
+    });
 </script>
     <!-- Javascript Imports (so many!) -->
     {% block imports-js %} {% include "networkviz/_imports-js.html" %} {% endblock %}
     <!-- Module Code -->
     {% block linechart-js %} {% include "networkviz/charts/_linechart.js" %} {% endblock %}
     {% block minicharts-js %} {% include "networkviz/charts/_minicharts.js" %} {% endblock %}
-    {% block form-js %} {% include "networkviz/charts/_form.js" %} {% endblock %}
     {% block inputknob-js %} {% include "networkviz/charts/_inputknob.js" %} {% endblock %}
-    {% block sliders-js %} {% include "networkviz/charts/_sliders.js" %} {% endblock %}
-    {% block advanced-form-js %} {% include "networkviz/charts/_advanced-form.js" %} {% endblock %}
     {% block chart-cards-js %} {% include "networkviz/charts/_chart-cards.js" %} {% endblock %}
     <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
+    <script type="text/javascript" src="http://d3js.org/d3.v3.js"></script>
+    <script type="text/javascript" src="{% static 'js/custom.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/graph.js' %}"></script>
 {% endblock %}

@@ -51,4 +51,5 @@ urlpatterns = [
     url(r'^api/region/$', views.api_regions),
     url(r'^api/region/(?P<element_query>[a-zA-Z0-9_\*]+)', views.api_regions),
 
+    url(r'^datatable', views.query_for_dataTable, name='datatable'),
 ]
