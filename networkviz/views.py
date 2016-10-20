@@ -136,47 +136,51 @@ def disaggregateRegion(request, region_id):
         ### Display aggregate net_load as an input.
         print(current_minute)
         # ### AGGREGATE LOAD
-        # msg_list=[]
-        # message={}
-        # message['label']="Aggregate Net Load"
-        # vals=[agg_netload[elem] for elem in range(0,i)]
-        # times=list([t/60 for t in range(minute_of_day[0],current_minute)])
-        # message['data']=[list(a) for a in zip(times,vals) ]
-        # msg_list.append(message)
-        # overall["AggregateLoad"]=msg_list
+        msg_list=[]
+        message={}
+        message['label']="Aggregate Net Load"
+        vals=[agg_netload[elem] for elem in range(0,i)]
+        times=list([t/60 for t in range(minute_of_day[0],current_minute)])
+        message['data']=[list(a) for a in zip(times,vals) ]
+        msg_list.append(message)
+        overall["AggregateLoad"]=msg_list
 
         # ### SOLAR PROXY
-        # msg_list=[]
-        # message={}
-        # message['label']="Aggregate Net Load"
-        # vals=[agg_netload[elem] for elem in range(0,i)]
-        # times=list([t/60 for t in range(minute_of_day[0],current_minute)])
-        # message['data']=[list(a) for a in zip(times,vals) ]
-        # msg_list.append(message)
-        # overall["SolarProxy"]=msg_list
+        msg_list=[]
+        message={}
+        message['label']="Solar Proxy"
+        vals=[elem[0] for elem in predictors['1169']]
+        times=list([t/60 for t in range(minute_of_day[0],current_minute)])
+        message['data']=[list(a) for a in zip(times,vals) ]
+        msg_list.append(message)
+        overall["SolarProxy"]=msg_list
+
+        if region_id=="1":
+            filtered_models=model_names[1:5]
+        elif region_id=="2":
+            filtered_models=model_names[10:14]
 
 
+        for elem in filtered_models:
+            if ctr<4:
+                msg_list=[]
+                message={}
+                message['label']=elem+'_estimated'
+                vals=list(disaggSignal[elem])
+                times=list([t/60 for t in range(minute_of_day[0],current_minute)])
+                message['data']=[list(a) for a in zip(times,vals) ]
+                msg_list.append(message)
 
-        for elem in model_names[1:]:
-            msg_list=[]
-            message={}
-            message['label']=elem+'_estimated'
-            vals=list(disaggSignal[elem])
-            times=list([t/60 for t in range(minute_of_day[0],current_minute)])
-            message['data']=[list(a) for a in zip(times,vals) ]
-            msg_list.append(message)
+                message={}
+                message['label']=elem+'_true'
+                vals=list(solar_true[elem])
+                times=list([t/60 for t in range(minute_of_day[0],current_minute)])
+                message['data']=[list(a) for a in zip(times,vals) ]
+                msg_list.append(message)
 
-            message={}
-            message['label']=elem+'_true'
-            vals=list(solar_true[elem])
-            times=list([t/60 for t in range(minute_of_day[0],current_minute)])
-            message['data']=[list(a) for a in zip(times,vals) ]
-            msg_list.append(message)
-
-            overall[str(ctr)]=msg_list
+                overall[str(ctr)]=msg_list
             ctr=ctr+1
         ### rewrite
-
         return JsonResponse(json.dumps(overall),safe=False)
 
 def mlpowerflow(request):
