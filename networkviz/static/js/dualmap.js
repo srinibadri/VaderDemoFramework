@@ -193,13 +193,17 @@ console.log("Layers Finished");
 
 
 var map1 = L.map('map1', {
-    layers: [baseLayers1["Mapbox Theme"], overlayLayers1["Meters"], overlayLayers1["Nodes"], overlayLayers1["Loads"], overlayLayers1["Switches"], overlayLayers1["Line Sensors"], overlayLayers1["Lines"], overlayLayers1["Regions"]],
+    layers: [baseLayers1["Mapbox Theme"], overlayLayers1["Meters"],
+    // overlayLayers1["Nodes"], overlayLayers1["Loads"],
+    overlayLayers1["Switches"], overlayLayers1["Line Sensors"], overlayLayers1["Lines"], overlayLayers1["Regions"]],
     center: center,
     zoom: zoom
 });
 map1.attributionControl.setPrefix('');
 var map2 = L.map('map2', {
-    layers: [baseLayers2["Mapbox Theme"], overlayLayers2["Meters"], overlayLayers2["Nodes"], overlayLayers2["Loads"], overlayLayers2["Switches"], overlayLayers2["Line Sensors"], overlayLayers2["Lines"], overlayLayers2["Regions"]],
+    layers: [baseLayers2["OpenMap Theme"], overlayLayers2["Meters"],
+    // overlayLayers2["Nodes"], overlayLayers2["Loads"],
+    overlayLayers2["Switches"], overlayLayers2["Line Sensors"], overlayLayers2["Lines"], overlayLayers2["Regions"]],
     center: center,
     zoom: zoom,
     zoomControl: false
