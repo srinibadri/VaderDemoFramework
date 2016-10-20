@@ -297,7 +297,7 @@ L.Control.Watermark = L.Control.extend({
     onAdd: function(map) {
       console.log("Testing");
         var img = L.DomUtil.create('img');
-        img.src = 'https://www6.slac.stanford.edu/sites/all/themes/slac_www/logo.png';
+        img.src = '/static/images/logo-slac.png';
         img.style.width = '200px';
         return img;
     },
@@ -345,7 +345,7 @@ function populateLayer(endpoint, layerGroup, iconPath, element_type, priority=0)
 maps.forEach(function(map_obj){
 
   // Lines sometimes have sensors. Get this list first
-  $.getJSON( sensorApiEndpoint, function(sensorData) {
+  var jsonPromise = $.getJSON( sensorApiEndpoint, function(sensorData) {
     if (!sensorData) { return; }
     if (sensorData['status'] == "False") { return; }
     sensor_list = sensorData;
@@ -384,7 +384,27 @@ maps.forEach(function(map_obj){
       }
 
     });
+  }).error(function() {
+    // Just so we have an offline demo as well
+    // Then get the list of lines
+    $.getJSON( lineApiEndpoint, function(geo_json_data) {
+      map_obj.overlay["Lines"].addLayer(L.geoJSON(geo_json_data,
+          {filter: function(feature, layer) {return feature.geometry.type == "LineString";},
+              onEachFeature: function(feature, layer) {
+                    layer.bindPopup(feature.properties.name);
+                    // layer.bindTooltip(feature.properties.name);
+              },
+              // This style is just used as a sneaky/dumb way of
+              //    communicating to the popup handler.
+              style: function(feature) {
+                return {className:(feature.properties.name)};
+              }
+        })
+      )
+    });
   });
+
+  setTimeout(function(){ jsonPromise.abort(); }, 2000);
 
   // Add each of the desired layers
   console.log("Overlay meters")
