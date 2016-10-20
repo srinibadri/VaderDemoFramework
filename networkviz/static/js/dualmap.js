@@ -201,8 +201,10 @@ var map1 = L.map('map1', {
 });
 map1.attributionControl.setPrefix('');
 var map2 = L.map('map2', {
-    layers: [baseLayers2["OpenMap Theme"], overlayLayers2["Meters"],
-    // overlayLayers2["Nodes"], overlayLayers2["Loads"],
+    layers: [baseLayers2["OpenMap Theme"],
+    //overlayLayers2["Meters"],
+    overlayLayers2["Nodes"],
+    // overlayLayers2["Loads"],
     overlayLayers2["Switches"], overlayLayers2["Line Sensors"], overlayLayers2["Lines"], overlayLayers2["Regions"]],
     center: center,
     zoom: zoom,
