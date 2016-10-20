@@ -1,4 +1,4 @@
-{% extends "vader/base-header.html" %}
+{% extends "vader/base.html" %}
 {% block style %}
 {% load staticfiles %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/console.css' %}">
@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block content %}
+{% include "vader/_navbar.html" %}
 <!-- Removed Navbar Import From Here -->
 <div class="console-container">
     <div class="row">
