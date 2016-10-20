@@ -228,9 +228,9 @@ def api_switch_state(request, actual=''):
 
 
 # Helper methods
-def to_number(s):
+def is_int(s):
     try:
         int(s)
-        return int(s)
+        return True
     except ValueError:
         return False
