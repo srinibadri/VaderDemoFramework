@@ -2,12 +2,14 @@
 {% block style %}
 {% load staticfiles %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/dashboard.css' %}">
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+
     {% block imports-css %} {% include "networkviz/_imports-css.html" %}{% endblock %}
-    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
 {% endblock %}
 
 {% block content %}
-{% include "vader/_navbar.html" %}
+<!-- Removed Navbar Import From Here -->
 <div class="dashboard-container">
     <div class="row">
         <!-- page content -->
@@ -84,4 +86,3 @@
     {% block chart-cards-js %} {% include "networkviz/charts/_chart-cards.js" %} {% endblock %}
     <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 {% endblock %}
-

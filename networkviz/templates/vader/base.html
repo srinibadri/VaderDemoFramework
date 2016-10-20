@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/leaflet.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/weather-icons.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/toggle.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/toggle.css' %}">
     {% block style %}{% endblock %}
 </head>
 
@@ -29,6 +30,29 @@
                   <img src="{% static 'images/VaderLogo.png' %}" alt="Vader Landing" width=90%>
                 </a>
             </div><!-- /logo-title -->
+
+            <!-- Added Navbar Here -->
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div id="navbar" class="collapse navbar-collapse" style="color: #000000 !important;">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="{% url 'dashboard' %}" style="color: #000000 !important;"><span class="fa fa-bar-chart"></span> Dashboard</a>
+                    </li>
+
+                    <li>
+                        <a href="{% url 'map' %}" style="color: #000000 !important;"><span class="fa fa-map-marker"></span> Map</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'console' %}" style="color: #000000 !important;"><span class="fa fa-desktop"></span> Console</a>
+                    </li>
+                    <li>
+                        {% include "vader/_weather.html" %}
+                    </li>
+                </ul>
+                {% block extension %} {% endblock %}
+            </div>
+
     </header> <!-- /logo-title -->
 
     {% block content %}{% endblock %}
