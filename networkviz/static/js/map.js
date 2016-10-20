@@ -84,6 +84,7 @@ var meterIcon = new NormalGridIcon({iconUrl: '/static/images/icons/meter.png'}),
 
 console.log("General Settings Finished");
 
+
 //##################### Layers #####################
 
 // Base Map Layers
@@ -95,6 +96,16 @@ var Mapbox_Theme = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}
         'Imagery © <a href="http://mapbox.com">Mapbox</a>',
     id: 'mapbox.streets'
 });
+
+// var Mapbox_Theme2 =
+// L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYmVuZHJhZmZpbiIsImEiOiJjaXRtMmx1NGwwMGE5MnhsNG9kZGJ4bG9xIn0.trghQwlKFrdvueMDquqkJA', {
+//     maxZoom: 18,
+//     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+//         '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+//         'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+//     id: 'mapbox.streets'
+// });
+
 
 // var Thunderforest_TransportDark = L.tileLayer('http://{s}.tile.thunderforest.com/transport-dark/{z}/{x}/{y}.png?apikey={apikey}', {
 // 	attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -111,13 +122,27 @@ var Esri_WorldStreetMap = L.tileLayer('http://server.arcgisonline.com/ArcGIS/res
 	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
 });
 
+// var Esri_WorldStreetMap2 =
+// L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+// 	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+// });
+
+
+
 var OpenMapSurfer_Grayscale = L.tileLayer('http://korona.geog.uni-heidelberg.de/tiles/roadsg/x={x}&y={y}&z={z}', {
 	maxZoom: 19,
 	attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 });
 
+// var OpenMapSurfer_Grayscale2 =
+// L.tileLayer('http://korona.geog.uni-heidelberg.de/tiles/roadsg/x={x}&y={y}&z={z}', {
+// 	maxZoom: 19,
+// 	attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+// });
+
+
 // Theme Layers
-var baseLayers = {
+var baseLayers1 = {
     "Mapbox Theme": Mapbox_Theme,
     "Esri Theme": Esri_WorldStreetMap,
     // "Thunderforest": Thunderforest_Landscape,
@@ -125,49 +150,63 @@ var baseLayers = {
     "OpenMap Theme": OpenMapSurfer_Grayscale
 };
 
+// Theme Layers
+// var baseLayers2 = {
+//     "Mapbox Theme": Mapbox_Theme2,
+//     "Esri Theme": Esri_WorldStreetMap2,
+//     // "Thunderforest": Thunderforest_Landscape2,
+//     // "Thunderforest 2": Thunderforest_TransportDark2,
+//     "OpenMap Theme": OpenMapSurfer_Grayscale2
+// };
 
-var meterLayer = L.layerGroup([]);
-var nodeLayer = L.layerGroup([]);
-var loadLayer = L.layerGroup([]);
-var houseLayer = L.layerGroup([]);
-var switchLayer = L.layerGroup([]);
-var lineLayer = L.layerGroup([]);
-var lineSensorLayer = L.layerGroup([]);
 
-// Overlay Layers
-var overlayLayers = {
-    "Meters": meterLayer,
-    "Switches": switchLayer,
-    "Nodes": nodeLayer,
-    "Loads": loadLayer,
-    "Lines": lineLayer,
-    "Line Sensors": lineSensorLayer
+
+// Overlay Layers as displayed on the layer chooser
+var overlayLayers1 = {
+    "Meters": L.layerGroup([]),
+    "Switches": L.layerGroup([]),
+    "Nodes": L.layerGroup([]),
+    "Loads": L.layerGroup([]),
+    // "Houses": L.layerGroup([]),
+    "Lines": L.layerGroup([]),
+    "Line Sensors": L.layerGroup([])
 };
+// var overlayLayers2 = {
+//     "Meters": L.layerGroup([]),
+//     "Switches": L.layerGroup([]),
+//     "Nodes": L.layerGroup([]),
+//     "Loads": L.layerGroup([]),
+//     // "Houses": L.layerGroup([]),
+//     "Lines": L.layerGroup([]),
+//     "Line Sensors": L.layerGroup([])
+// };
+
 
 
 console.log("Layers Finished");
+
 
 //##################### Maps #####################
 
 
 var map1 = L.map('map1', {
-    layers: [Mapbox_Theme, meterLayer, nodeLayer, loadLayer, switchLayer, lineSensorLayer, lineLayer],
+    layers: [baseLayers1["Mapbox Theme"], overlayLayers1["Meters"], overlayLayers1["Nodes"], overlayLayers1["Loads"], overlayLayers1["Switches"], overlayLayers1["Line Sensors"], overlayLayers1["Lines"]],
     center: center,
     zoom: zoom
 });
 map1.attributionControl.setPrefix('');
 // var map2 = L.map('map2', {
-//     layers: [layer2],
+//     layers: [baseLayers2["Mapbox Theme"], overlayLayers2["Meters"], overlayLayers2["Nodes"], overlayLayers2["Loads"], overlayLayers2["Switches"], overlayLayers2["Line Sensors"], overlayLayers2["Lines"]],
 //     center: center,
 //     zoom: zoom,
 //     zoomControl: false
 // });
 
-// Add each map to the map array. This will be useful for scalable calling later
-maps.push(map1);
-// maps.push(map2);
-// maps.push(map3);
 
+// Add each map to the map array. This will be useful for scalable calling later
+maps.push({"map":map1, "base":baseLayers1, "overlay":overlayLayers1, "popup":L.popup()});
+// maps.push({"map":map2, "base":baseLayers2, "overlay":overlayLayers2, "popup":L.popup()});
+// maps.push(map3);
 
 
 console.log("Maps Finished");
@@ -177,15 +216,21 @@ console.log("Maps Finished");
 
 //---- Pop Up Related
 
+
+
 var popup = L.popup();
-function onMapClick(e, map) {
+
+function onMapClick(e, map_obj) {
     popup
         .setLatLng(e.latlng)
-        .setContent("You clicked the map at <br>" + e.latlng.toString())
-        .openOn(map);
+        .setContent("You clicked the map at " + e.latlng.toString());
+        // .openOn(map_obj.popup);
 }
 
-var temp, deets;
+// Temp is a debugging object that you can use to interrogate the popup object
+var temp;
+
+// This is the handler that gets called whenever an element is clicked on
 function pop_up(e) {
   if(!e) {
     return;
@@ -194,7 +239,7 @@ function pop_up(e) {
     return;
   }
   element_details = {}
-  // Check if it is a path
+  // Handle the secret message passing if it is a path object
   if('_path' in e.popup._source) {
     console.log("Path");
     if ('classList' in e.popup._source._path) {
@@ -204,24 +249,22 @@ function pop_up(e) {
         value = classes[index];
         if (value.substring(0, 4) === "line") {
              // You've found it, the full text is in `value`.
-             // So you might grab it and break the loop, although
-             // really what you do having found it depends on
-             // what you need.
              element_details = {"type":"line", "name": value};
              break;
          }
          if (value.substring(0, 4) === "sens") {
               // You've found it, the full text is in `value`.
-              // So you might grab it and break the loop, although
-              // really what you do having found it depends on
-              // what you need.
               element_details = {"type":"sensor", "name": value};
               break;
           }
 
       }
+      if (element_details == {}) {
+        console.log("No secret message found in the class name!!");
+      }
     }
   } else {
+    // Handle the normal markers
     element_details = JSON.parse(e.popup._source.getElement()['alt']);
   }
   temp = e;
@@ -231,84 +274,7 @@ function pop_up(e) {
     e.popup.setContent(JSON.stringify(data)).update();
   });
 
-  // e.popup.setContent(marker + "Updated").update();
-  // pop_name = marker.feature.properties.name;
-  //
-  // $.getJSON( "http://localhost:8000/vader/api/"+pop_name+"", function(datar) {
-  //   // e.popup.setContent(datar).update();
-  //   // alert(JSON.stringify(datar));
-  //   contents = "<br><br><h3>"+marker.feature.properties.name+"</h3><br><TABLE>\
-  //     <CAPTION>triplex_meter #1056</CAPTION>\
-  //     <TR><TH WIDTH=\"35\" ALIGN=LEFT>Property<HR></TH>\
-  //     <TH WIDTH=\"135\" COLSPAN=2 ALIGN=LEFT><NOBR>Line 1</NOBR><HR></TH>\
-  //     <TH WIDTH=\"135\" COLSPAN=2 ALIGN=LEFT><NOBR>Line 2</NOBR><HR></TH>\
-  //     <TH WIDTH=\"135\" COLSPAN=2 ALIGN=LEFT><NOBR>Neutral</NOBR><HR></TH>\
-  //     </TR>\
-  //     <TR><TH ALIGN=LEFT>Voltage</TH>\
-  //     <TD ALIGN=RIGHT ><NOBR>"+datar.voltage_1+"</NOBR></TD>\
-  //     <TD ALIGN=RIGHT ><NOBR>"+datar.voltage_2+"</NOBR></TD>\
-  //     <TD ALIGN=RIGHT ><NOBR>"+datar.voltage_3+"</NOBR></TD>\
-  //     <TR><TH ALIGN=LEFT>Power</TH>\
-  //     <TD ALIGN=RIGHT ><NOBR>"+datar.power_1+"</NOBR</TD>\
-  //     <TD ALIGN=RIGHT ><NOBR>"+datar.power_2+"</NOBR</TD>\
-  //     <TD ALIGN=RIGHT ><NOBR>"+datar.power_3+"</NOBR</TD>\
-  //     </TR>\
-  //     </TABLE>";
-  //
-  //
-  //   sparkline_contents="<br><br><div class=\"sparkline_one\">\
-  //                 <canvas width=\"200\" height=\"60\" ></canvas></div>";
-  //
-  //   e.popup.setContent(contents + sparkline_contents).update();
-  //
-  //   $(".sparkline_one").sparkline([2, 4, 3, 4, 5, 4, 5, 4, 3, 4, 5, 6, 7, 5, 4, 3, 5, 6], {
-  //     type: 'bar',
-  //     height: '40',
-  //     barWidth: 9,
-  //     colorMap: {
-  //       '7': '#a1a1a1'
-  //     },
-  //     barSpacing: 2,
-  //     barColor: '#26B99A'
-  //   });
-  //
-  // });
-
 }
-
-// function onEachFeature(feature, layer) {
-//     // does this feature have a property named popupContent?
-//     if (feature.properties){// && feature.properties.popupContent) {
-//         layer.bindPopup("<div id=\"" + feature.properties.name + "\">" + feature.properties.name + ". This is a link: <a href='#' class='seeDetailsLink'>Click me</a></div>", {className: feature.properties.name, minWidth:500});
-//     }
-// }
-
-
-//---- Layers Related
-
-L.Control.Watermark = L.Control.extend({
-    onAdd: function(map) {
-      console.log("Testing");
-        var img = L.DomUtil.create('img');
-
-        img.src = 'https://www6.slac.stanford.edu/sites/all/themes/slac_www/logo.png';
-        img.style.width = '200px';
-
-        return img;
-    },
-
-    onRemove: function(map) {
-      console.log("Testing");
-        // Nothing to do here
-    }
-});
-
-L.control.watermark = function(opts) {
-  console.log("Testing");
-    return new L.Control.Watermark(opts);
-}
-
-L.control.watermark({ position: 'bottomleft' }).addTo(map1);
 
 
 
@@ -322,33 +288,39 @@ L.control.watermark({ position: 'bottomleft' }).addTo(map1);
 
 console.log("Handlers Finished");
 
+
 //##################### Controls #####################
 
+//---- Layers Related
 
+L.Control.Watermark = L.Control.extend({
+    onAdd: function(map) {
+      console.log("Testing");
+        var img = L.DomUtil.create('img');
+        img.src = 'https://www6.slac.stanford.edu/sites/all/themes/slac_www/logo.png';
+        img.style.width = '200px';
+        return img;
+    },
 
-//
-// L.ClickWindowHandler = L.Handler.extend({
-//     addHooks: function() {
-//         L.DomEvent.on(document, 'onClick', this._doSomething, this);
-//     },
-//
-//     removeHooks: function() {
-//         L.DomEvent.off(document, 'onClick', this._doSomething, this);
-//     },
-//
-//     _doSomething: function(event) { alert('hi') }
-// });
+    onRemove: function(map) {
+      console.log("Testing Watermark remove");
+        // Nothing to do here
+    }
+});
 
-
-
-
-
+L.control.watermark = function(opts) {
+  console.log("Testing");
+    return new L.Control.Watermark(opts);
+}
+// Add to first map only
+L.control.watermark({ position: 'bottomleft' }).addTo(map1);
 
 
 console.log("Controls Finished");
 
 //##################### Adding to Maps #####################
 
+// Helper function for adding normal layers
 function populateLayer(endpoint, layerGroup, iconPath, element_type, priority=0) {
   $.getJSON( endpoint, function(elements, error) {
     elements.forEach(function(element) {
@@ -369,16 +341,8 @@ function populateLayer(endpoint, layerGroup, iconPath, element_type, priority=0)
   });
 }
 
-
-// L.Map.addInitHook('addHandler', '', L.ClickWindowHandler);
-// function al(name) {
-//   alert(name);
-// }
-
-var el = [];
-
-
-maps.forEach(function(map){
+// Adds each of the layers to each of the maps
+maps.forEach(function(map_obj){
 
   // Lines sometimes have sensors. Get this list first
   $.getJSON( sensorApiEndpoint, function(sensorData) {
@@ -391,7 +355,7 @@ maps.forEach(function(map){
 
     // Then get the list of lines
     $.getJSON( lineApiEndpoint, function(geo_json_data) {
-      lineLayer.addLayer(L.geoJSON(geo_json_data,
+      map_obj.overlay["Lines"].addLayer(L.geoJSON(geo_json_data,
           {filter: function(feature, layer) {return feature.geometry.type == "LineString";},
               onEachFeature: function(feature, layer) {
                   sensorName = (feature.properties.name).replace("line","sensor");
@@ -405,16 +369,15 @@ maps.forEach(function(map){
                     layer.bindPopup(feature.properties.name);
                     // layer.bindTooltip(feature.properties.name);
               },
+              // This style is just used as a sneaky/dumb way of
+              //    communicating to the popup handler.
               style: function(feature) {
                 return {className:(feature.properties.name)};
               }
-              // classname: function(feature, layer) {
-              //   JSON.stringify({"type":"line","name":feature.properties.name})
-              // }
-        })//.bindPopup("hi")
-      )//addTo(map);
+        })
+      )
       for (i = 0; i < sensor_layers.length; ++i) {
-        lineSensorLayer.addLayer(L.geoJson(sensor_layers[i], {style: function(feature) {
+        map_obj.overlay["Line Sensors"].addLayer(L.geoJson(sensor_layers[i], {style: function(feature) {
           return {color: "#ff7800", className:(sensor_layers_names[i])}
         }}).bindPopup(sensor_layers_names[i]));
 
@@ -423,35 +386,39 @@ maps.forEach(function(map){
     });
   });
 
+  // Add each of the desired layers
+  console.log("Overlay meters")
+  console.log(map_obj.overlay["Meters"])
+  populateLayer(switchApiEndpoint, (map_obj.overlay["Switches"]), switchIcon, "switch", priority=2);
+  populateLayer(meterApiEndpoint, (map_obj.overlay["Meters"]), meterIcon, "meter");
+  populateLayer(nodeApiEndpoint, (map_obj.overlay["Nodes"]), nodeIcon, "node");
+  populateLayer(loadApiEndpoint, (map_obj.overlay["Loads"]), loadIcon, "load");
+
+  console.log("Overlay meters done")
 
 
-
-  populateLayer(switchApiEndpoint, switchLayer, switchIcon, "switch", priority=2);
-  populateLayer(meterApiEndpoint, meterLayer, meterIcon, "meter");
-  populateLayer(nodeApiEndpoint, nodeLayer, nodeIcon, "node");
-  populateLayer(loadApiEndpoint, loadLayer, loadIcon, "load");
-
-  // Houses do not have location information
+  // Houses do not have location information, so skip them
   // populateLayer(houseApiEndpoint, houseLayer, houseIcon, "house");
 
 });
 
 
-maps.forEach(function(map){
-  layerControl = L.control.layers(baseLayers, overlayLayers).addTo(map);
-  // layerControl.addTo(map);
-  map.on('click', function(e) {
-    onMapClick(e, map);
-  });
-  map.on('popupopen', function(e) {
+maps.forEach(function(map_obj){
+  layerControl = L.control.layers(map_obj.base, map_obj.overlay).addTo(map_obj.map);
+  // layerControl.addTo(map_obj.map);
+
+  // Can't figure out how to do the map click popups, but they are annoying anyway
+  // map_obj.map.on('click', function(e, map_obj) {
+  //   onMapClick(e, map_obj);
+  // });
+  map_obj.map.on('popupopen', function(e) {
     pop_up(e);
   });
   // Sync to Other Maps
   // maps.forEach(function(syncMapTo){
-  //   map.sync(syncMapTo);
+  //   map_obj.map.sync(syncMapTo.map);
   // });
-  // map.addHandler('onClick', L.ClickWindowHandler)
 });
 
 
-console.log("Doneish");
+console.log("Done, but waiting on web requests");
