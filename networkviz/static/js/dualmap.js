@@ -17,8 +17,9 @@ var meterApiEndpoint = "/static/data/cache/meters.json",
     lineApiEndpoint = "/static/data/model.geo.json",
     feederApiEndpoint = "/static/data/cache/feeder.json";
 
-var sensorApiEndpoint = "/vader/api/sensor/";
-var sensor_list = [];
+var sensorApiEndpoint = "/vader/api/sensor/",
+    regionApiEndpoint = "/vader/api/region/";
+    var sensor_list = [];
 
 
 //
@@ -169,7 +170,8 @@ var overlayLayers1 = {
     "Loads": L.layerGroup([]),
     // "Houses": L.layerGroup([]),
     "Lines": L.layerGroup([]),
-    "Line Sensors": L.layerGroup([])
+    "Line Sensors": L.layerGroup([]),
+    "Regions": L.layerGroup([])
 };
 var overlayLayers2 = {
     "Meters": L.layerGroup([]),
@@ -178,7 +180,8 @@ var overlayLayers2 = {
     "Loads": L.layerGroup([]),
     // "Houses": L.layerGroup([]),
     "Lines": L.layerGroup([]),
-    "Line Sensors": L.layerGroup([])
+    "Line Sensors": L.layerGroup([]),
+    "Regions": L.layerGroup([])
 };
 
 
@@ -190,13 +193,13 @@ console.log("Layers Finished");
 
 
 var map1 = L.map('map1', {
-    layers: [baseLayers1["Mapbox Theme"], overlayLayers1["Meters"], overlayLayers1["Nodes"], overlayLayers1["Loads"], overlayLayers1["Switches"], overlayLayers1["Line Sensors"], overlayLayers1["Lines"]],
+    layers: [baseLayers1["Mapbox Theme"], overlayLayers1["Meters"], overlayLayers1["Nodes"], overlayLayers1["Loads"], overlayLayers1["Switches"], overlayLayers1["Line Sensors"], overlayLayers1["Lines"], overlayLayers1["Regions"]],
     center: center,
     zoom: zoom
 });
 map1.attributionControl.setPrefix('');
 var map2 = L.map('map2', {
-    layers: [baseLayers2["Mapbox Theme"], overlayLayers2["Meters"], overlayLayers2["Nodes"], overlayLayers2["Loads"], overlayLayers2["Switches"], overlayLayers2["Line Sensors"], overlayLayers2["Lines"]],
+    layers: [baseLayers2["Mapbox Theme"], overlayLayers2["Meters"], overlayLayers2["Nodes"], overlayLayers2["Loads"], overlayLayers2["Switches"], overlayLayers2["Line Sensors"], overlayLayers2["Lines"], overlayLayers2["Regions"]],
     center: center,
     zoom: zoom,
     zoomControl: false
@@ -204,8 +207,8 @@ var map2 = L.map('map2', {
 
 
 // Add each map to the map array. This will be useful for scalable calling later
-maps.push({"map":map1, "base":baseLayers1, "overlay":overlayLayers1, "popup":L.popup()});
-maps.push({"map":map2, "base":baseLayers2, "overlay":overlayLayers2, "popup":L.popup()});
+maps.push({"map":map1, "base":baseLayers1, "overlay":overlayLayers1, "popup":L.popup(), "predict_state": "actual"});
+maps.push({"map":map2, "base":baseLayers2, "overlay":overlayLayers2, "popup":L.popup(), "predict_state": "predicted"});
 // maps.push(map3);
 
 
@@ -241,9 +244,9 @@ function pop_up(e) {
   element_details = {}
   // Handle the secret message passing if it is a path object
   if('_path' in e.popup._source) {
-    console.log("Path");
+    // console.log("Path");
     if ('classList' in e.popup._source._path) {
-      console.log("Path " + e.popup._source._path.classList);
+      // console.log("Path " + e.popup._source._path.classList);
       classes = e.popup._source._path.classList;
       for (index = 0; index < classes.length; ++index) {
         value = classes[index];
@@ -271,7 +274,7 @@ function pop_up(e) {
   e.popup.setContent("Loading...").update();
 
   $.getJSON( "http://localhost:8000/vader/api/"+element_details['type']+"/"+element_details['name']+"", function(data) {
-    e.popup.setContent(JSON.stringify(data)).update();
+    e.popup.setContent(JSON.stringify(data['name'])).update();
   });
 
 }
@@ -295,7 +298,7 @@ console.log("Handlers Finished");
 
 L.Control.Watermark = L.Control.extend({
     onAdd: function(map) {
-      console.log("Testing");
+      // console.log("Testing");
         var img = L.DomUtil.create('img');
         img.src = '/static/images/logo-slac.png';
         img.style.width = '200px';
@@ -330,6 +333,9 @@ function populateLayer(endpoint, layerGroup, iconPath, element_type, priority=0)
           icon: iconPath,
           alt:JSON.stringify({"type":element_type,"name":element['name']})
         }).bindPopup(element['name'] + " loading..."); //.bindTooltip(element['name']);
+        if (priority == 1) {
+          marker.setZIndexOffset(700);
+        }
         if (priority > 1) {
           marker.setZIndexOffset(800);
         }
@@ -338,6 +344,25 @@ function populateLayer(endpoint, layerGroup, iconPath, element_type, priority=0)
         // console.log(element['name'] + " Does Not Have Location Coordinates!!");
       }
     });
+  });
+}
+
+var region_colors = ['red', 'blue', 'yellow','yellow', 'red', 'green', 'green', 'green', 'orange'];
+var region_colors2 =['red', 'blue', 'blue','yellow', 'red', 'green', 'green', 'green', 'orange'];
+
+
+function populateRegions(endpoint, layerGroup, predict_state) {
+  console.log("populateRegions");
+  $.getJSON( endpoint, function(elements, error) {
+    if(predict_state == "actual") {
+      elements.forEach(function(element) {
+        layerGroup.addLayer(L.polygon(element.points, {color: region_colors[element.group_num]}))
+      });
+    } else {
+      elements.forEach(function(element) {
+        layerGroup.addLayer(L.polygon(element.points, {color: region_colors2[element.group_num]}))
+      });
+    }
   });
 }
 
@@ -351,7 +376,7 @@ maps.forEach(function(map_obj){
     sensor_list = sensorData;
     sensor_layers = [];
     sensor_layers_names = [];
-    console.log(sensor_list);
+    // console.log(sensor_list);
 
     // Then get the list of lines
     $.getJSON( lineApiEndpoint, function(geo_json_data) {
@@ -407,12 +432,12 @@ maps.forEach(function(map_obj){
   setTimeout(function(){ map_obj.jsonPromise.abort(); }, 2000);
 
   // Add each of the desired layers
-  console.log("Overlay meters")
-  console.log(map_obj.overlay["Meters"])
   populateLayer(switchApiEndpoint, (map_obj.overlay["Switches"]), switchIcon, "switch", priority=2);
-  populateLayer(meterApiEndpoint, (map_obj.overlay["Meters"]), meterIcon, "meter");
+  populateLayer(meterApiEndpoint, (map_obj.overlay["Meters"]), meterIcon, "meter", priority=1);
   populateLayer(nodeApiEndpoint, (map_obj.overlay["Nodes"]), nodeIcon, "node");
   populateLayer(loadApiEndpoint, (map_obj.overlay["Loads"]), loadIcon, "load");
+
+  populateRegions(regionApiEndpoint, (map_obj.overlay["Regions"]), map_obj.predict_state);
 
   console.log("Overlay meters done")
 

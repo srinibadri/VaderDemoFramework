@@ -42,5 +42,7 @@ urlpatterns = [
     url(r'^api/sensor/$', views.api_sensors),
     url(r'^api/sensor/(?P<element_query>[a-zA-Z0-9_\*]+)', views.api_sensors),
 
+    url(r'^api/region/$', views.api_regions),
+    url(r'^api/region/(?P<element_query>[a-zA-Z0-9_\*]+)', views.api_regions),
 
 ]

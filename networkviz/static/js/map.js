@@ -17,7 +17,8 @@ var meterApiEndpoint = "/static/data/cache/meters.json",
     lineApiEndpoint = "/static/data/model.geo.json",
     feederApiEndpoint = "/static/data/cache/feeder.json";
 
-var sensorApiEndpoint = "/vader/api/sensor/";
+var sensorApiEndpoint = "/vader/api/sensor/",
+    regionApiEndpoint = "/vader/api/region/";
 var sensor_list = [];
 
 
@@ -169,7 +170,8 @@ var overlayLayers1 = {
     "Loads": L.layerGroup([]),
     // "Houses": L.layerGroup([]),
     "Lines": L.layerGroup([]),
-    "Line Sensors": L.layerGroup([])
+    "Line Sensors": L.layerGroup([]),
+    "Regions": L.layerGroup([])
 };
 // var overlayLayers2 = {
 //     "Meters": L.layerGroup([]),
@@ -223,8 +225,8 @@ var popup = L.popup();
 function onMapClick(e, map_obj) {
     popup
         .setLatLng(e.latlng)
-        .setContent("You clicked the map at " + e.latlng.toString());
-        // .openOn(map_obj.popup);
+        .setContent("You clicked the map at " + e.latlng.toString())
+        .openOn(map1);
 }
 
 // Temp is a debugging object that you can use to interrogate the popup object
@@ -271,7 +273,7 @@ function pop_up(e) {
   e.popup.setContent("Loading...").update();
 
   $.getJSON( "http://localhost:8000/vader/api/"+element_details['type']+"/"+element_details['name']+"", function(data) {
-    e.popup.setContent(JSON.stringify(data)).update();
+    e.popup.setContent(JSON.stringify(data['name'])).update();
   });
 
 }
@@ -330,6 +332,9 @@ function populateLayer(endpoint, layerGroup, iconPath, element_type, priority=0)
           icon: iconPath,
           alt:JSON.stringify({"type":element_type,"name":element['name']})
         }).bindPopup(element['name'] + " loading..."); //.bindTooltip(element['name']);
+        if (priority == 1) {
+          marker.setZIndexOffset(700);
+        }
         if (priority > 1) {
           marker.setZIndexOffset(800);
         }
@@ -337,6 +342,20 @@ function populateLayer(endpoint, layerGroup, iconPath, element_type, priority=0)
       } else {
         // console.log(element['name'] + " Does Not Have Location Coordinates!!");
       }
+    });
+  });
+}
+
+var region_colors = ['red', 'blue', 'grey','yellow', 'red', 'black', 'green', 'green', 'orange'];
+
+function populateRegions(endpoint, layerGroup, predict_state) {
+  console.log("populateRegions");
+  $.getJSON( endpoint, function(elements, error) {
+    console.log("Got Data");
+    console.log(elements);
+    elements.forEach(function(element) {
+      console.log(element.points);
+      layerGroup.addLayer(L.polygon(element.points, {color: region_colors[element.group_num]}))
     });
   });
 }
@@ -410,9 +429,11 @@ maps.forEach(function(map_obj){
   console.log("Overlay meters")
   console.log(map_obj.overlay["Meters"])
   populateLayer(switchApiEndpoint, (map_obj.overlay["Switches"]), switchIcon, "switch", priority=2);
-  populateLayer(meterApiEndpoint, (map_obj.overlay["Meters"]), meterIcon, "meter");
+  populateLayer(meterApiEndpoint, (map_obj.overlay["Meters"]), meterIcon, "meter", priority=1);
   populateLayer(nodeApiEndpoint, (map_obj.overlay["Nodes"]), nodeIcon, "node");
   populateLayer(loadApiEndpoint, (map_obj.overlay["Loads"]), loadIcon, "load");
+
+  populateRegions(regionApiEndpoint, (map_obj.overlay["Regions"]), map_obj.predict_state);
 
   console.log("Overlay meters done")
 
@@ -428,9 +449,9 @@ maps.forEach(function(map_obj){
   // layerControl.addTo(map_obj.map);
 
   // Can't figure out how to do the map click popups, but they are annoying anyway
-  // map_obj.map.on('click', function(e, map_obj) {
-  //   onMapClick(e, map_obj);
-  // });
+  map_obj.map.on('click', function(e, map_obj) {
+    onMapClick(e, map_obj);
+  });
   map_obj.map.on('popupopen', function(e) {
     pop_up(e);
   });
