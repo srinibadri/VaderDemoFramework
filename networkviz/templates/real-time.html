@@ -2,6 +2,7 @@
 {% load staticfiles %}
 
 {% block content %}
+{% include "vader/_navbar-logo.html" %}
 <div class="container">
 <h2>Real-Time Analytics Demos</h2>
 
@@ -22,8 +23,8 @@
               <img class="card-img-top" src="{% static 'images/SwitchConfig.png' %}" alt="Forecasting" width="100%">
               <div class="card-block">
                 <h4 class="card-title">Switch Configuration Detection</h4>
-                <p class="card-text"> Detection of switch configurations.</p>
-                <a href="#" class="btn btn-primary">Launch Demo</a>
+                <p class="card-text">Autodetection of switch configurations with minimal sensor data.</p>
+                <a href="/vader/switch-prediction" class="btn btn-primary">Launch Demo</a>
             </div>
         </div>
 	</div>

@@ -2,11 +2,15 @@
 {% block style %}
 {% load staticfiles %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/dashboard.css' %}">
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+
     {% block imports-css %} {% include "networkviz/_imports-css.html" %}{% endblock %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
 {% endblock %}
 
 {% block content %}
 {% include "vader/_navbar.html" %}
+<!-- Removed Navbar Import From Here -->
 <div class="dashboard-container">
     <div class="row">
         <!-- page content -->
@@ -21,8 +25,6 @@
 
                 <!-- top tiles -->
                 {% block tiles %} {% include "networkviz/charts/_tiles.html" %} {% endblock %}
-                <!-- /top tiles -->
-
 
                 <div class="clearfix"></div>
 
@@ -30,36 +32,35 @@
                 <div class="row">
                     {% block linechart %} {% include "networkviz/charts/_linechart.html" %} {% endblock %}
                 </div>
-                <!-- /line charts -->
-
                 <br />
-
                 <!-- Basic Cards -->
                 <div class="row">
                     {% block cards %} {% include "networkviz/charts/_cards.html" %} {% endblock %}
                 </div>
-                <!-- /Basic Cards -->
-
+                <!-- Data table -->
+                <div class="row">
+                    <div class="col-md-12">
+                    {% include "vader/meter-table.html" %}
+                    </div>
+                </div>
+                <br />
                 <!-- Mini Charts -->
                 <div class="row">
                     <div class="col-md-12">
                         {% block minicharts %} {% include "networkviz/charts/_minicharts.html" %} {% endblock %}
                     </div>
                 </div>
-                <!-- /Mini Charts -->
-
-
                 <!-- Knobs -->
                 <div class="row">
                     {% block inputknob %} {% include "networkviz/charts/_inputknob.html" %} {% endblock %}
                 </div>
-                <!-- /Knobs -->
 
-                <!-- Knobs -->
+                <!-- Sliders -->
                 <div class="row">
+                    <div class="col-md-12">
                     {% block sliders %} {% include "networkviz/charts/_sliders.html" %} {% endblock %}
+                    </div>
                 </div>
-                <!-- /Knobs -->
 
                 </div>
             </div>
@@ -68,15 +69,21 @@
 {% endblock %}
 
 {% block script %}
-<!-- Javascript Imports (so many!) -->
-{% block imports-js %} {% include "networkviz/_imports-js.html" %} {% endblock %}
-<!-- Module Code -->
-{% block linechart-js %} {% include "networkviz/charts/_linechart.js" %} {% endblock %}
-{% block minicharts-js %} {% include "networkviz/charts/_minicharts.js" %} {% endblock %}
-{% block form-js %} {% include "networkviz/charts/_form.js" %} {% endblock %}
-{% block inputknob-js %} {% include "networkviz/charts/_inputknob.js" %} {% endblock %}
-{% block sliders-js %} {% include "networkviz/charts/_sliders.js" %} {% endblock %}
-{% block advanced-form-js %} {% include "networkviz/charts/_advanced-form.js" %} {% endblock %}
-{% block chart-cards-js %} {% include "networkviz/charts/_chart-cards.js" %} {% endblock %}
+<script>
+    $(document).ready(function(){
+    console.log($('#meter-table'));
+    $('#meter-table').DataTable();
+});
+</script>
+    <!-- Javascript Imports (so many!) -->
+    {% block imports-js %} {% include "networkviz/_imports-js.html" %} {% endblock %}
+    <!-- Module Code -->
+    {% block linechart-js %} {% include "networkviz/charts/_linechart.js" %} {% endblock %}
+    {% block minicharts-js %} {% include "networkviz/charts/_minicharts.js" %} {% endblock %}
+    {% block form-js %} {% include "networkviz/charts/_form.js" %} {% endblock %}
+    {% block inputknob-js %} {% include "networkviz/charts/_inputknob.js" %} {% endblock %}
+    {% block sliders-js %} {% include "networkviz/charts/_sliders.js" %} {% endblock %}
+    {% block advanced-form-js %} {% include "networkviz/charts/_advanced-form.js" %} {% endblock %}
+    {% block chart-cards-js %} {% include "networkviz/charts/_chart-cards.js" %} {% endblock %}
+    <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 {% endblock %}
-

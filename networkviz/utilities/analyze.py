@@ -7,7 +7,7 @@ e.g. analyze.obtain_object_name_list("ieee123")
 """
 import re
 
-from networkviz.utilities import database
+from networkviz.utilities import database, connection
 
 
 def obtain_object_name_list(simulation_name):
@@ -80,20 +80,33 @@ def obtain_object_name_raw(simulation_name):
     return res
 
 
-def get_predicted_switch_states(simulation_name="ieee123"):
+
+
+#### For the 'Switch Configuration Detection' research
+
+def get_predicted_switch_states(switches, simulation_name="ieee123"):
     """
 
     :param simulation_name: e.g., "ieee123", "ieee123s", "ieee123z", "ieee123zs"
     :return: a list of predicted switch states
     """
-    switch_state = [{"sw0":True},{"sw1":True},{"sw2":False},{"sw3":True},{"sw4":False},{"sw5":True},{"sw6":False},{"sw7":True},{"sw8":False},{"sw9":False}]
-    return {"switches":switch_state}
+    switch_states = []
+    for switch in switches:
+        switch_states.append({switch:
+            {"phase_A_state":"CLOSED", "phase_B_state": "CLOSED", "phase_C_state": "OPEN"}
+        })
+    return switch_states
 
-def get_actual_switch_states(simulation_name="ieee123"):
+def get_actual_switch_states(switches, simulation_name="ieee123"):
     """
 
     :param simulation_name: e.g., "ieee123", "ieee123s", "ieee123z", "ieee123zs"
-    :return: a list of predicted switch states
+    :return: a list of actual switch states
     """
-    switch_state = [{"sw0":False},{"sw1":False},{"sw2":False},{"sw3":True},{"sw4":False},{"sw5":True},{"sw6":False},{"sw7":True},{"sw8":False},{"sw9":False}]
-    return {"switches":switch_state}
+    switch_states = []
+    for switch in switches:
+        obj = connection.get_object(switch)
+        switch_states.append({switch:
+            {"phase_A_state":obj['phase_A_state'], "phase_B_state": obj['phase_B_state'], "phase_C_state": obj['phase_C_state']}
+        })
+    return switch_states

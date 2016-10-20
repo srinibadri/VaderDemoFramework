@@ -10,60 +10,15 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/leaflet.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/weather-icons.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/toggle.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/toggle.css' %}">
     {% block style %}{% endblock %}
 </head>
 
-<style type="text/css">
-    .header_vader_logo{
-    float: left;
-    padding-top: 5px;
-    padding-left: 20px;
-
-    }
-    .header_slac_logo{
-    float: right;
-    padding-top: 30px;
-    padding-right: 20px;
-    }
-
-    #stan_logo{
-    width: 150px;
-    padding-top: 5px;
-    padding-right: 20px;
-    }
-    header{
-    height:100px;
-    padding-bottom: 20px;
-    background-color: #8C1515;
-    border-bottom: 10px solid $light-gray;
-    }
-
-</style>
-
 <body>
-    <header>
-            <div id="logo-title" class="header_slac_logo">
-            <a href="https://www6.slac.stanford.edu/" title="stan" rel="stan" id="stan_logo">
-              <img src="{% static 'images/stanford.png' %}" alt="Stanford" width="150px" id="stan_logo">
-            </a>
-            <a href="https://www6.slac.stanford.edu/" title="SLAC" rel="SLAC" id="logo">
-              <img src="https://www6.slac.stanford.edu/sites/all/themes/slac_www/logo.png" alt="SLAC">
-            </a>
-
-            </div>
-            <div id="logo-title" class="header_vader_logo">
-                <a href="/vader" title="VADER" rel="VADER" id="logo2">
-                  <img src="{% static 'images/VaderLogo.png' %}" alt="Vader Landing" width=90%>
-                </a>
-            </div><!-- /logo-title -->
-    </header> <!-- /logo-title -->
-
     {% block content %}{% endblock %}
     <script src="{% static 'js/jquery.min.js' %} "></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/leaflet.js' %}"></script>
-
     {% block script %}{% endblock %}
-
 </body>
 </html>

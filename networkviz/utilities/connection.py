@@ -8,6 +8,9 @@ GLDSetGlobal => get_global
 GLDGetGlobal => set_global
 
 """
+from __future__ import print_function
+import re
+import sys
 import json
 import token
 import tokenize
@@ -45,10 +48,67 @@ def set_property(category, name, value):
 
 
 #TODO: Add XML support
-def get_object(object_name):
+def get_object(object_name, useJson=True):
+    obj = {}
     url = base_url.replace('xml', 'json') + object_name + "/*"
-    info = get_raw_data_from_connection(url)
-    return json.loads(info)
+    print(url)
+    try:
+        info = get_raw_data_from_connection(url)
+        # Fix the trailing comma in some of the lists
+        info = clean_json(info)
+        # Fix the list of objects that GridlabD returns
+        if useJson:
+            badObj = json.loads(info)
+            obj = merge_dicts(*badObj)
+        else:
+            obj = {}
+    except ValueError:
+        eprint("%s not found" % (object_name))
+    return obj
+
+def get_objects(element_prefix, func_get_elements, element_query="list"):
+    '''
+
+    Single handler method for gathering lists of elements (meters, switches, nodes, houses, etc).
+    Arguments:
+        request             -- Django Request object
+        element_prefix      -- Element name prefix (so that meter/meter_1 and meter/1 both work)
+        func_get_elements   -- A function object that can be used to retrieve a list of all the elements of that type in the simulation
+        element_query       -- Which collection of data requested. See below.
+
+    Note: You can replace 'meter' with switch, load, node, house, etc.
+    Handles a few types of queries in the "element_query" field:
+
+    /           --> Returns list of element names of that type
+    /list       --> Returns list of element names of that type
+    /meter_1    --> Returns data about single element with name 'meter_1'
+    /1          --> Returns data about single element with name 'meter_1'. More specifically, with the name (element_prefix+'1')
+    /*          --> Returns a list containing full data on each of the elements in the /list
+
+    If it fails, it will return None
+    '''
+    print("%s query requested: %s" % (element_prefix, element_query))
+    # List all of the names of the elements
+    if element_query == "list":
+        return func_get_elements()
+    # Provide all details of all of the elements
+    elif element_query == "*":
+        list_elements = []
+        for element in func_get_elements():
+            obj = connection.get_object(element)
+            if not obj:
+                return None
+            list_elements.append(obj)
+        return list_elements
+    # Attempt to get details of a single element
+    else:
+        if element_prefix not in element_query:
+            element_query = element_prefix + element_query
+        obj = connection.get_object(element_query)
+        if not obj:
+            return None
+        return obj
+
 
 
 def set_data(url):
@@ -80,6 +140,22 @@ def get_data(url):
         item_list = xml_doc.getElementsByTagName('value')
         return item_list[0].childNodes[0].data
 
+def merge_dicts(*dict_args):
+    '''
+    Given any number of dicts, shallow copy and merge into a new dict,
+    precedence goes to key value pairs in latter dicts.
+    '''
+    result = {}
+    for dictionary in dict_args:
+        result.update(dictionary)
+    return result
+
+
+def clean_json(string):
+    string = re.sub(",[ \t\r\n]+}", "}", string)
+    string = re.sub(",[ \t\r\n]+\]", "]", string)
+
+    return string
 
 def fix_lazy_json(in_text):
     token_gen = tokenize.generate_tokens(StringIO(in_text).readline)
@@ -108,3 +184,6 @@ def fix_lazy_json(in_text):
 
         result.append((tok_id, tok_val))
     return tokenize.untokenize(result)
+
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
