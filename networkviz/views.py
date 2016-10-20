@@ -110,7 +110,7 @@ def disaggregateRegion(request, region_id):
         ## Need to turn this into the message we will be appending to each visualization
         static_loc='/home/eckara/Desktop/CMU_Practicum/VADER/VaderDemoFramework/networkviz/static/data/'
         #with open(static_loc+'objs.pickle') as f:  # Python 3: open(..., 'rb')
-        agg_netload, predictors, alphas, model_names,models, solar_true, minute_of_day = pickle.load(open(static_loc+'objs.pickle','rb'))
+        agg_netload, predictors, alphas, model_names,models, solar_true, minute_of_day,arrs = pickle.load(open(static_loc+'objs.pickle','rb'))
 
         tt=int(time.time())*1000
         now = datetime.datetime.now()-datetime.timedelta(hours=7)
@@ -134,8 +134,21 @@ def disaggregateRegion(request, region_id):
 
         ### Come up with a seperation of houses based on model names
         ### Display aggregate net_load as an input.
-        print(current_minute)
+        #print(current_minute)
         # ### AGGREGATE LOAD
+
+        if region_id=="1":
+            filtered_models=model_names[1:5]
+            filteredArrs=arrs[1:5]
+
+        elif region_id=="2":
+            filtered_models=model_names[10:14]
+            filteredArrs=arrs[10:14]
+            
+        agg_netload=[]
+        for elem in zip(*filteredArrs):
+            agg_netload.append(np.sum(elem))
+            
         msg_list=[]
         message={}
         message['label']="Aggregate Net Load"
@@ -154,11 +167,6 @@ def disaggregateRegion(request, region_id):
         message['data']=[list(a) for a in zip(times,vals) ]
         msg_list.append(message)
         overall["SolarProxy"]=msg_list
-
-        if region_id=="1":
-            filtered_models=model_names[1:5]
-        elif region_id=="2":
-            filtered_models=model_names[10:14]
 
 
         for elem in filtered_models:

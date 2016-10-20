@@ -178,7 +178,7 @@ function clickDrawGraph(e) {
       // You can make your ajax call declaration here
       //$.ajax(...
         var layer = e.target;
-        console.log(layer.feature.properties)
+        //console.log(layer.feature.properties)
         $.ajax({ 
             type: 'GET', 
             url: 'http://127.0.0.1:8000/vader/VoltageAPI/'+layer.feature.properties.region+"/7", 
