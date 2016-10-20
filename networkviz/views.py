@@ -10,6 +10,7 @@ import pandas as pd
 import time
 from SolarDisaggregation import *
 import datetime
+from vaderviz.settings import PICKLE_FOLDER
 
 # Create your views here.
 
@@ -108,9 +109,8 @@ def realtime(request):
 def disaggregateRegion(request, region_id):
         #Generates random values to send via websocket
         ## Need to turn this into the message we will be appending to each visualization
-        static_loc='/home/eckara/Desktop/CMU_Practicum/VADER/VaderDemoFramework/networkviz/static/data/'
         #with open(static_loc+'objs.pickle') as f:  # Python 3: open(..., 'rb')
-        agg_netload, predictors, alphas, model_names,models, solar_true, minute_of_day,arrs = pickle.load(open(static_loc+'objs.pickle','rb'))
+        agg_netload, predictors, alphas, model_names,models, solar_true, minute_of_day,arrs = pickle.load(open(PICKLE_FOLDER+'objs.pickle','rb'))
 
         tt=int(time.time())*1000
         now = datetime.datetime.now()-datetime.timedelta(hours=7)
@@ -148,7 +148,7 @@ def disaggregateRegion(request, region_id):
         agg_netload=[]
         for elem in zip(*filteredArrs):
             agg_netload.append(np.sum(elem))
-            
+
         msg_list=[]
         message={}
         message['label']="Aggregate Net Load"
@@ -203,10 +203,10 @@ def voltageWarning(request, region_id=0, bus_id=7):
     :param bus_id: 1, 2, ..., 7
     :return:
     """
+    print(PICKLE_FOLDER)
     region_id=int(region_id)
     bus_id=int(bus_id)
-    static_loc = '/home/eckara/Desktop/CMU_Practicum/VADER/VaderDemoFramework/networkviz/static/data/'
-    with open(static_loc + 'dfs.pickle', 'rb') as f:
+    with open(PICKLE_FOLDER + "dfs.pickle", 'rb') as f:
         df, df_forecast, estimated_rela_std = pickle.load(f)
     THRESHOLD = 1e-5
     df_std = df_forecast.std()

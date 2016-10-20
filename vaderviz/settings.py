@@ -147,3 +147,5 @@ DATABASES_CONFIGURATIONS = {
         'ami', 'model', 'scada', 'data'
     }
 }
+
+PICKLE_FOLDER = os.path.join(BASE_DIR, 'networkviz/static/data/')
