@@ -118,7 +118,7 @@ def disaggregateRegion(request, region_id):
         if current_minute< minute_of_day[0]:
             i=False
         elif current_minute> minute_of_day[1]:
-            i= minute_of_day
+            i= minute_of_day[1]-minute_of_day[0]-1
         else:
             i=current_minute-minute_of_day[0]
 
@@ -178,3 +178,71 @@ def disaggregateRegion(request, region_id):
         ### rewrite
 
         return JsonResponse(json.dumps(overall),safe=False)
+
+def mlpowerflow(request):
+    ##data=disaggregateRegion(region_id)
+    return render(request,'mlpowerflow.html')
+
+def voltageWarning(request, region_id=0, bus_id=7):
+    """
+    For voltage warning demo
+    :param request:
+    :param region_id: 0, 1, 2
+    :param bus_id: 1, 2, ..., 7
+    :return:
+    """
+    region_id=int(region_id)
+    bus_id=int(bus_id)
+    static_loc = '/home/eckara/Desktop/CMU_Practicum/VADER/VaderDemoFramework/networkviz/static/data/'
+    with open(static_loc + 'dfs.pickle', 'rb') as f:
+        df, df_forecast, estimated_rela_std = pickle.load(f)
+    THRESHOLD = 1e-5
+    df_std = df_forecast.std()
+    for idx in df_std.index:
+        if abs(df_std[idx]) < THRESHOLD:
+            df_std[idx] = 1.
+    df_forecast_norm = (df_forecast - df_forecast.mean()) / df_std
+
+    df_forecast_norm_lb = df_forecast_norm - estimated_rela_std
+    df_forecast_norm_ub = df_forecast_norm + estimated_rela_std
+
+    df_forecast_lb = df_forecast_norm_lb * df_std + df_forecast.mean()
+    df_forecast_ub = df_forecast_norm_ub * df_std + df_forecast.mean()
+
+    now = datetime.datetime.now()
+    now_round = datetime.datetime(year=now.year, month=now.month, day=now.day, hour=now.hour, minute=0)
+    history_start = now_round - datetime.timedelta(days=6)
+    actual_points = 6 * 24 + 1
+    forecast_points = 7 * 24 + 1
+    forecast_only_points = forecast_points - actual_points
+
+    actual_ts = [history_start + i * datetime.timedelta(hours=1) for i in range(actual_points)]
+    forecast_ts = [history_start + i * datetime.timedelta(hours=1) for i in range(forecast_points)]
+    forecast_only_ts = [now_round + i * datetime.timedelta(hours=1) for i in range(forecast_only_points)]
+
+    plot_names = ['load', 'voltage']
+    var_names = ['p', 'v']
+
+    overall = dict()
+    for elem_idx, elem in enumerate(plot_names):
+        msg_list = []
+
+        message = {}
+        message['label'] = elem + '_estimated'
+
+        start_point = region_id * 24 * 7 * 4
+        vals = list(df_forecast.ix[start_point:(start_point+forecast_points), str(var_names[elem_idx]) + str(bus_id)])
+        times = list([(ts - datetime.datetime(1970,1,1)).total_seconds() for ts in forecast_ts])
+        message['data'] = [list(a) for a in zip(times, vals)]
+        msg_list.append(message)
+
+        message = {}
+        message['label'] = elem + '_true'
+        vals = list(df_forecast.ix[start_point:(start_point+actual_points), str(var_names[elem_idx]) + str(bus_id)])
+        times = list([(ts - datetime.datetime(1970,1,1)).total_seconds() for ts in actual_ts])
+        message['data'] = [list(a) for a in zip(times, vals)]
+        msg_list.append(message)
+
+        overall[elem] = msg_list
+
+    return JsonResponse(json.dumps(overall), safe=False)

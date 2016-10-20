@@ -18,6 +18,8 @@ urlpatterns = [
     url(r'^planning', views.planning, name='planning'),
     url(r'^real-time', views.realtime, name='real-time'),
     url(r'^PVDisagg', views.pvdisagg, name='disaggMain'),
+    url(r'^MLPowerFlow', views.mlpowerflow, name='disaggMain'),
+    url(r'^VoltageAPI/(?P<region_id>[0-9]+)/(?P<bus_id>[0-9]+)$', views.voltageWarning, name='region_disagg'),
     url(r'^PVAPI/(?P<region_id>[0-9]+)$', views.disaggregateRegion, name='region_disagg'),
     url(r'^api/(?P<element_name>[a-zA-Z0-9_]+)', views.dummyapi, name='dummyapi'),
 
