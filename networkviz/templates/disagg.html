@@ -217,7 +217,7 @@ function clickDrawGraph(e) {
         var layer = e.target;
         $.ajax({ 
             type: 'GET', 
-            url: 'http://127.0.0.1:8000/vader/PVAPI/'+layer.feature.properties.region, 
+            url: 'PVAPI/'+layer.feature.properties.region, 
             dataType: 'json',
             success: function (data) { 
                         $.each(JSON.parse(data), function(key,value) {

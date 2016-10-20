@@ -181,7 +181,7 @@ function clickDrawGraph(e) {
         //console.log(layer.feature.properties)
         $.ajax({ 
             type: 'GET', 
-            url: 'http://127.0.0.1:8000/vader/VoltageAPI/'+layer.feature.properties.region+"/7", 
+            url: 'VoltageAPI/'+layer.feature.properties.region+"/7", 
             dataType: 'json',
             success: function (data) { 
                         $.each(JSON.parse(data), function(key,value) {

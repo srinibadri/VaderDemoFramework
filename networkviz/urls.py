@@ -22,7 +22,6 @@ urlpatterns = [
     # API for VOLTAGE AND PV DISAGG demos
     url(r'^VoltageAPI/(?P<region_id>[0-9]+)/(?P<bus_id>[0-9]+)$', views.voltageWarning, name='region_disagg'),
     url(r'^PVAPI/(?P<region_id>[0-9]+)$', views.disaggregateRegion, name='region_disagg'),
-    url(r'^api/(?P<element_name>[a-zA-Z0-9_]+)', views.dummyapi, name='dummyapi'),
 
 
     # API for Simulation Elements
