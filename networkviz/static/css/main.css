@@ -1,25 +1,129 @@
 body{
-    background: #F7F7F7;
+    background: #F7F7F7 !important;
     color: #73879C;
 }
 
+.navbar-header {
+    width: 20%;
+}
+.navbar .navbar-header {
+    min-height: 90px;
+}
+.navbar li a {
+    vertical-align: middle;
+    line-height: 60px;
+}
+
+.nav > li > a > img {
+    margin-top: 10px;
+}
+.nav > li > a > span {
+    margin-top: 20px;
+}
 #navigator {
     margin-bottom: 0px;
-    background-color: #1abb9c;
-    position: fixed;
+    background-color: #8C1515;
     z-index: 1000;
     width: 100%;
+    vertical-align: middle;
 }
 
-.navbar-nav a {
-  color: #000000;
-  height: 90px;
-  padding-top: 50px;
+.navbar-slac {
+  background-color: #8C1515;
+  border-color: #8C1515;
 }
-.nav .navbar-nav li a {
-  color: #000000 !important;
+.navbar-slac .navbar-brand {
+  color: #fff;
 }
-
+.navbar-slac .navbar-brand:hover,
+.navbar-slac .navbar-brand:focus {
+  color: #5e5e5e;
+  background-color: transparent;
+}
+.navbar-slac .navbar-text {
+  color: #ddd;
+}
+.navbar-slac .navbar-nav > li > a {
+  color: #ddd;
+}
+.navbar-slac .navbar-nav > li > a:hover,
+.navbar-slac .navbar-nav > li > a:focus {
+  color: #fff;
+  background-color: transparent;
+}
+.navbar-slac .navbar-nav > .active > a,
+.navbar-slac .navbar-nav > .active > a:hover,
+.navbar-slac .navbar-nav > .active > a:focus {
+  color: #fff;
+  background-color: #8C1515;
+}
+.navbar-slac .navbar-nav > .disabled > a,
+.navbar-slac .navbar-nav > .disabled > a:hover,
+.navbar-slac .navbar-nav > .disabled > a:focus {
+  color: #ccc;
+  background-color: transparent;
+}
+.navbar-slac .navbar-toggle {
+  border-color: #ddd;
+}
+.navbar-slac .navbar-toggle:hover,
+.navbar-slac .navbar-toggle:focus {
+  background-color: #ddd;
+}
+.navbar-slac .navbar-toggle .icon-bar {
+  background-color: #888;
+}
+.navbar-slac .navbar-collapse,
+.navbar-slac .navbar-form {
+  border-color: #8C1515;
+}
+.navbar-slac .navbar-nav > .open > a,
+.navbar-slac .navbar-nav > .open > a:hover,
+.navbar-slac .navbar-nav > .open > a:focus {
+  color: #555;
+  background-color: #8C1515;
+}
+@media (max-width: 767px) {
+  .navbar-slac .navbar-nav .open .dropdown-menu > li > a {
+    color: #777;
+  }
+  .navbar-slac .navbar-nav .open .dropdown-menu > li > a:hover,
+  .navbar-slac .navbar-nav .open .dropdown-menu > li > a:focus {
+    color: #333;
+    background-color: transparent;
+  }
+  .navbar-slac .navbar-nav .open .dropdown-menu > .active > a,
+  .navbar-slac .navbar-nav .open .dropdown-menu > .active > a:hover,
+  .navbar-slac .navbar-nav .open .dropdown-menu > .active > a:focus {
+    color: #555;
+    background-color: #8C1515;
+  }
+  .navbar-slac .navbar-nav .open .dropdown-menu > .disabled > a,
+  .navbar-slac .navbar-nav .open .dropdown-menu > .disabled > a:hover,
+  .navbar-slac .navbar-nav .open .dropdown-menu > .disabled > a:focus {
+    color: #ccc;
+    background-color: transparent;
+  }
+}
+.navbar-slac .navbar-link {
+  color: #777;
+}
+.navbar-slac .navbar-link:hover {
+  color: #333;
+}
+.navbar-slac .btn-link {
+  color: #777;
+}
+.navbar-slac .btn-link:hover,
+.navbar-slac .btn-link:focus {
+  color: #333;
+}
+.navbar-slac .btn-link[disabled]:hover,
+fieldset[disabled] .navbar-slac .btn-link:hover,
+.navbar-slac .btn-link[disabled]:focus,
+fieldset[disabled] .navbar-slac .btn-link:focus {
+  color: #ccc;
+}
 .navbar-login
 {
     width: 305px;
@@ -32,29 +136,6 @@ body{
     padding: 10px;
     padding-bottom: 0px;
     padding-top: 0px;
-}
-
-.icon-size
-{
-    font-size: 87px;
-}
-
-.header_vader_logo{
-    float: left;
-    padding-top: 5px;
-    padding-left: 20px;
-
-}
-.header_slac_logo{
-    float: right;
-    padding-top: 30px;
-    padding-right: 20px;
-}
-
-#stan_logo{
-    width: 150px;
-    padding-top: 5px;
-    padding-right: 20px;
 }
 header{
     height:100px;

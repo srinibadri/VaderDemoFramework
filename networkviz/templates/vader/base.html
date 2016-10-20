@@ -15,33 +15,10 @@
 </head>
 
 <body>
-    <header>
-            <div id="logo-title" class="header_slac_logo">
-            <a href="https://www6.slac.stanford.edu/" title="stan" rel="stan" id="stan_logo">
-              <img src="{% static 'images/stanford.png' %}" alt="Stanford" width="150px" id="stan_logo">
-            </a>
-            <a href="https://www6.slac.stanford.edu/" title="SLAC" rel="SLAC" id="logo">
-              <img src="{% static 'images/logo-slac.png' %}" alt="SLAC">
-            </a>
-
-            </div>
-            <div id="logo-title" class="header_vader_logo">
-                <a href="/vader" title="VADER" rel="VADER" id="logo2">
-                  <img src="{% static 'images/VaderLogo.png' %}" alt="Vader Landing" width=90%>
-                </a>
-            </div><!-- /logo-title -->
-
-            <!-- Added Navbar Here -->
-
-                {% block extension %} {% endblock %}
-
-    </header> <!-- /logo-title -->
-
     {% block content %}{% endblock %}
     <script src="{% static 'js/jquery.min.js' %} "></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/leaflet.js' %}"></script>
     {% block script %}{% endblock %}
-
 </body>
 </html>
