@@ -21,7 +21,7 @@ $(document).ready(function() {
         // reset height
         $RIGHT_COL.css('min-height', $(window).height());
 
-        var bodyHeight = $BODY.outerHeight(), 
+        var bodyHeight = $BODY.outerHeight(),
             footerHeight = $BODY.hasClass('footer_fixed') ? 0 : $FOOTER.height(),
             leftColHeight = $LEFT_COL.eq(1).height() + $SIDEBAR_FOOTER.height(),
             contentHeight = bodyHeight < leftColHeight ? leftColHeight : bodyHeight;
@@ -46,7 +46,7 @@ $(document).ready(function() {
                 $SIDEBAR_MENU.find('li').removeClass('active active-sm');
                 $SIDEBAR_MENU.find('li ul').slideUp();
             }
-            
+
             $li.addClass('active');
 
             $('ul:first', $li).slideDown(function() {
@@ -79,12 +79,12 @@ $(document).ready(function() {
         setContentHeight();
     }).parent().addClass('active');
 
-    // recompute content when resizing
-    $(window).smartresize(function(){  
-        setContentHeight();
-    });
-
-    setContentHeight();
+    // // recompute content when resizing
+    // $(window).smartresize(function(){
+    //     setContentHeight();
+    // });
+    //
+    // setContentHeight();
 
     // fixed sidebar
     if ($.fn.mCustomScrollbar) {

@@ -1,34 +1,40 @@
-<table id="meter-table" class="display" cellspacing="0" width="100%">
-    <thead>
-    <tr>
-        <th>Name</th>
-        <th>Status</th>
-        <th>ON/OFF</th>
-        <th>Demand</th>
-        <th>Energy</th>
-        <th>Voltage 1</th>
-    </tr>
-    </thead>
-    <tfoot>
-    <tr>
-        <th>Name</th>
-        <th>Status</th>
-        <th>ON/OFF</th>
-        <th>Demand</th>
-        <th>Energy</th>
-        <th>Voltage 1</th>
-    </tr>
-    </tfoot>
-    <tbody>
-{% for meter in data %}
-    <tr>
-        <td>{{ data }}</td>
-        <td>In_Service</td>
-        <td>1</td>
-        <td>1</td>
-        <td>1</td>
-        <td>1</td>
-    </tr>
-{% endfor %}
-    </tbody>
-</table>
+<div class="x_panel">
+
+    <div class="x_title">
+        <h2>DataTable</h2>
+        <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+            </li>
+            <li><a class="close-link"><i class="fa fa-close"></i></a>
+            </li>
+        </ul>
+        <div class="clearfix"></div>
+    </div>
+    <div class="x_content">
+
+        <table id="meter-table" class="display" cellspacing="0" width="100%">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Demand</th>
+                <th>Energy</th>
+                <th>Voltage 1</th>
+                <th>Voltage 2</th>
+            </tr>
+            </thead>
+            <tfoot>
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Demand</th>
+                <th>Energy</th>
+                <th>Voltage 1</th>
+                <th>Voltage 2</th>
+            </tr>
+            </tfoot>
+        </table>
+
+    </div>
+</div>
+

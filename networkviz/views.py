@@ -365,6 +365,7 @@ def is_int(s):
     except ValueError:
         return False
 
+
 def query_for_dataTable(request):
     simulation_name = request.GET.get('simulation_name')
     database_name = request.GET.get('database')
@@ -372,7 +373,6 @@ def query_for_dataTable(request):
     table = request.GET.get('table')
     print simulation_name, database_name, field, table
     database.connect_to_database(simulation_name, database_name)
-    #meters = analyze.categorize_object_name(simulation_name)['meter']
     meters = database.query_database(simulation_name, database_name, field, table)
     print meters
     return HttpResponse(json.dumps(meters), content_type="application/json")
