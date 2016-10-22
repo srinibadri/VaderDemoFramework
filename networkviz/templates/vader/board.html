@@ -1,11 +1,11 @@
 {% extends "vader/base.html" %}
 {% block style %}
 {% load staticfiles %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/dashboard.css' %}">
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
-
+    <link rel="stylesheet" type="text/css" href="{% static 'css/dashboard.css' %}">
     {% block imports-css %} {% include "networkviz/_imports-css.html" %}{% endblock %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/zf/dt-1.10.12/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/graph.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -40,10 +40,9 @@
                 <!-- Data table -->
                 <div class="row">
                     <div class="col-md-12">
-                    {% include "vader/meter-table.html" %}
+                        {% include "vader/meter-table.html" %}
                     </div>
                 </div>
-                <br />
                 <!-- Mini Charts -->
                 <div class="row">
                     <div class="col-md-12">
@@ -55,35 +54,24 @@
                     {% block inputknob %} {% include "networkviz/charts/_inputknob.html" %} {% endblock %}
                 </div>
 
-                <!-- Sliders -->
-                <div class="row">
-                    <div class="col-md-12">
-                    {% block sliders %} {% include "networkviz/charts/_sliders.html" %} {% endblock %}
-                    </div>
-                </div>
-
                 </div>
             </div>
         </div>
     </div>
+{% include "vader/graph.html" %}
 {% endblock %}
 
 {% block script %}
-<script>
-    $(document).ready(function(){
-    console.log($('#meter-table'));
-    $('#meter-table').DataTable();
-});
-</script>
+    <script type="text/javascript" src="{% static 'js/datatable.js' %}"></script>
     <!-- Javascript Imports (so many!) -->
     {% block imports-js %} {% include "networkviz/_imports-js.html" %} {% endblock %}
     <!-- Module Code -->
     {% block linechart-js %} {% include "networkviz/charts/_linechart.js" %} {% endblock %}
     {% block minicharts-js %} {% include "networkviz/charts/_minicharts.js" %} {% endblock %}
-    {% block form-js %} {% include "networkviz/charts/_form.js" %} {% endblock %}
     {% block inputknob-js %} {% include "networkviz/charts/_inputknob.js" %} {% endblock %}
-    {% block sliders-js %} {% include "networkviz/charts/_sliders.js" %} {% endblock %}
-    {% block advanced-form-js %} {% include "networkviz/charts/_advanced-form.js" %} {% endblock %}
     {% block chart-cards-js %} {% include "networkviz/charts/_chart-cards.js" %} {% endblock %}
-    <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/zf/dt-1.10.12/datatables.min.js"></script>
+    <script type="text/javascript" src="http://d3js.org/d3.v3.js"></script>
+    <script type="text/javascript" src="{% static 'js/custom.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/graph.js' %}"></script>
 {% endblock %}

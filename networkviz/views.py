@@ -11,6 +11,7 @@ import time
 from SolarDisaggregation import *
 import datetime
 from vaderviz.settings import PICKLE_FOLDER
+import numpy as np
 
 # Create your views here.
 
@@ -236,12 +237,14 @@ def dualmap(request):
     context = {}
     return HttpResponse(template.render(context, request))
 
+
 def map(request):
     template = loader.get_template('vader/map.html')
     context = {}
     return HttpResponse(template.render(context, request))
 
 # API Serving
+
 
 def api_objects(request, element_prefix, elements_list, element_query="list"):
     '''
@@ -286,6 +289,7 @@ def api_objects(request, element_prefix, elements_list, element_query="list"):
             return JsonResponse({'status':'false','message':'%s not found' % element_query}, status=500)
         return JsonResponse(obj)
 
+
 def api_meters(request, element_query="list"):
     elements_list = analyze.categorize_object_name("ieee123")['meter']
     # import pdb; pdb.set_trace()
@@ -293,6 +297,7 @@ def api_meters(request, element_query="list"):
 
 def api_switches(request, element_query="list"):
     elements_list = analyze.categorize_object_name("ieee123")['sw']
+    print elements_list
     return api_objects(request, "sw", elements_list, element_query)
 
 def api_loads(request, element_query="list"):
@@ -316,7 +321,10 @@ def api_sensors(request, element_query="list"):
     return api_objects(request, "sensor", elements_list, element_query)
 
 
-
+def api_capacitors(request, element_query="list"):
+    elements_list = analyze.categorize_object_name("ieee123")['cap']
+    print elements_list
+    return api_objects(request, "cap", elements_list, element_query)
 
 def api_regions(request, element_query="list"):
     regions = '''[
@@ -331,7 +339,6 @@ def api_regions(request, element_query="list"):
     ]'''
     print(regions)
     return HttpResponse(regions)
-
 
 
 def api_switch_state(request, actual=''):
@@ -361,3 +368,21 @@ def is_int(s):
     except ValueError:
         return False
 
+
+def query_for_dataTable(request):
+    simulation_name = request.GET.get('simulation_name')
+    database_name = request.GET.get('database')
+    field = request.GET.get('field')
+    table = request.GET.get('table')
+    print simulation_name, database_name, field, table
+    database.connect_to_database(simulation_name, database_name)
+    meters = database.query_database(simulation_name, database_name, field, table)
+    print meters
+    return HttpResponse(json.dumps(meters), content_type="application/json")
+
+
+def query_for_feeder(request):
+    sw_list = analyze.get_object_list('ieee123', "sw")
+    cap_list = analyze.get_object_list('ieee123', "cap")
+    context = {"sw_list": sw_list, "cap_list": cap_list}
+    return render(request, 'vader/_console-feeder.html', context)

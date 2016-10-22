@@ -11,3 +11,31 @@ body{
     border: 1px solid #dcdcdc;
     border-radius: 15px;
 }
+
+.datatable-panel{
+    width: 100%;
+    position: relative;
+    display: inline-block;
+    background: #ffffff;
+    border: 1px solid #dcdcdc;
+    border-radius: 15px;
+    padding: 10px 15px 10px 15px;
+}
+
+.table-name {
+    width: 20%;
+}
+
+.table-attr{
+    text-align: center;
+    width: 15%;
+    /*border-bottom-width: 0;*/
+    /*border-left-width: 0;*/
+    /*border-right-width: 1px;*/
+    /*border-top-width: 1px;*/
+}
+
+.table-status{
+    text-align: center;
+    width: 20%;
+}

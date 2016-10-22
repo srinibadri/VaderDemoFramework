@@ -279,7 +279,7 @@ function pop_up(e) {
   temp = e;
   e.popup.setContent("Loading...").update();
 
-  $.getJSON( "http://localhost:8000/vader/api/"+element_details['type']+"/"+element_details['name']+"", function(data) {
+  $.getJSON( "/vader/api/"+element_details['type']+"/"+element_details['name']+"", function(data) {
     e.popup.setContent(JSON.stringify(data['name'])).update();
   });
 

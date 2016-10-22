@@ -27,6 +27,9 @@ body{
     width: 100%;
     vertical-align: middle;
 }
+.navbar-header a img {
+    margin-top: -5px;
+}
 
 .navbar-slac {
   background-color: #8C1515;

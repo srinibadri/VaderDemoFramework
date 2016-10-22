@@ -2,7 +2,7 @@
 {% load staticfiles %}
 {% block tab %}
 <!-- Collect the nav links, forms, and other content for toggling -->
-            <ul class="nav navbar-nav">
+            <ul class="nav navbar-nav navbar-left">
                 <li>
                     <a href="{% url 'dashboard' %}"><span class="fa fa-bar-chart"></span> Dashboard</a>
                 </li>
@@ -17,5 +17,5 @@
                     {% include "vader/_weather.html" %}
                 </li>
                 {% block extension %} {% endblock %}
-            </ul>    
+            </ul>
 {% endblock %}

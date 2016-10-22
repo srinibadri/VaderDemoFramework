@@ -1,0 +1,47 @@
+<div class="console-panel x_panel">
+    <div class="console-title">
+        <h3>Feeder
+            <ul class="nav navbar-right">
+                <li>
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </li>
+            </ul>
+        </h3>
+    </div>
+    <div class="console-content x_content">
+        <div class="row-no-gutter">
+            <!-- switches -->
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <h4>Switch</h4>
+                <div class="row-no-gutter">
+                    {% for sw in sw_list %}
+                    <div class="col-md-4 col-sm-4 col-xs-12 console-item">{{ sw }}</div>
+                    <div class="col-md-4 col-sm-4 col-xs-12 console-item">closed</div>
+                    <div class="col-md-4 col-sm-4 col-xs-12 console-item">
+                        <label class="toggle"><input type="checkbox"><div class="slider round"></div></label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <!-- Capacitors -->
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <h4>Capacitors</h4>
+                <div class="row-no-gutter">
+                    {% for cap in cap_list %}
+                    <div class="col-md-3 col-sm-3 col-xs-12 console-item">{{ cap }}</div>
+                    <div class="col-md-3 col-sm-3 col-xs-12 console-item">closed</div>
+                    <div class="col-md-3 col-sm-3 col-xs-12 console-item">
+                        <label class="toggle"><input type="checkbox"><div class="slider round"></div></label></div>
+                    <div class="col-md-3 col-sm-3 col-xs-12 console-item">
+                        <a onclick="graphConfig(20, 100, '83 A', 'line', 'Voltage (V)')" data-toggle="modal" data-target="#graph">
+                            <i class="fa fa-line-chart graph-icon" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
