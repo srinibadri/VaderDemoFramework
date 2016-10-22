@@ -10,6 +10,10 @@ import re
 from networkviz.utilities import database, connection
 
 
+def get_object_list(simulation_name, category):
+    return categorize_object_name(simulation_name)[category]
+
+
 def obtain_object_name_list(simulation_name):
     """
 
