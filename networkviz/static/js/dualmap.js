@@ -197,7 +197,8 @@ var map1 = L.map('map1', {
     // overlayLayers1["Nodes"], overlayLayers1["Loads"],
     overlayLayers1["Switches"], overlayLayers1["Line Sensors"], overlayLayers1["Lines"], overlayLayers1["Regions"]],
     center: center,
-    zoom: zoom
+    zoom: zoom,
+    scrollWheelZoom: false
 });
 map1.attributionControl.setPrefix('');
 var map2 = L.map('map2', {
@@ -208,6 +209,7 @@ var map2 = L.map('map2', {
     overlayLayers2["Switches"], overlayLayers2["Line Sensors"], overlayLayers2["Lines"], overlayLayers2["Regions"]],
     center: center,
     zoom: zoom,
+    scrollWheelZoom: false,
     zoomControl: false
 });
 

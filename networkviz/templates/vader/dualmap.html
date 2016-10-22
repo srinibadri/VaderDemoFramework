@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-{% include "vader/_navbar-map.html" %}
+{% include "vader/_navbar.html" %}
 <style type="text/css">
     .map { width: 49.5%; height: 87%; float: left; margin-right: 1%;}
     .lastmap { margin-right: 0; float: right; }
@@ -15,6 +15,17 @@
 <div id="wrapper" class="toggled">
     {% include "vader/_sidebar.html" %}
     <div class="page-content-wrapper">
+
+      <div class="jumbotron text-center" style="padding: 35px; padding-bottom: 20px; margin-bottom: 0px;">
+        <p>This demo presents a machine learning tool that can switch configurations and region connectivity with minimal data.</p>
+
+        <p><b>Left side is actual state</b> populated from complete information, the <b>right side is predicted</b> using data from a small number of sensors</p>
+
+      <!--   <div class="container">
+        <img class="card-img-top" src="{% static 'images/pvdisagg.png' %}" alt="PV DisAgg" width="80%">
+        </div> -->
+      </div>
+
         <div class="map" id="map1"></div>
         <div class="map lastmap" id="map2"></div>
         <!-- <div class="map lastmap" id="map3"></div> -->
