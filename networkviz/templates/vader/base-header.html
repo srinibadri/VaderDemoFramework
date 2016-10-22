@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.min.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/weather.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/climate.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/leaflet.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/weather-icons.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/toggle.css' %}">
@@ -47,7 +47,7 @@
                         <a href="{% url 'console' %}" style="color: #000000 !important;"><span class="fa fa-desktop"></span> Console</a>
                     </li>
                     <li>
-                        {% include "vader/_weather.html" %}
+                        {% include "vader/_climate.html" %}
                     </li>
                 </ul>
                 {% block extension %} {% endblock %}

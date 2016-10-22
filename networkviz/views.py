@@ -305,7 +305,6 @@ def api_meters(request, element_query="list"):
 
 def api_switches(request, element_query="list"):
     elements_list = analyze.categorize_object_name("ieee123")['sw']
-    print elements_list
     return api_objects(request, "sw", elements_list, element_query)
 
 def api_loads(request, element_query="list"):
@@ -385,7 +384,6 @@ def query_for_dataTable(request):
     print simulation_name, database_name, field, table
     database.connect_to_database(simulation_name, database_name)
     meters = database.query_database(simulation_name, database_name, field, table)
-    print meters
     return HttpResponse(json.dumps(meters), content_type="application/json")
 
 
@@ -394,3 +392,8 @@ def query_for_feeder(request):
     cap_list = analyze.get_object_list('ieee123', "cap")
     context = {"sw_list": sw_list, "cap_list": cap_list}
     return render(request, 'vader/_console-feeder.html', context)
+
+
+def query_for_climate(request):
+    climate_json = climate.query_climate()
+    return HttpResponse(climate_json, content_type="application/json")

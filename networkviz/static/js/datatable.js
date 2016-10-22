@@ -23,7 +23,6 @@ $(document).ready(function(){
                 data[i].push(icon);
                 data[i].push(icon);
             }
-            console.log(data);
             $('#meter-table').DataTable(
                 {
                     "columns": [
