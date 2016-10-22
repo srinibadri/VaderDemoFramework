@@ -297,6 +297,7 @@ def api_meters(request, element_query="list"):
 
 def api_switches(request, element_query="list"):
     elements_list = analyze.categorize_object_name("ieee123")['sw']
+    print elements_list
     return api_objects(request, "sw", elements_list, element_query)
 
 def api_loads(request, element_query="list"):
@@ -320,7 +321,10 @@ def api_sensors(request, element_query="list"):
     return api_objects(request, "sensor", elements_list, element_query)
 
 
-
+def api_capacitors(request, element_query="list"):
+    elements_list = analyze.categorize_object_name("ieee123")['cap']
+    print elements_list
+    return api_objects(request, "cap", elements_list, element_query)
 
 def api_regions(request, element_query="list"):
     regions = '''[
@@ -335,7 +339,6 @@ def api_regions(request, element_query="list"):
     ]'''
     print(regions)
     return HttpResponse(regions)
-
 
 
 def api_switch_state(request, actual=''):
@@ -376,3 +379,10 @@ def query_for_dataTable(request):
     meters = database.query_database(simulation_name, database_name, field, table)
     print meters
     return HttpResponse(json.dumps(meters), content_type="application/json")
+
+
+def query_for_feeder(request):
+    sw_list = analyze.get_object_list('ieee123', "sw")
+    cap_list = analyze.get_object_list('ieee123', "cap")
+    context = {"sw_list": sw_list, "cap_list": cap_list}
+    return render(request, 'vader/_console-feeder.html', context)
