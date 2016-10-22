@@ -6,7 +6,7 @@ from django.template import loader
 import untangle, requests, json
 from utilities import analyze, connection, database, simulation, climate
 import pickle
-#import pandas as pd
+import pandas as pd
 import time
 from SolarDisaggregation import *
 import datetime

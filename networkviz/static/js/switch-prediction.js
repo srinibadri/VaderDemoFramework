@@ -15,11 +15,11 @@ var meterApiEndpoint = "/static/data/cache/meters.json",
     nodeApiEndpoint = "/static/data/cache/node.json",
     houseApiEndpoint = "/static/data/cache/house.json",
     lineApiEndpoint = "/static/data/model.geo.json",
-    substationApiEndpoint = "/static/data/cache/substations.json";
+    feederApiEndpoint = "/static/data/cache/feeder.json";
 
 var sensorApiEndpoint = "/vader/api/sensor/",
     regionApiEndpoint = "/vader/api/region/";
-var sensor_list = [];
+    var sensor_list = [];
 
 
 //
@@ -46,18 +46,13 @@ var geojsonMarkerOptions = {
 };
 
 var normalIconSize = 20,
-    bigIconSize = 30,
-    megaIconSize = 60;
+    bigIconSize = 30;
 var normalIconDimens = [normalIconSize, normalIconSize],
     normalIconAnchor = [normalIconSize/2, normalIconSize/2],
     normalIconPopup  = [0, -normalIconSize/2 + 3];
 var bigIconDimens = [bigIconSize, bigIconSize],
     bigIconAnchor = [bigIconSize/2, bigIconSize/2],
     bigIconPopup  = [0, -bigIconSize/2 + 3];
-var megaIconDimens = [megaIconSize, megaIconSize],
-    megaIconAnchor = [megaIconSize/2, megaIconSize/2],
-    megaIconPopup  = [0, -megaIconSize/2 + 3];
-
 
 var NormalGridIcon = L.Icon.extend({
     options: {
@@ -81,26 +76,12 @@ var BigGridIcon = L.Icon.extend({
       popupAnchor:  bigIconPopup // point from which the popup should open relative to the iconAnchor
     }
 });
-var MegaGridIcon = L.Icon.extend({
-    options: {
-      iconUrl: '/static/images/icons/substation.png',
-      // shadowUrl: 'leaf-shadow.png',
-      iconSize:     megaIconDimens, // size of the icon
-      // shadowSize:   [50, 64], // size of the shadow
-      iconAnchor:   megaIconAnchor, // point of the icon which will correspond to marker's location
-      // shadowAnchor: [4, 62],  // the same for the shadow
-      popupAnchor:  megaIconPopup // point from which the popup should open relative to the iconAnchor
-    }
-});
-
-
 
 var meterIcon = new NormalGridIcon({iconUrl: '/static/images/icons/meter.png'}),
     nodeIcon = new NormalGridIcon({iconUrl: '/static/images/icons/node.png'}),
     loadIcon = new NormalGridIcon({iconUrl: '/static/images/icons/load.png'}),
     houseIcon = new NormalGridIcon({iconUrl: '/static/images/icons/house.png'}),
-    switchIcon = new BigGridIcon({iconUrl: '/static/images/icons/switch.png'}),
-    substationIcon = new MegaGridIcon({iconUrl: '/static/images/icons/substation.png'});
+    switchIcon = new BigGridIcon({iconUrl: '/static/images/icons/switch.png'});
 
 console.log("General Settings Finished");
 
@@ -117,14 +98,14 @@ var Mapbox_Theme = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}
     id: 'mapbox.streets'
 });
 
-// var Mapbox_Theme2 =
-// L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYmVuZHJhZmZpbiIsImEiOiJjaXRtMmx1NGwwMGE5MnhsNG9kZGJ4bG9xIn0.trghQwlKFrdvueMDquqkJA', {
-//     maxZoom: 18,
-//     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-//         '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-//         'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-//     id: 'mapbox.streets'
-// });
+var Mapbox_Theme2 =
+L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYmVuZHJhZmZpbiIsImEiOiJjaXRtMmx1NGwwMGE5MnhsNG9kZGJ4bG9xIn0.trghQwlKFrdvueMDquqkJA', {
+    maxZoom: 18,
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+        '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+        'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+    id: 'mapbox.streets'
+});
 
 
 // var Thunderforest_TransportDark = L.tileLayer('http://{s}.tile.thunderforest.com/transport-dark/{z}/{x}/{y}.png?apikey={apikey}', {
@@ -142,10 +123,10 @@ var Esri_WorldStreetMap = L.tileLayer('http://server.arcgisonline.com/ArcGIS/res
 	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
 });
 
-// var Esri_WorldStreetMap2 =
-// L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-// 	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
-// });
+var Esri_WorldStreetMap2 =
+L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+});
 
 
 
@@ -154,11 +135,11 @@ var OpenMapSurfer_Grayscale = L.tileLayer('http://korona.geog.uni-heidelberg.de/
 	attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 });
 
-// var OpenMapSurfer_Grayscale2 =
-// L.tileLayer('http://korona.geog.uni-heidelberg.de/tiles/roadsg/x={x}&y={y}&z={z}', {
-// 	maxZoom: 19,
-// 	attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-// });
+var OpenMapSurfer_Grayscale2 =
+L.tileLayer('http://korona.geog.uni-heidelberg.de/tiles/roadsg/x={x}&y={y}&z={z}', {
+	maxZoom: 19,
+	attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+});
 
 
 // Theme Layers
@@ -171,13 +152,13 @@ var baseLayers1 = {
 };
 
 // Theme Layers
-// var baseLayers2 = {
-//     "Mapbox Theme": Mapbox_Theme2,
-//     "Esri Theme": Esri_WorldStreetMap2,
-//     // "Thunderforest": Thunderforest_Landscape2,
-//     // "Thunderforest 2": Thunderforest_TransportDark2,
-//     "OpenMap Theme": OpenMapSurfer_Grayscale2
-// };
+var baseLayers2 = {
+    "Mapbox Theme": Mapbox_Theme2,
+    "Esri Theme": Esri_WorldStreetMap2,
+    // "Thunderforest": Thunderforest_Landscape2,
+    // "Thunderforest 2": Thunderforest_TransportDark2,
+    "OpenMap Theme": OpenMapSurfer_Grayscale2
+};
 
 
 
@@ -190,18 +171,18 @@ var overlayLayers1 = {
     // "Houses": L.layerGroup([]),
     "Lines": L.layerGroup([]),
     "Line Sensors": L.layerGroup([]),
-    "Substations": L.layerGroup([]),
     "Regions": L.layerGroup([])
 };
-// var overlayLayers2 = {
-//     "Meters": L.layerGroup([]),
-//     "Switches": L.layerGroup([]),
-//     "Nodes": L.layerGroup([]),
-//     "Loads": L.layerGroup([]),
-//     // "Houses": L.layerGroup([]),
-//     "Lines": L.layerGroup([]),
-//     "Line Sensors": L.layerGroup([])
-// };
+var overlayLayers2 = {
+    "Meters": L.layerGroup([]),
+    "Switches": L.layerGroup([]),
+    "Nodes": L.layerGroup([]),
+    "Loads": L.layerGroup([]),
+    // "Houses": L.layerGroup([]),
+    "Lines": L.layerGroup([]),
+    "Line Sensors": L.layerGroup([]),
+    "Regions": L.layerGroup([])
+};
 
 
 
@@ -212,29 +193,30 @@ console.log("Layers Finished");
 
 
 var map1 = L.map('map1', {
-    layers: [baseLayers1["Mapbox Theme"],
-    overlayLayers1["Meters"],
-    overlayLayers1["Nodes"],
-    overlayLayers1["Loads"],
-    overlayLayers1["Switches"],
-    overlayLayers1["Line Sensors"],
-    overlayLayers1["Lines"],
-    overlayLayers1["Substations"]],
+    layers: [baseLayers1["Mapbox Theme"], overlayLayers1["Meters"],
+    // overlayLayers1["Nodes"], overlayLayers1["Loads"],
+    overlayLayers1["Switches"], overlayLayers1["Line Sensors"], overlayLayers1["Lines"], overlayLayers1["Regions"]],
     center: center,
-    zoom: zoom
+    zoom: zoom,
+    scrollWheelZoom: false
 });
 map1.attributionControl.setPrefix('');
-// var map2 = L.map('map2', {
-//     layers: [baseLayers2["Mapbox Theme"], overlayLayers2["Meters"], overlayLayers2["Nodes"], overlayLayers2["Loads"], overlayLayers2["Switches"], overlayLayers2["Line Sensors"], overlayLayers2["Lines"]],
-//     center: center,
-//     zoom: zoom,
-//     zoomControl: false
-// });
+var map2 = L.map('map2', {
+    layers: [baseLayers2["OpenMap Theme"],
+    //overlayLayers2["Meters"],
+    overlayLayers2["Nodes"],
+    // overlayLayers2["Loads"],
+    overlayLayers2["Switches"], overlayLayers2["Line Sensors"], overlayLayers2["Lines"], overlayLayers2["Regions"]],
+    center: center,
+    zoom: zoom,
+    scrollWheelZoom: false,
+    zoomControl: false
+});
 
 
 // Add each map to the map array. This will be useful for scalable calling later
-maps.push({"map":map1, "base":baseLayers1, "overlay":overlayLayers1, "popup":L.popup()});
-// maps.push({"map":map2, "base":baseLayers2, "overlay":overlayLayers2, "popup":L.popup()});
+maps.push({"map":map1, "base":baseLayers1, "overlay":overlayLayers1, "popup":L.popup(), "predict_state": "actual"});
+maps.push({"map":map2, "base":baseLayers2, "overlay":overlayLayers2, "popup":L.popup(), "predict_state": "predicted"});
 // maps.push(map3);
 
 
@@ -252,8 +234,8 @@ var popup = L.popup();
 function onMapClick(e, map_obj) {
     popup
         .setLatLng(e.latlng)
-        .setContent("You clicked the map at " + e.latlng.toString())
-        .openOn(map1);
+        .setContent("You clicked the map at " + e.latlng.toString());
+        // .openOn(map_obj.popup);
 }
 
 // Temp is a debugging object that you can use to interrogate the popup object
@@ -270,9 +252,9 @@ function pop_up(e) {
   element_details = {}
   // Handle the secret message passing if it is a path object
   if('_path' in e.popup._source) {
-    console.log("Path");
+    // console.log("Path");
     if ('classList' in e.popup._source._path) {
-      console.log("Path " + e.popup._source._path.classList);
+      // console.log("Path " + e.popup._source._path.classList);
       classes = e.popup._source._path.classList;
       for (index = 0; index < classes.length; ++index) {
         value = classes[index];
@@ -324,7 +306,7 @@ console.log("Handlers Finished");
 
 L.Control.Watermark = L.Control.extend({
     onAdd: function(map) {
-      console.log("Testing");
+      // console.log("Testing");
         var img = L.DomUtil.create('img');
         img.src = '/static/images/logo-slac.png';
         img.style.width = '200px';
@@ -373,42 +355,22 @@ function populateLayer(endpoint, layerGroup, iconPath, element_type, priority=0)
   });
 }
 
-// Helper function for adding normal layers
-function populateLayerSubstation(endpoint, layerGroup, iconPath, element_type, priority=0) {
-  $.getJSON( endpoint, function(elements, error) {
-    elements.forEach(function(element) {
-      if (('latitude' in element) && ('longitude' in element)) {
-        latlong = [parseFloat(element['latitude']), parseFloat(element['longitude'])];
-        marker = L.marker(latlong, {
-          icon: new MegaGridIcon({iconUrl: '/static/images/icons/substation-'+element['color']+'.png'}),
-          alt:JSON.stringify({"type":element_type,"name":element['name']})
-        }).bindPopup(element['name'] + " loading..."); //.bindTooltip(element['name']);
-        if (priority == 1) {
-          marker.setZIndexOffset(700);
-        }
-        if (priority > 1) {
-          marker.setZIndexOffset(800);
-        }
-        layerGroup.addLayer(marker);
-      } else {
-        // console.log(element['name'] + " Does Not Have Location Coordinates!!");
-      }
-    });
-  });
-}
+var region_colors = ['red', 'blue', 'yellow','yellow', 'red', 'green', 'green', 'green', 'orange'];
+var region_colors2 =['red', 'blue', 'blue','yellow', 'red', 'green', 'green', 'green', 'orange'];
 
-
-var region_colors = ['red', 'blue', 'grey','yellow', 'red', 'black', 'green', 'green', 'orange'];
 
 function populateRegions(endpoint, layerGroup, predict_state) {
   console.log("populateRegions");
   $.getJSON( endpoint, function(elements, error) {
-    console.log("Got Data");
-    console.log(elements);
-    elements.forEach(function(element) {
-      console.log(element.points);
-      layerGroup.addLayer(L.polygon(element.points, {color: region_colors[element.group_num]}))
-    });
+    if(predict_state == "actual") {
+      elements.forEach(function(element) {
+        layerGroup.addLayer(L.polygon(element.points, {color: region_colors[element.group_num]}))
+      });
+    } else {
+      elements.forEach(function(element) {
+        layerGroup.addLayer(L.polygon(element.points, {color: region_colors2[element.group_num]}))
+      });
+    }
   });
 }
 
@@ -416,13 +378,13 @@ function populateRegions(endpoint, layerGroup, predict_state) {
 maps.forEach(function(map_obj){
 
   // Lines sometimes have sensors. Get this list first
-  var jsonPromise = $.getJSON( sensorApiEndpoint, function(sensorData) {
+  map_obj.jsonPromise = $.getJSON( sensorApiEndpoint, function(sensorData) {
     if (!sensorData) { return; }
     if (sensorData['status'] == "False") { return; }
     sensor_list = sensorData;
     sensor_layers = [];
     sensor_layers_names = [];
-    console.log(sensor_list);
+    // console.log(sensor_list);
 
     // Then get the list of lines
     $.getJSON( lineApiEndpoint, function(geo_json_data) {
@@ -475,17 +437,13 @@ maps.forEach(function(map_obj){
     });
   });
 
-  setTimeout(function(){ jsonPromise.abort(); }, 2000);
+  setTimeout(function(){ map_obj.jsonPromise.abort(); }, 2000);
 
   // Add each of the desired layers
-  console.log("Overlay meters")
-  console.log(map_obj.overlay["Meters"])
   populateLayer(switchApiEndpoint, (map_obj.overlay["Switches"]), switchIcon, "switch", priority=2);
   populateLayer(meterApiEndpoint, (map_obj.overlay["Meters"]), meterIcon, "meter", priority=1);
   populateLayer(nodeApiEndpoint, (map_obj.overlay["Nodes"]), nodeIcon, "node");
   populateLayer(loadApiEndpoint, (map_obj.overlay["Loads"]), loadIcon, "load");
-  
-  populateLayerSubstation(substationApiEndpoint, (map_obj.overlay["Substations"]), substationIcon, "substation");
 
   populateRegions(regionApiEndpoint, (map_obj.overlay["Regions"]), map_obj.predict_state);
 
@@ -503,16 +461,16 @@ maps.forEach(function(map_obj){
   // layerControl.addTo(map_obj.map);
 
   // Can't figure out how to do the map click popups, but they are annoying anyway
-  map_obj.map.on('click', function(e, map_obj) {
-    onMapClick(e, map_obj);
+  // map_obj.map.on('click', function(e, map_obj) {
+  //   onMapClick(e, map_obj);
+  // });
+  map_obj.map.on('popupopen', function(e) {
+    pop_up(e);
   });
-  // map_obj.map.on('popupopen', function(e) {
-  //   pop_up(e);
-  // });
   // Sync to Other Maps
-  // maps.forEach(function(syncMapTo){
-  //   map_obj.map.sync(syncMapTo.map);
-  // });
+  maps.forEach(function(syncMapTo){
+    map_obj.map.sync(syncMapTo.map);
+  });
 });
 
 
