@@ -11,13 +11,17 @@ $(document).ready(function(){
             "table": 'meter'
         },
         success : function(data){
-            icon =  '<a onclick=graphConfig(30, 100, "90 B", "line", "Voltage (V)") data-toggle="modal" data-target="#graph"><i class="fa fa-history graph-icon" aria-hidden="true"></i></a>' +
-                '<a onclick="graphConfig(30, 100, "90 B", "line", "Voltage (V)")" data-toggle="modal" data-target="#graph"><i class="fa fa-line-chart graph-icon" aria-hidden="true"></i></a>';
+            icon =  '<div class="col-md-6">' +
+                '<a onclick="graphConfig(30, 100, "90 B", "line", "Voltage (V)")" data-toggle="modal" data-target="#graph"><i class="fa fa-history graph-icon" aria-hidden="true"></i></a>' +
+                '</div>' +
+                '<div class="col-md-6">' +
+                '<a onclick="graphConfig(30, 100, "90 B", "line", "Voltage (V)")" data-toggle="modal" data-target="#graph"><i class="fa fa-line-chart graph-icon" aria-hidden="true"></i></a>' +
+                '</div>';
             for (i = 0; i < data.length; i++) {
                 data[i].push('IN_SERVICE');
                 data[i].push(icon);
                 data[i].push(icon);
-                data[i].push(icon)
+                data[i].push(icon);
                 data[i].push(icon);
             }
             console.log(data);
@@ -34,6 +38,9 @@ $(document).ready(function(){
                     ],
                     data: data
                 });
+        },
+        error : function(err) {
+            alert(err);
         }
     });
 });

@@ -23,13 +23,19 @@ body{
 }
 
 .table-name {
-
+    width: 20%;
 }
 
 .table-attr{
     text-align: center;
+    width: 15%;
+    /*border-bottom-width: 0;*/
+    /*border-left-width: 0;*/
+    /*border-right-width: 1px;*/
+    /*border-top-width: 1px;*/
 }
 
 .table-status{
     text-align: center;
+    width: 20%;
 }
