@@ -155,7 +155,14 @@ var overlayLayers1 = {
 
 
 var map1 = L.map('map1', {
-    layers: [baseLayers1["Mapbox Theme"], overlayLayers1["Meters"], overlayLayers1["Nodes"], overlayLayers1["Loads"], overlayLayers1["Switches"], overlayLayers1["Line Sensors"], overlayLayers1["Lines"], overlayLayers1["Regions"]],
+    layers: [baseLayers1["Mapbox Theme"],
+    // overlayLayers1["Meters"],
+    overlayLayers1["Switches"],
+    // overlayLayers1["Nodes"],
+    overlayLayers1["Loads"],
+    // overlayLayers1["Line Sensors"],
+    overlayLayers1["Lines"],
+    overlayLayers1["Regions"]],
     center: center,
     zoom: zoom,
     scrollWheelZoom: false
@@ -225,7 +232,7 @@ function populateLayer(endpoint, layerGroup, iconPath, element_type, priority=0)
         marker = L.marker(latlong, {
           icon: iconPath,
           alt:JSON.stringify({"type":element_type,"name":element['name']})
-        }).bindPopup(element['name'] + " loading..."); //.bindTooltip(element['name']);
+        });//.bindPopup(element['name'] + " loading..."); //.bindTooltip(element['name']);
         if (priority == 1) {
           marker.setZIndexOffset(700);
         }
@@ -266,7 +273,7 @@ maps.forEach(function(map_obj){
                     sensor_layers.push(layer.toGeoJSON());
                     sensor_layers_names.push(sensorName);
                   }
-                    layer.bindPopup(feature.properties.name);
+                    // layer.bindPopup(feature.properties.name);
                     // layer.bindTooltip(feature.properties.name);
               },
               // This style is just used as a sneaky/dumb way of
@@ -291,7 +298,7 @@ maps.forEach(function(map_obj){
       map_obj.overlay["Lines"].addLayer(L.geoJSON(geo_json_data,
           {filter: function(feature, layer) {return feature.geometry.type == "LineString";},
               onEachFeature: function(feature, layer) {
-                    layer.bindPopup(feature.properties.name);
+                    // layer.bindPopup(feature.properties.name);
                     // layer.bindTooltip(feature.properties.name);
               },
               // This style is just used as a sneaky/dumb way of
@@ -334,9 +341,9 @@ maps.forEach(function(map_obj){
   // map_obj.map.on('click', function(e, map_obj) {
   //   onMapClick(e, map_obj);
   // });
-  map_obj.map.on('popupopen', function(e) {
-    pop_up(e);
-  });
+  // map_obj.map.on('popupopen', function(e) {
+  //   pop_up(e);
+  // });
   // Sync to Other Maps
   // maps.forEach(function(syncMapTo){
   //   map_obj.map.sync(syncMapTo.map);
