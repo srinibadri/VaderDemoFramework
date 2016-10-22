@@ -112,7 +112,7 @@ def disaggregateRegion(request, region_id):
         elif region_id=="2":
             filtered_models=model_names[10:14]
             filteredArrs=arrs[10:14]
-            
+
         agg_netload=[]
         for elem in zip(*filteredArrs):
             agg_netload.append(np.sum(elem))
@@ -227,6 +227,14 @@ def voltageWarning(request, region_id=0, bus_id=7):
 
     return JsonResponse(json.dumps(overall), safe=False)
 
+
+################### Switch Prediction ###############
+
+# HTML Serving
+def switch_prediction(request):
+    template = loader.get_template('vader/switch-prediction.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
 
 
 ################### APIs for Maps ###################
