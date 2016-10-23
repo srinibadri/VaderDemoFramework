@@ -23,6 +23,7 @@ var sensor_list = [];
 
 var ignoreList = ["sw61to6101", "node_6101", "line60to61", "node_610", "node_61"];
 
+var monitoredList = ["sw13to152","sw151to300","sw450to451","sw95to195"];
 //
 // var meterApiEndpoint = "/vader/api/meter/\*",
 //     switchApiEndpoint = "/vader/api/switch/\*",
@@ -99,6 +100,7 @@ var meterIcon = new NormalGridIcon({iconUrl: '/static/images/icons/meter.png'}),
     loadIcon = new NormalGridIcon({iconUrl: '/static/images/icons/load.png'}),
     houseIcon = new NormalGridIcon({iconUrl: '/static/images/icons/house.png'}),
     switchIcon = new BigGridIcon({iconUrl: '/static/images/icons/switch.png'}),
+    switchIconUnmonitored = new BigGridIcon({iconUrl: '/static/images/icons/switch-unmonitored.png'}),
     substationIcon = new MegaGridIcon({iconUrl: '/static/images/icons/substation.png'});
 
 console.log("General Settings Finished");
@@ -392,6 +394,43 @@ function populateLayer(endpoint, layerGroup, iconPath, element_type, priority=0)
   });
 }
 
+
+// Helper function for adding normal layers
+function populateLayerSwitches(endpoint, layerGroup, normalIcon, monitoredIcon, element_type, priority=0) {
+  $.getJSON( endpoint, function(elements, error) {
+    elements.forEach(function(element) {
+      // We want to ignore a few elements
+      if (ignoreList.indexOf(element['name'])> -1) {
+        console.log("FOUND Element to Ignore" + element['name'])
+        return;
+      }
+      icon = normalIcon;
+      // We want to highlight a few elements
+      if (monitoredList.indexOf(element['name'])> -1) {
+        console.log("FOUND Element to Monitor" + element['name'])
+        icon = monitoredIcon;
+      }
+
+      if (('latitude' in element) && ('longitude' in element)) {
+        latlong = [parseFloat(element['latitude']), parseFloat(element['longitude'])];
+        marker = L.marker(latlong, {
+          icon: icon,
+          alt:JSON.stringify({"type":element_type,"name":element['name']})
+        }).bindPopup(element['name'] + " loading..."); //.bindTooltip(element['name']);
+        if (priority == 1) {
+          marker.setZIndexOffset(700);
+        }
+        if (priority > 1 || icon == monitoredIcon) {
+          marker.setZIndexOffset(800);
+        }
+        layerGroup.addLayer(marker);
+      } else {
+        console.log(element['name'] + " Does Not Have Location Coordinates!!");
+      }
+    });
+  });
+}
+
 // Helper function for adding normal layers
 function populateLayerSubstation(endpoint, layerGroup, iconPath, element_type, priority=0) {
   $.getJSON( endpoint, function(elements, error) {
@@ -517,7 +556,8 @@ maps.forEach(function(map_obj){
   setTimeout(function(){ map_obj.jsonPromise.abort(); }, 2000);
 
   // Add each of the desired layers
-  populateLayer(switchApiEndpoint, (map_obj.overlay["Switches"]), switchIcon, "switch", priority=2);
+  // populateLayerSwitches(switchApiEndpoint, (map_obj.overlay["Switches"]), switchIcon, switchIcon, "switch", priority=2);
+  // populateLayer(switchApiEndpoint, (map_obj.overlay["Switches"]), switchIcon, "switch", priority=2);
   populateLayer(meterApiEndpoint, (map_obj.overlay["Meters"]), meterIcon, "meter", priority=1);
   populateLayer(nodeApiEndpoint, (map_obj.overlay["Nodes"]), nodeIcon, "node");
   populateLayer(loadApiEndpoint, (map_obj.overlay["Loads"]), loadIcon, "load");
@@ -533,6 +573,10 @@ maps.forEach(function(map_obj){
   // populateLayer(houseApiEndpoint, houseLayer, houseIcon, "house");
 
 });
+
+populateLayerSwitches(switchApiEndpoint, (maps[0].overlay["Switches"]), switchIcon, switchIcon, "switch", priority=2);
+populateLayerSwitches(switchApiEndpoint, (maps[1].overlay["Switches"]), switchIconUnmonitored, switchIcon, "switch", priority=1);
+
 
 
 maps.forEach(function(map_obj){
