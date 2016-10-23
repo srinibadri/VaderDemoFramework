@@ -101,6 +101,12 @@ var meterIcon = new NormalGridIcon({iconUrl: '/static/images/icons/meter.png'}),
     houseIcon = new NormalGridIcon({iconUrl: '/static/images/icons/house.png'}),
     switchIcon = new BigGridIcon({iconUrl: '/static/images/icons/switch.png'}),
     switchIconUnmonitored = new BigGridIcon({iconUrl: '/static/images/icons/switch-unmonitored.png'}),
+    switchIconMonitored = new BigGridIcon({iconUrl: '/static/images/icons/switch-monitored.png'}),
+    switchIconMonitoredClosed = new BigGridIcon({iconUrl: '/static/images/icons/switch-monitored-closed.png'}),
+    switchIconMonitoredOpen = new BigGridIcon({iconUrl: '/static/images/icons/switch-monitored-open.png'}),
+    switchIconClosed = new BigGridIcon({iconUrl: '/static/images/icons/switch-monitored-closed.png'}),
+    switchIconOpen = new BigGridIcon({iconUrl: '/static/images/icons/switch-monitored-open.png'}),
+
     substationIcon = new MegaGridIcon({iconUrl: '/static/images/icons/substation.png'});
 
 console.log("General Settings Finished");
@@ -396,7 +402,7 @@ function populateLayer(endpoint, layerGroup, iconPath, element_type, priority=0)
 
 
 // Helper function for adding normal layers
-function populateLayerSwitches(endpoint, layerGroup, normalIcon, monitoredIcon, element_type, priority=0) {
+function populateLayerSwitches(endpoint, layerGroup, highlightMonitored, element_type, priority=0) {
   $.getJSON( endpoint, function(elements, error) {
     elements.forEach(function(element) {
       // We want to ignore a few elements
@@ -404,11 +410,27 @@ function populateLayerSwitches(endpoint, layerGroup, normalIcon, monitoredIcon, 
         console.log("FOUND Element to Ignore" + element['name'])
         return;
       }
-      icon = normalIcon;
+      monitored = false;
+      icon = switchIconOpen;
       // We want to highlight a few elements
-      if (monitoredList.indexOf(element['name'])> -1) {
-        console.log("FOUND Element to Monitor" + element['name'])
-        icon = monitoredIcon;
+      if (highlightMonitored) {
+        if (monitoredList.indexOf(element['name'])> -1) {
+          console.log("FOUND Element to Monitor" + element['name'])
+          monitored = true;
+          if (element['status'] == "OPEN") {
+            icon = switchIconMonitoredOpen;
+          } else {
+            icon = switchIconMonitoredClosed;
+          }
+        } else {
+          icon = switchIconUnmonitored;
+        }
+      } else {
+        if (element['status'] == "OPEN") {
+          icon = switchIconOpen;
+        } else {
+          icon = switchIconClosed;
+        }
       }
 
       if (('latitude' in element) && ('longitude' in element)) {
@@ -420,7 +442,7 @@ function populateLayerSwitches(endpoint, layerGroup, normalIcon, monitoredIcon, 
         if (priority == 1) {
           marker.setZIndexOffset(700);
         }
-        if (priority > 1 || icon == monitoredIcon) {
+        if (priority > 1 || monitored) {
           marker.setZIndexOffset(800);
         }
         layerGroup.addLayer(marker);
@@ -574,8 +596,8 @@ maps.forEach(function(map_obj){
 
 });
 
-populateLayerSwitches(switchApiEndpoint, (maps[0].overlay["Switches"]), switchIcon, switchIcon, "switch", priority=2);
-populateLayerSwitches(switchApiEndpoint, (maps[1].overlay["Switches"]), switchIconUnmonitored, switchIcon, "switch", priority=1);
+populateLayerSwitches(switchApiEndpoint, (maps[0].overlay["Switches"]), highlightMonitored=false, "switch", priority=2);
+populateLayerSwitches(switchApiEndpoint, (maps[1].overlay["Switches"]), highlightMonitored=true, "switch", priority=1);
 
 
 
