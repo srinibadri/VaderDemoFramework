@@ -394,7 +394,7 @@ function populateLayer(endpoint, layerGroup, iconPath, element_type, priority=0)
         }
         layerGroup.addLayer(marker);
       } else {
-        console.log(element['name'] + " Does Not Have Location Coordinates!!");
+        // console.log(element['name'] + " Does Not Have Location Coordinates!!");
       }
     });
   });
@@ -447,7 +447,7 @@ function populateLayerSwitches(endpoint, layerGroup, highlightMonitored, element
         }
         layerGroup.addLayer(marker);
       } else {
-        console.log(element['name'] + " Does Not Have Location Coordinates!!");
+        // console.log(element['name'] + " Does Not Have Location Coordinates!!");
       }
     });
   });
