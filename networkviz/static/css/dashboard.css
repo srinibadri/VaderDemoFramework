@@ -39,3 +39,7 @@ body{
     text-align: center;
     width: 20%;
 }
+
+.table-tab{
+    cursor: pointer;
+}
