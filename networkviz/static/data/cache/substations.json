@@ -9,10 +9,10 @@
     "color": "blue"
 }, {
   "id": "1",
-  "latitude": "35.39531",
+  "latitude": "35.39257",
   "status": "RUNNING",
   "name": "substation1",
-  "longitude": "-118.99155",
+  "longitude": "-118.99749",
   "operating_mode": "RUNNING",
   "phases": "ABCN",
   "color": "green"

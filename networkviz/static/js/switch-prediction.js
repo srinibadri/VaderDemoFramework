@@ -14,13 +14,14 @@ var meterApiEndpoint = "/static/data/cache/meters.json",
     loadApiEndpoint = "/static/data/cache/load.json",
     nodeApiEndpoint = "/static/data/cache/node.json",
     houseApiEndpoint = "/static/data/cache/house.json",
-    lineApiEndpoint = "/static/data/model.geo.json",
-    feederApiEndpoint = "/static/data/cache/feeder.json";
+    lineApiEndpoint = "/static/data/model2.geo.json",
+    substationApiEndpoint = "/static/data/cache/substations.json";
 
 var sensorApiEndpoint = "/vader/api/sensor/",
     regionApiEndpoint = "/vader/api/region/";
-    var sensor_list = [];
+var sensor_list = [];
 
+var ignoreList = ["sw61to6101", "node_6101", "line60to61", "node_610", "node_61"];
 
 //
 // var meterApiEndpoint = "/vader/api/meter/\*",
@@ -46,13 +47,17 @@ var geojsonMarkerOptions = {
 };
 
 var normalIconSize = 20,
-    bigIconSize = 30;
+    bigIconSize = 30,
+    megaIconSize = 60;
 var normalIconDimens = [normalIconSize, normalIconSize],
     normalIconAnchor = [normalIconSize/2, normalIconSize/2],
     normalIconPopup  = [0, -normalIconSize/2 + 3];
 var bigIconDimens = [bigIconSize, bigIconSize],
     bigIconAnchor = [bigIconSize/2, bigIconSize/2],
     bigIconPopup  = [0, -bigIconSize/2 + 3];
+var megaIconDimens = [megaIconSize, megaIconSize],
+    megaIconAnchor = [megaIconSize/2, megaIconSize/2],
+    megaIconPopup  = [0, -megaIconSize/2 + 3];
 
 var NormalGridIcon = L.Icon.extend({
     options: {
@@ -76,12 +81,25 @@ var BigGridIcon = L.Icon.extend({
       popupAnchor:  bigIconPopup // point from which the popup should open relative to the iconAnchor
     }
 });
+var MegaGridIcon = L.Icon.extend({
+    options: {
+      iconUrl: '/static/images/icons/substation.png',
+      // shadowUrl: 'leaf-shadow.png',
+      iconSize:     megaIconDimens, // size of the icon
+      // shadowSize:   [50, 64], // size of the shadow
+      iconAnchor:   megaIconAnchor, // point of the icon which will correspond to marker's location
+      // shadowAnchor: [4, 62],  // the same for the shadow
+      popupAnchor:  megaIconPopup // point from which the popup should open relative to the iconAnchor
+    }
+});
+
 
 var meterIcon = new NormalGridIcon({iconUrl: '/static/images/icons/meter.png'}),
     nodeIcon = new NormalGridIcon({iconUrl: '/static/images/icons/node.png'}),
     loadIcon = new NormalGridIcon({iconUrl: '/static/images/icons/load.png'}),
     houseIcon = new NormalGridIcon({iconUrl: '/static/images/icons/house.png'}),
-    switchIcon = new BigGridIcon({iconUrl: '/static/images/icons/switch.png'});
+    switchIcon = new BigGridIcon({iconUrl: '/static/images/icons/switch.png'}),
+    substationIcon = new MegaGridIcon({iconUrl: '/static/images/icons/substation.png'});
 
 console.log("General Settings Finished");
 
@@ -171,6 +189,7 @@ var overlayLayers1 = {
     // "Houses": L.layerGroup([]),
     "Lines": L.layerGroup([]),
     "Line Sensors": L.layerGroup([]),
+    "Substations": L.layerGroup([]),
     "Regions": L.layerGroup([])
 };
 var overlayLayers2 = {
@@ -181,6 +200,7 @@ var overlayLayers2 = {
     // "Houses": L.layerGroup([]),
     "Lines": L.layerGroup([]),
     "Line Sensors": L.layerGroup([]),
+    "Substations": L.layerGroup([]),
     "Regions": L.layerGroup([])
 };
 
@@ -193,9 +213,16 @@ console.log("Layers Finished");
 
 
 var map1 = L.map('map1', {
-    layers: [baseLayers1["Mapbox Theme"], overlayLayers1["Meters"],
-    // overlayLayers1["Nodes"], overlayLayers1["Loads"],
-    overlayLayers1["Switches"], overlayLayers1["Line Sensors"], overlayLayers1["Lines"], overlayLayers1["Regions"]],
+    layers: [baseLayers1["Mapbox Theme"],
+    overlayLayers1["Meters"],
+    // overlayLayers1["Nodes"],
+    overlayLayers1["Loads"],
+    overlayLayers1["Switches"],
+    overlayLayers1["Line Sensors"],
+    overlayLayers1["Lines"],
+    overlayLayers1["Substations"],
+    overlayLayers1["Regions"]
+    ],
     center: center,
     zoom: zoom,
     scrollWheelZoom: false
@@ -206,7 +233,12 @@ var map2 = L.map('map2', {
     //overlayLayers2["Meters"],
     overlayLayers2["Nodes"],
     // overlayLayers2["Loads"],
-    overlayLayers2["Switches"], overlayLayers2["Line Sensors"], overlayLayers2["Lines"], overlayLayers2["Regions"]],
+    overlayLayers2["Switches"],
+    overlayLayers2["Line Sensors"],
+    overlayLayers2["Lines"],
+    overlayLayers2["Substations"],
+    overlayLayers2["Regions"]
+    ],
     center: center,
     zoom: zoom,
     scrollWheelZoom: false,
@@ -335,10 +367,44 @@ console.log("Controls Finished");
 function populateLayer(endpoint, layerGroup, iconPath, element_type, priority=0) {
   $.getJSON( endpoint, function(elements, error) {
     elements.forEach(function(element) {
+      // We want to ignore a few elements
+      if (ignoreList.indexOf(element['name'])> -1) {
+        console.log("FOUND Element to Ignore" + element['name'])
+        return;
+      }
       if (('latitude' in element) && ('longitude' in element)) {
         latlong = [parseFloat(element['latitude']), parseFloat(element['longitude'])];
         marker = L.marker(latlong, {
           icon: iconPath,
+          alt:JSON.stringify({"type":element_type,"name":element['name']})
+        }).bindPopup(element['name'] + " loading..."); //.bindTooltip(element['name']);
+        if (priority == 1) {
+          marker.setZIndexOffset(700);
+        }
+        if (priority > 1) {
+          marker.setZIndexOffset(800);
+        }
+        layerGroup.addLayer(marker);
+      } else {
+        console.log(element['name'] + " Does Not Have Location Coordinates!!");
+      }
+    });
+  });
+}
+
+// Helper function for adding normal layers
+function populateLayerSubstation(endpoint, layerGroup, iconPath, element_type, priority=0) {
+  $.getJSON( endpoint, function(elements, error) {
+    elements.forEach(function(element) {
+      // We want to ignore a few elements
+      if (ignoreList.indexOf(element['name'])> -1) {
+        console.log("FOUND Element to Ignore" + element['name'])
+        return;
+      }
+      if (('latitude' in element) && ('longitude' in element)) {
+        latlong = [parseFloat(element['latitude']), parseFloat(element['longitude'])];
+        marker = L.marker(latlong, {
+          icon: new MegaGridIcon({iconUrl: '/static/images/icons/substation-'+element['color']+'.png'}),
           alt:JSON.stringify({"type":element_type,"name":element['name']})
         }).bindPopup(element['name'] + " loading..."); //.bindTooltip(element['name']);
         if (priority == 1) {
@@ -354,6 +420,7 @@ function populateLayer(endpoint, layerGroup, iconPath, element_type, priority=0)
     });
   });
 }
+
 
 var region_colors = ['red', 'blue', 'yellow','yellow', 'red', 'green', 'green', 'green', 'orange'];
 var region_colors2 =['red', 'blue', 'blue','yellow', 'red', 'green', 'green', 'green', 'orange'];
@@ -391,6 +458,11 @@ maps.forEach(function(map_obj){
       map_obj.overlay["Lines"].addLayer(L.geoJSON(geo_json_data,
           {filter: function(feature, layer) {return feature.geometry.type == "LineString";},
               onEachFeature: function(feature, layer) {
+                // We want to ignore a few elements
+                if (ignoreList.indexOf(feature.properties.name)> -1) {
+                  console.log("FOUND Element to Ignore" + feature.properties.name)
+                  return;
+                }
                   sensorName = (feature.properties.name).replace("line","sensor");
                   // console.log(sensorName);
                   if (sensor_list.indexOf(sensorName) > -1) {
@@ -424,6 +496,11 @@ maps.forEach(function(map_obj){
       map_obj.overlay["Lines"].addLayer(L.geoJSON(geo_json_data,
           {filter: function(feature, layer) {return feature.geometry.type == "LineString";},
               onEachFeature: function(feature, layer) {
+                // We want to ignore a few elements
+                if (ignoreList.indexOf(feature.properties.name)> -1) {
+                  console.log("FOUND Element to Ignore" + feature.properties.name)
+                  return;
+                }
                     layer.bindPopup(feature.properties.name);
                     // layer.bindTooltip(feature.properties.name);
               },
@@ -445,6 +522,8 @@ maps.forEach(function(map_obj){
   populateLayer(nodeApiEndpoint, (map_obj.overlay["Nodes"]), nodeIcon, "node");
   populateLayer(loadApiEndpoint, (map_obj.overlay["Loads"]), loadIcon, "load");
 
+  populateLayerSubstation(substationApiEndpoint, (map_obj.overlay["Substations"]), substationIcon, "substation");
+
   populateRegions(regionApiEndpoint, (map_obj.overlay["Regions"]), map_obj.predict_state);
 
   console.log("Overlay meters done")
@@ -461,12 +540,12 @@ maps.forEach(function(map_obj){
   // layerControl.addTo(map_obj.map);
 
   // Can't figure out how to do the map click popups, but they are annoying anyway
-  // map_obj.map.on('click', function(e, map_obj) {
-  //   onMapClick(e, map_obj);
-  // });
-  map_obj.map.on('popupopen', function(e) {
-    pop_up(e);
+  map_obj.map.on('click', function(e, map_obj) {
+    onMapClick(e, map_obj);
   });
+  // map_obj.map.on('popupopen', function(e) {
+  //   pop_up(e);
+  // });
   // Sync to Other Maps
   maps.forEach(function(syncMapTo){
     map_obj.map.sync(syncMapTo.map);

@@ -220,7 +220,9 @@ var map1 = L.map('map1', {
     overlayLayers1["Switches"],
     overlayLayers1["Line Sensors"],
     overlayLayers1["Lines"],
-    overlayLayers1["Substations"]],
+    overlayLayers1["Substations"]
+    // overlayLayers1["Regions"]
+    ],
     center: center,
     zoom: zoom
 });
@@ -410,6 +412,8 @@ function populateLayerSubstation(endpoint, layerGroup, iconPath, element_type, p
 
 
 var region_colors = ['red', 'blue', 'grey','yellow', 'red', 'black', 'green', 'green', 'orange'];
+var region_colors2 =['red', 'blue', 'blue','yellow', 'red', 'green', 'green', 'green', 'orange'];
+
 
 function populateRegions(endpoint, layerGroup, predict_state) {
   console.log("populateRegions");
