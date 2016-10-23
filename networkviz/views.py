@@ -377,19 +377,26 @@ def is_int(s):
 
 
 def query_for_dataTable(request):
+    context = {}
     simulation_name = request.GET.get('simulation_name')
-    database_name = request.GET.get('database')
-    field = request.GET.get('field')
-    table = request.GET.get('table')
-    print simulation_name, database_name, field, table
-    database.connect_to_database(simulation_name, database_name)
-    meters = database.query_database(simulation_name, database_name, field, table)
-    return HttpResponse(json.dumps(meters), content_type="application/json")
+    category_name = request.GET.get('category')
+    object_list = analyze.get_object_list(simulation_name, category_name)
+    data = []
+    data_list = []
+    for object in object_list:
+        data.append(object)
+        service_status = connection.get_property(object, 'service_status')
+        data.append(service_status)
+        data_list.append(data)
+        data = []
+    print data_list
+    return HttpResponse(json.dumps(data_list), content_type="application/json")
 
 
 def query_for_feeder(request):
-    sw_list = analyze.get_object_list('ieee123', "sw")
-    cap_list = analyze.get_object_list('ieee123', "cap")
+    simulation_name = request.GET.get('simulation_name')
+    sw_list = analyze.get_object_list(simulation_name, "sw")
+    cap_list = analyze.get_object_list(simulation_name, "cap")
     context = {"sw_list": sw_list, "cap_list": cap_list}
     return render(request, 'vader/_console-feeder.html', context)
 

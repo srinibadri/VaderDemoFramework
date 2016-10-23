@@ -9,21 +9,25 @@ $(document).ready(function(){
         $('.nav-tabs').children().removeClass("active");
         $(this).parent().addClass("active");
 
-        var $tableName = $(this).text().toLowerCase();
-        console.log("Open " + $tableName + " table");
-        queryDataTable($tableName, $simulationName);
+        var $categoryName = $(this).text().toLowerCase();
+        // if($categoryName == 'regulator'){
+        //     $categoryName = 'reg';
+        // }
+        // else if($categoryName == 'capacitor'){
+        //     $categoryName = 'cap';
+        // }
+        console.log("Open " + $categoryName + " table");
+        queryDataTable($categoryName, $simulationName);
     });
 
-    function queryDataTable($tableName, $simulationName){
+    function queryDataTable($categoryName, $simulationName){
         $.ajax({
             "url" : "/vader/datatable",
             "contentType" : "application/json",
             "type" : "GET",
             "data" : {
                 "simulation_name": $simulationName,
-                "database": 'data',
-                "field": 'DISTINCT name',
-                "table": $tableName
+                "category": $categoryName
             },
             success : function(data){
                 var icon =  '<div class="col-md-6">' +
@@ -33,12 +37,12 @@ $(document).ready(function(){
                     '<a onclick="graphConfig(30, 100, "90 B", "line", "Voltage (V)")" data-toggle="modal" data-target="#graph"><i class="fa fa-line-chart graph-icon" aria-hidden="true"></i></a>' +
                     '</div>';
                 for (var i = 0; i < data.length; i++) {
-                    data[i].push('IN_SERVICE');
                     data[i].push(icon);
                     data[i].push(icon);
                     data[i].push(icon);
                     data[i].push(icon);
                 }
+                console.log(data)
                 $('#meter-table').DataTable(
                     {
                         destroy: true,

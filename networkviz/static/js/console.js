@@ -1,5 +1,6 @@
 $(document).ready(function(){
 
+    var $simulationName = 'ieee123';
     queryFeeder();
 
     function queryFeeder(){
@@ -7,6 +8,9 @@ $(document).ready(function(){
             "url" : "api/feeder",
             "contentType" : "application/json",
             "type" : "GET",
+            "data" : {
+                "simulation_name": $simulationName
+            },
             success: function(data) {
                 $('.feeder-panel').html(data);
             }
