@@ -14,13 +14,14 @@ var meterApiEndpoint = "/static/data/cache/meters.json",
     loadApiEndpoint = "/static/data/cache/load.json",
     nodeApiEndpoint = "/static/data/cache/node.json",
     houseApiEndpoint = "/static/data/cache/house.json",
-    lineApiEndpoint = "/static/data/model.geo.json",
+    lineApiEndpoint = "/static/data/model2.geo.json",
     substationApiEndpoint = "/static/data/cache/substations.json";
 
 var sensorApiEndpoint = "/vader/api/sensor/",
     regionApiEndpoint = "/vader/api/region/";
 var sensor_list = [];
 
+var ignoreList = ["sw61to6101", "node_6101", "line60to61", "node_610", "node_61"];
 
 //
 // var meterApiEndpoint = "/vader/api/meter/\*",
@@ -353,6 +354,11 @@ console.log("Controls Finished");
 function populateLayer(endpoint, layerGroup, iconPath, element_type, priority=0) {
   $.getJSON( endpoint, function(elements, error) {
     elements.forEach(function(element) {
+      // We want to ignore a few elements
+      if (ignoreList.indexOf(element['name'])> -1) {
+        console.log("FOUND Element to Ignore" + element['name'])
+        return;
+      }
       if (('latitude' in element) && ('longitude' in element)) {
         latlong = [parseFloat(element['latitude']), parseFloat(element['longitude'])];
         marker = L.marker(latlong, {
@@ -377,6 +383,11 @@ function populateLayer(endpoint, layerGroup, iconPath, element_type, priority=0)
 function populateLayerSubstation(endpoint, layerGroup, iconPath, element_type, priority=0) {
   $.getJSON( endpoint, function(elements, error) {
     elements.forEach(function(element) {
+      // We want to ignore a few elements
+      if (ignoreList.indexOf(element['name'])> -1) {
+        console.log("FOUND Element to Ignore" + element['name'])
+        return;
+      }
       if (('latitude' in element) && ('longitude' in element)) {
         latlong = [parseFloat(element['latitude']), parseFloat(element['longitude'])];
         marker = L.marker(latlong, {
@@ -429,6 +440,11 @@ maps.forEach(function(map_obj){
       map_obj.overlay["Lines"].addLayer(L.geoJSON(geo_json_data,
           {filter: function(feature, layer) {return feature.geometry.type == "LineString";},
               onEachFeature: function(feature, layer) {
+                // We want to ignore a few elements
+                if (ignoreList.indexOf(feature.properties.name)> -1) {
+                  console.log("FOUND Element to Ignore" + feature.properties.name)
+                  return;
+                }
                   sensorName = (feature.properties.name).replace("line","sensor");
                   // console.log(sensorName);
                   if (sensor_list.indexOf(sensorName) > -1) {
@@ -456,14 +472,25 @@ maps.forEach(function(map_obj){
 
     });
   }).error(function() {
+    console.log("Using Cached Lines")
     // Just so we have an offline demo as well
     // Then get the list of lines
     $.getJSON( lineApiEndpoint, function(geo_json_data) {
+      // console.log(geo_json_data)
       map_obj.overlay["Lines"].addLayer(L.geoJSON(geo_json_data,
           {filter: function(feature, layer) {return feature.geometry.type == "LineString";},
               onEachFeature: function(feature, layer) {
+                // We want to ignore a few elements
+                if (ignoreList.indexOf(feature.properties.name)> -1) {
+                  console.log("FOUND Element to Ignore" + feature.properties.name)
+                  return;
+                }
                     layer.bindPopup(feature.properties.name);
                     // layer.bindTooltip(feature.properties.name);
+
+                    if (feature.properties.name == "line86to87") {
+                      console.log(feature);
+                    }
               },
               // This style is just used as a sneaky/dumb way of
               //    communicating to the popup handler.
@@ -484,7 +511,7 @@ maps.forEach(function(map_obj){
   populateLayer(meterApiEndpoint, (map_obj.overlay["Meters"]), meterIcon, "meter", priority=1);
   populateLayer(nodeApiEndpoint, (map_obj.overlay["Nodes"]), nodeIcon, "node");
   populateLayer(loadApiEndpoint, (map_obj.overlay["Loads"]), loadIcon, "load");
-  
+
   populateLayerSubstation(substationApiEndpoint, (map_obj.overlay["Substations"]), substationIcon, "substation");
 
   populateRegions(regionApiEndpoint, (map_obj.overlay["Regions"]), map_obj.predict_state);
