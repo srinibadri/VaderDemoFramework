@@ -19,7 +19,43 @@ var meterApiEndpoint = "/static/data/cache/meters.json",
 
 var sensorApiEndpoint = "/vader/api/sensor/",
     regionApiEndpoint = "/vader/api/region/";
-    var sensor_list = [];
+var sensor_list = [];
+
+
+
+var region_colors = ['red', 'blue', 'grey','yellow', 'red', 'black', 'green', 'green', 'orange'];
+
+
+var regions = [{
+    "type": "Feature",
+    "properties": {"region": "1"},
+    "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+            [-118.99704,35.39185],
+            [-119.00208,35.39185],
+            [-119.00208,35.38780],
+            [-118.99914,35.38780],
+            [-118.99914,35.39089],
+            [-118.99704,35.39092],
+            [-118.99704,35.39185],
+
+        ]]
+    }
+}, {
+    "type": "Feature",
+    "properties": {"region": "2"},
+    "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+        [-119.00011,35.38383],
+        [-119.00011,35.38741],
+        [-119.00363,35.38741],
+        [-119.00363,35.38383],
+        [-119.00011,35.38383],
+        ]]
+    }
+}];
 
 
 //
@@ -98,69 +134,11 @@ var Mapbox_Theme = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}
     id: 'mapbox.streets'
 });
 
-var Mapbox_Theme2 =
-L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYmVuZHJhZmZpbiIsImEiOiJjaXRtMmx1NGwwMGE5MnhsNG9kZGJ4bG9xIn0.trghQwlKFrdvueMDquqkJA', {
-    maxZoom: 18,
-    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-        '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-        'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-    id: 'mapbox.streets'
-});
-
-
-// var Thunderforest_TransportDark = L.tileLayer('http://{s}.tile.thunderforest.com/transport-dark/{z}/{x}/{y}.png?apikey={apikey}', {
-// 	attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-// 	maxZoom: 19,
-// 	apikey: '7eaba955146e49abba3989008a4d373d'
-// });
-//
-// var Thunderforest_Landscape = L.tileLayer('http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey={apikey}', {
-// 	attribution: '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-// 	apikey: '7eaba955146e49abba3989008a4d373d'
-// });
-
-var Esri_WorldStreetMap = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
-});
-
-var Esri_WorldStreetMap2 =
-L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
-});
-
-
-
-var OpenMapSurfer_Grayscale = L.tileLayer('http://korona.geog.uni-heidelberg.de/tiles/roadsg/x={x}&y={y}&z={z}', {
-	maxZoom: 19,
-	attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-});
-
-var OpenMapSurfer_Grayscale2 =
-L.tileLayer('http://korona.geog.uni-heidelberg.de/tiles/roadsg/x={x}&y={y}&z={z}', {
-	maxZoom: 19,
-	attribution: 'Imagery from <a href="http://giscience.uni-hd.de/">GIScience Research Group @ University of Heidelberg</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-});
-
 
 // Theme Layers
 var baseLayers1 = {
-    "Mapbox Theme": Mapbox_Theme,
-    "Esri Theme": Esri_WorldStreetMap,
-    // "Thunderforest": Thunderforest_Landscape,
-    // "Thunderforest 2": Thunderforest_TransportDark,
-    "OpenMap Theme": OpenMapSurfer_Grayscale
+    "Mapbox Theme": Mapbox_Theme
 };
-
-// Theme Layers
-var baseLayers2 = {
-    "Mapbox Theme": Mapbox_Theme2,
-    "Esri Theme": Esri_WorldStreetMap2,
-    // "Thunderforest": Thunderforest_Landscape2,
-    // "Thunderforest 2": Thunderforest_TransportDark2,
-    "OpenMap Theme": OpenMapSurfer_Grayscale2
-};
-
-
 
 // Overlay Layers as displayed on the layer chooser
 var overlayLayers1 = {
@@ -173,131 +151,44 @@ var overlayLayers1 = {
     "Line Sensors": L.layerGroup([]),
     "Regions": L.layerGroup([])
 };
-var overlayLayers2 = {
-    "Meters": L.layerGroup([]),
-    "Switches": L.layerGroup([]),
-    "Nodes": L.layerGroup([]),
-    "Loads": L.layerGroup([]),
-    // "Houses": L.layerGroup([]),
-    "Lines": L.layerGroup([]),
-    "Line Sensors": L.layerGroup([]),
-    "Regions": L.layerGroup([])
-};
 
-
-
-console.log("Layers Finished");
-
-
-//##################### Maps #####################
 
 
 var map1 = L.map('map1', {
-    layers: [baseLayers1["Mapbox Theme"], overlayLayers1["Meters"],
-    // overlayLayers1["Nodes"], overlayLayers1["Loads"],
-    overlayLayers1["Switches"], overlayLayers1["Line Sensors"], overlayLayers1["Lines"], overlayLayers1["Regions"]],
+    layers: [baseLayers1["Mapbox Theme"],
+    // overlayLayers1["Meters"],
+    overlayLayers1["Switches"],
+    // overlayLayers1["Nodes"],
+    overlayLayers1["Loads"],
+    // overlayLayers1["Line Sensors"],
+    overlayLayers1["Lines"],
+    overlayLayers1["Regions"]],
     center: center,
     zoom: zoom,
     scrollWheelZoom: false
 });
-map1.attributionControl.setPrefix('');
-var map2 = L.map('map2', {
-    layers: [baseLayers2["OpenMap Theme"],
-    //overlayLayers2["Meters"],
-    overlayLayers2["Nodes"],
-    // overlayLayers2["Loads"],
-    overlayLayers2["Switches"], overlayLayers2["Line Sensors"], overlayLayers2["Lines"], overlayLayers2["Regions"]],
-    center: center,
-    zoom: zoom,
-    scrollWheelZoom: false,
-    zoomControl: false
-});
 
+map1.attributionControl.setPrefix('');
+// var map2 = L.map('map2', {
+//     layers: [layer2],
+//     center: center,
+//     zoom: zoom,
+//     zoomControl: false
+// });
 
 // Add each map to the map array. This will be useful for scalable calling later
-maps.push({"map":map1, "base":baseLayers1, "overlay":overlayLayers1, "popup":L.popup(), "predict_state": "actual"});
-maps.push({"map":map2, "base":baseLayers2, "overlay":overlayLayers2, "popup":L.popup(), "predict_state": "predicted"});
+maps.push({"map":map1, "base":baseLayers1, "overlay":overlayLayers1, "popup":L.popup()});
+// maps.push({"map":map2, "base":baseLayers2, "overlay":overlayLayers2, "popup":L.popup()});
 // maps.push(map3);
 
 
 console.log("Maps Finished");
 
+
 //##################### Handlers #####################
 
 
-//---- Pop Up Related
 
-
-
-var popup = L.popup();
-
-function onMapClick(e, map_obj) {
-    popup
-        .setLatLng(e.latlng)
-        .setContent("You clicked the map at " + e.latlng.toString());
-        // .openOn(map_obj.popup);
-}
-
-// Temp is a debugging object that you can use to interrogate the popup object
-var temp;
-
-// This is the handler that gets called whenever an element is clicked on
-function pop_up(e) {
-  if(!e) {
-    return;
-  }
-  if(!e.popup._source) {
-    return;
-  }
-  element_details = {}
-  // Handle the secret message passing if it is a path object
-  if('_path' in e.popup._source) {
-    // console.log("Path");
-    if ('classList' in e.popup._source._path) {
-      // console.log("Path " + e.popup._source._path.classList);
-      classes = e.popup._source._path.classList;
-      for (index = 0; index < classes.length; ++index) {
-        value = classes[index];
-        if (value.substring(0, 4) === "line") {
-             // You've found it, the full text is in `value`.
-             element_details = {"type":"line", "name": value};
-             break;
-         }
-         if (value.substring(0, 4) === "sens") {
-              // You've found it, the full text is in `value`.
-              element_details = {"type":"sensor", "name": value};
-              break;
-          }
-
-      }
-      if (element_details == {}) {
-        console.log("No secret message found in the class name!!");
-      }
-    }
-  } else {
-    // Handle the normal markers
-    element_details = JSON.parse(e.popup._source.getElement()['alt']);
-  }
-  temp = e;
-  e.popup.setContent("Loading...").update();
-
-  $.getJSON( "/vader/api/"+element_details['type']+"/"+element_details['name']+"", function(data) {
-    e.popup.setContent(JSON.stringify(data['name'])).update();
-  });
-
-}
-
-
-
-//---- Movement Related
-
-
-
-//---- Coloring Related
-
-
-
-console.log("Handlers Finished");
 
 
 //##################### Controls #####################
@@ -306,7 +197,7 @@ console.log("Handlers Finished");
 
 L.Control.Watermark = L.Control.extend({
     onAdd: function(map) {
-      // console.log("Testing");
+      console.log("Testing");
         var img = L.DomUtil.create('img');
         img.src = '/static/images/logo-slac.png';
         img.style.width = '200px';
@@ -329,6 +220,7 @@ L.control.watermark({ position: 'bottomleft' }).addTo(map1);
 
 console.log("Controls Finished");
 
+
 //##################### Adding to Maps #####################
 
 // Helper function for adding normal layers
@@ -340,7 +232,7 @@ function populateLayer(endpoint, layerGroup, iconPath, element_type, priority=0)
         marker = L.marker(latlong, {
           icon: iconPath,
           alt:JSON.stringify({"type":element_type,"name":element['name']})
-        }).bindPopup(element['name'] + " loading..."); //.bindTooltip(element['name']);
+        });//.bindPopup(element['name'] + " loading..."); //.bindTooltip(element['name']);
         if (priority == 1) {
           marker.setZIndexOffset(700);
         }
@@ -355,36 +247,18 @@ function populateLayer(endpoint, layerGroup, iconPath, element_type, priority=0)
   });
 }
 
-var region_colors = ['red', 'blue', 'yellow','yellow', 'red', 'green', 'green', 'green', 'orange'];
-var region_colors2 =['red', 'blue', 'blue','yellow', 'red', 'green', 'green', 'green', 'orange'];
-
-
-function populateRegions(endpoint, layerGroup, predict_state) {
-  console.log("populateRegions");
-  $.getJSON( endpoint, function(elements, error) {
-    if(predict_state == "actual") {
-      elements.forEach(function(element) {
-        layerGroup.addLayer(L.polygon(element.points, {color: region_colors[element.group_num]}))
-      });
-    } else {
-      elements.forEach(function(element) {
-        layerGroup.addLayer(L.polygon(element.points, {color: region_colors2[element.group_num]}))
-      });
-    }
-  });
-}
 
 // Adds each of the layers to each of the maps
 maps.forEach(function(map_obj){
 
   // Lines sometimes have sensors. Get this list first
-  map_obj.jsonPromise = $.getJSON( sensorApiEndpoint, function(sensorData) {
+  var jsonPromise = $.getJSON( sensorApiEndpoint, function(sensorData) {
     if (!sensorData) { return; }
     if (sensorData['status'] == "False") { return; }
     sensor_list = sensorData;
     sensor_layers = [];
     sensor_layers_names = [];
-    // console.log(sensor_list);
+    console.log(sensor_list);
 
     // Then get the list of lines
     $.getJSON( lineApiEndpoint, function(geo_json_data) {
@@ -399,7 +273,7 @@ maps.forEach(function(map_obj){
                     sensor_layers.push(layer.toGeoJSON());
                     sensor_layers_names.push(sensorName);
                   }
-                    layer.bindPopup(feature.properties.name);
+                    // layer.bindPopup(feature.properties.name);
                     // layer.bindTooltip(feature.properties.name);
               },
               // This style is just used as a sneaky/dumb way of
@@ -424,7 +298,7 @@ maps.forEach(function(map_obj){
       map_obj.overlay["Lines"].addLayer(L.geoJSON(geo_json_data,
           {filter: function(feature, layer) {return feature.geometry.type == "LineString";},
               onEachFeature: function(feature, layer) {
-                    layer.bindPopup(feature.properties.name);
+                    // layer.bindPopup(feature.properties.name);
                     // layer.bindTooltip(feature.properties.name);
               },
               // This style is just used as a sneaky/dumb way of
@@ -437,15 +311,18 @@ maps.forEach(function(map_obj){
     });
   });
 
-  setTimeout(function(){ map_obj.jsonPromise.abort(); }, 2000);
+  setTimeout(function(){ jsonPromise.abort(); }, 2000);
 
   // Add each of the desired layers
+  console.log("Overlay meters")
+  console.log(map_obj.overlay["Meters"])
   populateLayer(switchApiEndpoint, (map_obj.overlay["Switches"]), switchIcon, "switch", priority=2);
   populateLayer(meterApiEndpoint, (map_obj.overlay["Meters"]), meterIcon, "meter", priority=1);
   populateLayer(nodeApiEndpoint, (map_obj.overlay["Nodes"]), nodeIcon, "node");
   populateLayer(loadApiEndpoint, (map_obj.overlay["Loads"]), loadIcon, "load");
 
-  populateRegions(regionApiEndpoint, (map_obj.overlay["Regions"]), map_obj.predict_state);
+  populateRegions(regions, (map_obj.overlay["Regions"]));
+  // populateRegions(regionApiEndpoint, (map_obj.overlay["Regions"]), map_obj.predict_state);
 
   console.log("Overlay meters done")
 
@@ -464,14 +341,149 @@ maps.forEach(function(map_obj){
   // map_obj.map.on('click', function(e, map_obj) {
   //   onMapClick(e, map_obj);
   // });
-  map_obj.map.on('popupopen', function(e) {
-    pop_up(e);
-  });
+  // map_obj.map.on('popupopen', function(e) {
+  //   pop_up(e);
+  // });
   // Sync to Other Maps
-  maps.forEach(function(syncMapTo){
-    map_obj.map.sync(syncMapTo.map);
-  });
+  // maps.forEach(function(syncMapTo){
+  //   map_obj.map.sync(syncMapTo.map);
+  // });
 });
 
 
 console.log("Done, but waiting on web requests");
+
+
+
+// ##################### Disagg Business Logic
+
+
+
+// function populateRegions(endpoint, layerGroup, predict_state) {
+//   console.log("populateRegions");
+//   $.getJSON( endpoint, function(elements, error) {
+//     console.log("Got Data");
+//     console.log(elements);
+//     elements.forEach(function(element) {
+//       console.log(element.points);
+//       layerGroup.addLayer(L.polygon(element.points, {color: region_colors[element.group_num]}))
+//     });
+//   });
+// }
+
+
+
+function onEachFeature(feature, layer) {
+  console.console.log("On Each Feature " +feature);
+}
+
+
+var geojson;
+function populateRegions(region_geo_json, layerGroup) {
+  console.log("Populate" + region_geo_json);
+  geojson=L.geoJSON(region_geo_json, {
+      style: function(feature) {
+          switch (feature.properties.region) {
+              case '1': return {color: "#ff0000"};
+              case '2':   return {color: "#0000ff"};
+          }
+      },
+      onEachFeature: function(feature, layer) {
+        layer.on({
+            mouseover: highlightFeature,
+            mouseout: resetHighlight,
+            click: clickDrawGraph
+        });
+      }
+  });
+  console.log("Populate Created");
+  layerGroup.addLayer(geojson);
+
+
+}
+
+
+// maps.forEach(function(map){
+//
+//   $.getJSON( "/static/data/model.geo.json", function(geo_json_data) {
+//     var myLayer = L.geoJSON(geo_json_data, {
+//         style: myStyle,
+//         //onEachFeature: onEachFeature,
+//         pointToLayer: function (feature, latlng) {
+//           element_num = parseInt(feature.properties.name.split("_")[1]);
+//           hexString = "#"+Math.min(element_num,255).toString(16) +"5400";
+//           geojsonMarkerOptions.fillColor = hexString;
+//           return L.circleMarker(latlng, geojsonMarkerOptions);
+//         }
+//     }).addTo(map);
+//
+//   });
+// });
+//
+// var myStyle = {
+//     "color": "#ff7800",
+//     "weight": 5,
+//     "opacity": 1
+// };
+//
+// var geojsonMarkerOptions = {
+//     radius: 9,
+//     fillColor: "#ee5400",
+//     color: "#000",
+//     weight: 1,
+//     opacity: 1,
+//     fillOpacity: 0.8
+// };
+
+
+
+function clickDrawGraph(e) {
+      // e = event
+      //console.log(feature.properties.region);
+      // You can make your ajax call declaration here
+      //$.ajax(...
+        var layer = e.target;
+        $.ajax({
+            type: 'GET',
+            url: 'PVAPI/'+layer.feature.properties.region,
+            dataType: 'json',
+            success: function (data) {
+                        $.each(JSON.parse(data), function(key,value) {
+                        drawChart(value,key);
+                    });
+                //console.log(data); // do anything you want with your parsed data
+                      // for(var i=0; i<2; i++){
+            }
+        });
+      //window.location.href = '/vader/PVDisagg/'+feature.properties.region
+      }
+
+function drawChart(dat,graphName) {
+    var plotarea = $('#graph'+graphName);
+
+
+    $.plot( plotarea , dat, { xaxis: {
+                   // mode: "time",
+                }
+            });
+
+};
+
+function highlightFeature(e) {
+    var layer = e.target;
+
+    layer.setStyle({
+        weight: 5,
+        color: '#666',
+        dashArray: '',
+        fillOpacity: 0.7
+    });
+
+    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+        layer.bringToFront();
+    }
+}
+
+function resetHighlight(e) {
+    geojson.resetStyle(e.target);
+}

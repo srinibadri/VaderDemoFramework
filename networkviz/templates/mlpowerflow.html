@@ -2,8 +2,10 @@
 {% load staticfiles %}
 
 {% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}" />
+
 <style type="text/css">
-#map
+#map1
 {
     width: 100%;
     height:100%;
@@ -27,15 +29,19 @@
 {% endblock %}
 
 {% block content %}
-<div class="jumbotron text-center" style="padding: 35px">
+{% include "vader/_navbar-logo.html" %}
+<div class="jumbotron text-center" style="padding: 35px; padding-bottom: 20px; margin-bottom: 0px;">
   <p>This demo presents a machine learning based tool that can replace power flow analysis by mapping power measurements to voltage.</p>
+
+  <p>Click on the highlighted regions to populate the graphs below</p>
+
 <!--   <div class="container">
   <img class="card-img-top" src="{% static 'images/pvdisagg.png' %}" alt="PV DisAgg" width="80%">
   </div> -->
 </div>
 <div class="container-fluid">
     <div class="col-lg-12 fill" id="map-holder">
-        <div id="map"></div>
+        <div id="map1"></div>
     </div>
 </div>
 <div class="container">
@@ -59,193 +65,7 @@
 <script type="text/javascript" src="{% static 'js/jquery.flot.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/jquery.flot.time.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/jquery.flot.resize.js' %}"></script>
-<script language="javascript" type="text/javascript">
-// MAP to bind
-// var map = L.map('map').setView([35.39117,-118.99704], 15);
 
-// L.tileLayer(
-//     'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-//     {maxZoom: 18}).addTo(map);
+<script type="text/javascript" src="{% static 'js/mlpowerflow.js' %}"></script>
 
-
-
-
-var maps = [];
-var center = [35.38781, -118.99631];
-var zoom = 15.5;
-
-var layer1 = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYmVuZHJhZmZpbiIsImEiOiJjaXRtMmx1NGwwMGE5MnhsNG9kZGJ4bG9xIn0.trghQwlKFrdvueMDquqkJA', {
-    maxZoom: 18,
-    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-        '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-        'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-    id: 'mapbox.streets'
-});
-
-// var layer2 = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYmVuZHJhZmZpbiIsImEiOiJjaXRtMmx1NGwwMGE5MnhsNG9kZGJ4bG9xIn0.trghQwlKFrdvueMDquqkJA', {
-//     maxZoom: 18,
-//     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-//         '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-//         'Imagery © <a href="http://mapbox.com">Mapbox</a>',
-//     id: 'mapbox.streets'
-// });
-
-var map = L.map('map', {
-    layers: [layer1],
-    center: center,
-    zoom: zoom
-});
-map.attributionControl.setPrefix('');
-// var map2 = L.map('map2', {
-//     layers: [layer2],
-//     center: center,
-//     zoom: zoom,
-//     zoomControl: false
-// });
-
-// Add each map to the map array. This will be useful for scalable calling later
-maps.push(map);
-
-maps.forEach(function(map){
-
-  $.getJSON( "/static/data/model.geo.json", function(geo_json_data) {
-    var myLayer = L.geoJSON(geo_json_data, {
-        style: myStyle,
-        //onEachFeature: onEachFeature,
-        pointToLayer: function (feature, latlng) {
-          element_num = parseInt(feature.properties.name.split("_")[1]);
-          hexString = "#"+Math.min(element_num,255).toString(16) +"5400";
-          geojsonMarkerOptions.fillColor = hexString;
-          return L.circleMarker(latlng, geojsonMarkerOptions);
-        }
-    }).addTo(map);
-
-  });
-});
-
-var myStyle = {
-    "color": "#ff7800",
-    "weight": 5,
-    "opacity": 1
-};
-
-var geojsonMarkerOptions = {
-    radius: 9,
-    fillColor: "#ee5400",
-    color: "#000",
-    weight: 1,
-    opacity: 1,
-    fillOpacity: 0.8
-};
-
-var regions = [{
-    "type": "Feature",
-    "properties": {"region": "1"},
-    "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-            [-118.99704,35.39185],
-            [-119.00208,35.39185],
-            [-119.00208,35.38780],
-            [-118.99914,35.38780],
-            [-118.99914,35.39089],
-            [-118.99704,35.39092],
-            [-118.99704,35.39185],
-
-        ]]
-    }
-}, {
-    "type": "Feature",
-    "properties": {"region": "2"},
-    "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-        [-119.00011,35.38383],
-        [-119.00011,35.38741],
-        [-119.00363,35.38741],
-        [-119.00363,35.38383],
-        [-119.00011,35.38383],
-        ]]
-    }
-}];
-
-
-
-function clickDrawGraph(e) {
-
-      // e = event
-      //console.log(feature.properties.region);
-      // You can make your ajax call declaration here
-      //$.ajax(...
-        var layer = e.target;
-        //console.log(layer.feature.properties)
-        $.ajax({ 
-            type: 'GET', 
-            url: 'VoltageAPI/'+layer.feature.properties.region+"/7", 
-            dataType: 'json',
-            success: function (data) { 
-                        $.each(JSON.parse(data), function(key,value) {
-                        drawChart(value,key);
-                    });
-                //console.log(data); // do anything you want with your parsed data
-                      // for(var i=0; i<2; i++){
-            }
-        });
-      //window.location.href = '/vader/PVDisagg/'+feature.properties.region
-      }
-
-function drawChart(dat,graphName) {
-    var plotarea = $('#graph'+graphName);
-
-
-    $.plot( plotarea , dat, { xaxis: {
-                    mode: "time",
-                }
-            });
-
-};
-
-function highlightFeature(e) {
-    var layer = e.target;
-
-    layer.setStyle({
-        weight: 5,
-        color: '#666',
-        dashArray: '',
-        fillOpacity: 0.7
-    });
-
-    if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-        layer.bringToFront();
-    }
-}
-
-function resetHighlight(e) {
-    geojson.resetStyle(e.target);
-}
-
-
-function onEachFeature(feature, layer) {
-    layer.on({
-        mouseover: highlightFeature,
-        mouseout: resetHighlight,
-        click: clickDrawGraph
-    });
-}
-
-var geojson;
-
-geojson=L.geoJSON(regions, {
-    style: function(feature) {
-        switch (feature.properties.region) {
-            case '1': return {color: "#ff0000"};
-            case '2':   return {color: "#0000ff"};
-        }
-    },
-    onEachFeature: onEachFeature
-}).addTo(map);
-
-
-
-</script>
 {% endblock %}

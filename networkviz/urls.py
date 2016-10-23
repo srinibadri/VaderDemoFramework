@@ -11,7 +11,7 @@ urlpatterns = [
     url(r'^d3/', views.d3, name='d3'),
     url(r'^ieee123/', views.ieee123, name='ieee123'),
     url(r'^map', views.map, name='map'),
-    url(r'^switch-prediction', views.dualmap, name='dualmap'),
+    url(r'^switch-prediction', views.switch_prediction, name='dualmap'),
     url(r'^console', views.console, name='console'),
     url(r'^dashboard', views.dashboard, name='dashboard'),
     url(r'^planning', views.planning, name='planning'),
@@ -51,5 +51,9 @@ urlpatterns = [
     url(r'^api/region/$', views.api_regions),
     url(r'^api/region/(?P<element_query>[a-zA-Z0-9_\*]+)', views.api_regions),
 
+    url(r'^api/capacitor/$', views.api_capacitors),
+
+    url(r'^api/feeder/$', views.query_for_feeder, name='feeder'),
     url(r'^datatable', views.query_for_dataTable, name='datatable'),
+    url(r'^climate', views.query_for_climate, name='climate'),
 ]

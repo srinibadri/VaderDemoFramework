@@ -112,7 +112,7 @@ def disaggregateRegion(request, region_id):
         elif region_id=="2":
             filtered_models=model_names[10:14]
             filteredArrs=arrs[10:14]
-            
+
         agg_netload=[]
         for elem in zip(*filteredArrs):
             agg_netload.append(np.sum(elem))
@@ -228,6 +228,14 @@ def voltageWarning(request, region_id=0, bus_id=7):
     return JsonResponse(json.dumps(overall), safe=False)
 
 
+################### Switch Prediction ###############
+
+# HTML Serving
+def switch_prediction(request):
+    template = loader.get_template('vader/switch-prediction.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
+
 
 ################### APIs for Maps ###################
 
@@ -320,7 +328,10 @@ def api_sensors(request, element_query="list"):
     return api_objects(request, "sensor", elements_list, element_query)
 
 
-
+def api_capacitors(request, element_query="list"):
+    elements_list = analyze.categorize_object_name("ieee123")['cap']
+    print elements_list
+    return api_objects(request, "cap", elements_list, element_query)
 
 def api_regions(request, element_query="list"):
     regions = '''[
@@ -335,7 +346,6 @@ def api_regions(request, element_query="list"):
     ]'''
     print(regions)
     return HttpResponse(regions)
-
 
 
 def api_switch_state(request, actual=''):
@@ -374,5 +384,16 @@ def query_for_dataTable(request):
     print simulation_name, database_name, field, table
     database.connect_to_database(simulation_name, database_name)
     meters = database.query_database(simulation_name, database_name, field, table)
-    print meters
     return HttpResponse(json.dumps(meters), content_type="application/json")
+
+
+def query_for_feeder(request):
+    sw_list = analyze.get_object_list('ieee123', "sw")
+    cap_list = analyze.get_object_list('ieee123', "cap")
+    context = {"sw_list": sw_list, "cap_list": cap_list}
+    return render(request, 'vader/_console-feeder.html', context)
+
+
+def query_for_climate(request):
+    climate_json = climate.query_climate()
+    return HttpResponse(climate_json, content_type="application/json")

@@ -1,0 +1,99 @@
+{% extends "vader/base.html" %}
+{% block style %}
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/leaflet.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/tabordion.css' %}" />
+{% endblock %}
+
+{% block content %}
+{% include "vader/_navbar.html" %}
+<style type="text/css">
+    #topo-select { width: 3%; height: 87%; float: left; margin-right: 1%;}
+    .map { width: 45.5%; height: 87%; float: left; margin-right: 1%;}
+    .lastmap { margin-right: 0; float: right; }
+</style>
+
+<div id="wrapper" class="toggled">
+    {% include "vader/_sidebar.html" %}
+    <div class="page-content-wrapper">
+
+      <div class="jumbotron text-center" style="padding: 35px; padding-bottom: 20px; margin-bottom: 0px;">
+        <p>This demo presents a machine learning tool that can switch configurations and region connectivity with minimal data.</p>
+
+        <p><b>Left side is actual state</b> populated from complete information, the <b>right side is predicted</b> using data from a small number of sensors</p>
+
+      <!--   <div class="container">
+        <img class="card-img-top" src="{% static 'images/pvdisagg.png' %}" alt="PV DisAgg" width="80%">
+        </div> -->
+      </div>
+      <div class="tabordion" id="topo-select">
+        <section id="section1">
+        <input type="radio" name="sections" id="option1" checked>
+        <label for="option1">1</label>
+        <input type="radio" name="sections" name="2" id="option2">
+        <label for="option2">2</label>
+        <input type="radio" name="sections" id="option3">
+        <label for="option3">3</label>
+        <input type="radio" name="sections" id="option4">
+        <label for="option4">4</label>
+        <input type="radio" name="sections" id="option5">
+        <label for="option5">5</label>
+        <input type="radio" name="sections" id="option6">
+        <label for="option6">6</label>
+        <input type="radio" name="sections" id="option7">
+        <label for="option7">7</label>
+        <input type="radio" name="sections" id="option8">
+        <label for="option8">8</label>
+        <input type="radio" name="sections" id="option9">
+        <label for="option9">9</label>
+        <input type="radio" name="sections" id="option10">
+        <label for="option10">10</label>
+        <input type="radio" name="sections" id="option11">
+        <label for="option11">11</label>
+        <input type="radio" name="sections" id="option12">
+        <label for="option12">12</label>
+        <input type="radio" name="sections" id="option13">
+        <label for="option13">13</label>
+        <input type="radio" name="sections" id="option14">
+        <label for="option14">14</label>
+        <input type="radio" name="sections" id="option15">
+        <label for="option15">15</label>
+        <input type="radio" name="sections" id="option16">
+        <label for="option16">16</label>
+        <input type="radio" name="sections" id="option17">
+        <label for="option17">17</label>
+
+</section>
+           <!-- <select multiple class="form-control" id="sel2">
+             <option>1</option>
+             <option>2</option>
+             <option>3</option>
+             <option>4</option>
+             <option>5</option>
+           </select> -->
+         </div>
+        <div class="map" id="map1"></div>
+        <div class="map lastmap" id="map2"></div>
+        <!-- <div class="map lastmap" id="map3"></div> -->
+    </div>
+</div>
+{% endblock %}
+
+
+
+{% block script %}
+<!-- jQuery Sparklines -->
+<script src="{% static 'js/leaflet.js' %}"></script>
+<script src="{% static 'js/d3.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'networkviz/gent/vendors/jquery-sparkline/dist/jquery.sparkline.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/L.Map.Sync.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/switch-prediction.js' %}"></script>
+<script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+</script>
+{% endblock %}
