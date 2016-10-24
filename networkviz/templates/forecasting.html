@@ -1,0 +1,166 @@
+{% extends "vader/base.html" %}
+{% block style %}
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/leaflet.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/forecasting.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui.css' %}" />
+{% endblock %}
+
+{% block content %}
+{% include "vader/_navbar.html" %}
+<style type="text/css">
+    .map { width: 100%; height: 87%; float: left; margin-right: 1%;}
+    .lastmap { margin-right: 0; float: right; }
+</style>
+
+<div id="wrapper" class="toggled">
+    {% include "vader/_sidebar.html" %}
+    <div class="page-content-wrapper">
+
+      <div class="jumbotron text-center" style="padding: 35px; padding-bottom: 20px; margin-bottom: 0px;">
+        <p>This demo presents a machine learning tool that can predict future power demand with minimal errors.</p>
+
+        <!-- <p><b>Left side is actual state</b> populated from complete information, the <b>right side is predicted</b> using data from a small number of sensors</p> -->
+
+      <!--   <div class="container">
+        <img class="card-img-top" src="{% static 'images/pvdisagg.png' %}" alt="PV DisAgg" width="80%">
+        </div> -->
+      </div>
+      <div class="row">
+        <div class="col-md-2 left_col" role="main">
+          Date:
+          <fieldset>
+            <div class="control-group">
+              <div class="controls">
+                <div class="col-md-11 xdisplay_inputx form-group has-feedback">
+                  <input type="text" class="form-control has-feedback-left" id="single_cal2" placeholder="Choose Date" aria-describedby="inputSuccess2Status2"  value="11/01/2011">
+                  <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                  <span id="inputSuccess2Status2" class="sr-only">(success)</span>
+                </div>
+              </div>
+            </div>
+
+          <label for="minbeds" class="">Time: </label><br>
+          <div id="time-slider">
+          <div id="time-slider-handle" class="ui-slider-handle custom-handle"></div>
+          </div>
+
+          <!-- <div class="ui-widget"> -->
+            <label for="tags">Meter: </label><br>
+            <!-- <input id="tags">
+          </div> -->
+          <div id="starting-slider">
+          <div id="starting-slider-handle" class="ui-slider-handle"></div>
+          </div>
+
+          <!-- <label for="meter">Meter: </label><br>
+             <select name="meter" id="meter">
+               <option selected="selected">0</option>
+               <option>1</option>
+               <option>94585</option>
+               <option>93635</option>
+               <option>94061</option>
+               <option>93313</option>
+               <option>93306</option>
+               <option>94806</option>
+
+             </select> -->
+
+          <label for="zips">Zip code: </label><br>
+             <select name="zips" id="zips">
+               <option selected="selected">93309</option>
+               <option>93307</option>
+               <option>94585</option>
+               <option>93635</option>
+               <option>94061</option>
+               <option>93313</option>
+               <option>93306</option>
+               <option>94806</option>
+
+             </select>
+
+           <label for="algors">Prediction Algorithm: </label><br>
+              <select name="algors" id="algors">
+                <option selected="selected">SVR</option>
+                <option>AdaBoostDTR</option>
+                <option>AdaptiveLinear</option>
+                <option>DecisionTreeRegressor</option>
+                <option>GradientBoostingRegressor</option>
+                <option>KNeighborsRegressor</option>
+                <option>LassoLarsIC</option>
+                <option>OLS</option>
+                <option>SVR</option>
+
+              </select>
+
+              <!-- <div class="ui-widget"> -->
+                <label for="tags">Prediction Length: </label><br>
+                <!-- <input id="tags">
+              </div> -->
+              <div id="predict-slider">
+              <div id="predict-slider-handle" class="ui-slider-handle"></div>
+              </div>
+
+        </fieldset>
+
+
+        <div id="dataShell"></div>
+        </div>
+<div class="col-md-6 left_col" role="main">
+
+        <div class="map" id="map1"></div>
+      </div>
+      <div class="col-md-4 right_col" role="main">
+        <!-- <h2>Outputs</h2> -->
+        <div class="card text-center" style="background-color: #fff; padding: 15px; border-radius: 15px;">
+            <p><span class="glyphicon glyphicon-home"></span> Actual and Forcasted</p>
+    	   <div class="container graph" id="graph0"></div>
+        </div>
+        <div class="card text-center" style="background-color: #fff; padding: 15px; border-radius: 15px;">
+        <p><span class="glyphicon glyphicon-home"></span> Errors over Times (Forcasted - Actual)</p>
+    	<div class="container graph" id="graph1"></div>
+        </div>
+        <div class="card text-center" style="background-color: #fff; padding: 15px; border-radius: 15px;">
+        <p><span class="glyphicon glyphicon-home"></span> Histogram of Errors</p>
+    	<div class="container graph" id="graph2"></div>
+        </div>
+        <div class="card text-center" style="background-color: #fff; padding: 15px; border-radius: 15px;">
+        <p><span class="glyphicon glyphicon-home"></span> Errors</p>
+        <div class="container graph" id="graph3"></div>
+        </div>
+
+</div>
+</div>
+        <!-- <div class="map lastmap" id="map3"></div> -->
+    </div>
+</div>
+{% endblock %}
+
+
+
+{% block script %}
+<!-- jQuery Sparklines -->
+<script src="{% static 'js/leaflet.js' %}"></script>
+<script src="{% static 'js/d3.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'networkviz/gent/vendors/jquery-sparkline/dist/jquery.sparkline.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/L.Map.Sync.js' %}"></script>
+<!-- bootstrap-daterangepicker -->
+<script src="{% static 'networkviz/gent/js/moment/moment.min.js' %}"></script>
+<script src="{% static 'networkviz/gent/js/datepicker/daterangepicker.js' %}"></script>
+<script src="{% static 'js/jquery-ui.js' %}"></script>
+
+<script type="text/javascript" src="{% static 'js/jquery.flot.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.flot.time.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.flot.resize.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.csv.js' %}"></script>
+
+<script type="text/javascript" src="{% static 'js/forecasting.js' %}"></script>
+<script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+</script>
+{% endblock %}
