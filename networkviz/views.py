@@ -66,13 +66,14 @@ def ieee123(request):
     return HttpResponse(template.render(context, request))
 
 def get_live_data(request):
+    result = ''
     try:
         category = request.GET.get('category')
         name = request.GET.get('name')
-        return HttpResponse(connection.get_property(category, name))
+        result = connection.get_property(category, name)
     except:
-        return HttpResponse('')
-
+        result = ''
+    return HttpResponse(result)
 
 def structure(requeest):
     return HttpResponse(json.dumps(analyze.analyze_table('ieee123', 'scada', 'capacitor')));

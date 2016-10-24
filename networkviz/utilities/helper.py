@@ -3,4 +3,4 @@ def convert_decimal_list_to_string(input_arg, index):
 
 
 def convert_decimal_list_to_float(input_arg, index):
-    return [float(x[index]) for x in input_arg]
+    return [(float(x[index]) if x[index] else 0) for x in input_arg]
