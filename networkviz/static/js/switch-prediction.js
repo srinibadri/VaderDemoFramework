@@ -17,6 +17,8 @@ var meterApiEndpoint = "/static/data/cache/meters.json",
     lineApiEndpoint = "/static/data/model2.geo.json",
     substationApiEndpoint = "/static/data/cache/substations.json";
 
+var switchConfigFileEndpoint = "/static/data/switch_data/";
+// var switchConfigFileEndpoint = "/vader/api/switch/state/";
 var sensorApiEndpoint = "/vader/api/sensor/",
     regionApiEndpoint = "/vader/api/region/";
 var sensor_list = [];
@@ -24,6 +26,18 @@ var sensor_list = [];
 var ignoreList = ["sw61to6101", "node_6101", "line60to61", "node_610", "node_61"];
 
 var monitoredList = ["sw13to152","sw151to300","sw450to451","sw95to195"];
+
+var switchStateList = ["sw15001to149","sw250to251","sw300to350","sw450to451","sw95to195","sw13to152","sw18to135","sw60to160","sw61to6101","sw97to197","sw54to94","sw151to300"];
+var switchConfigsUrls = ["RT_configs.csv",
+      "15M_configs.csv", "30M_configs.csv",
+      "1HR_configs.csv", "2HR_configs.csv",
+      "3HR_configs.csv", "5HR_configs.csv",
+      "1D_configs.csv",  "2D_configs.csv"];
+
+var switchMarkerList = [];
+var switchConfigs = [{},{},{},{},{},{},{},{},{}];
+var currentConfig = 0;
+var currentTime = 0;
 //
 // var meterApiEndpoint = "/vader/api/meter/\*",
 //     switchApiEndpoint = "/vader/api/switch/\*",
@@ -101,6 +115,9 @@ var meterIcon = new NormalGridIcon({iconUrl: '/static/images/icons/meter.png'}),
     houseIcon = new NormalGridIcon({iconUrl: '/static/images/icons/house.png'}),
     switchIcon = new BigGridIcon({iconUrl: '/static/images/icons/switch.png'}),
     switchIconUnmonitored = new BigGridIcon({iconUrl: '/static/images/icons/switch-unmonitored.png'}),
+    switchIconUnmonitoredOpen = new BigGridIcon({iconUrl: '/static/images/icons/switch-unmonitored-open.png'}),
+    switchIconUnmonitoredClosed = new BigGridIcon({iconUrl: '/static/images/icons/switch-unmonitored-closed.png'}),
+
     switchIconMonitored = new BigGridIcon({iconUrl: '/static/images/icons/switch-monitored.png'}),
     switchIconMonitoredClosed = new BigGridIcon({iconUrl: '/static/images/icons/switch-monitored-closed.png'}),
     switchIconMonitoredOpen = new BigGridIcon({iconUrl: '/static/images/icons/switch-monitored-open.png'}),
@@ -255,8 +272,8 @@ var map2 = L.map('map2', {
 
 
 // Add each map to the map array. This will be useful for scalable calling later
-maps.push({"map":map1, "base":baseLayers1, "overlay":overlayLayers1, "popup":L.popup(), "predict_state": "actual"});
-maps.push({"map":map2, "base":baseLayers2, "overlay":overlayLayers2, "popup":L.popup(), "predict_state": "predicted"});
+maps.push({"map":map1, "base":baseLayers1, "overlay":overlayLayers1, "popup":L.popup(), "predict_state": "actual", "switches":[] });
+maps.push({"map":map2, "base":baseLayers2, "overlay":overlayLayers2, "popup":L.popup(), "predict_state": "predicted", "switches":[] });
 // maps.push(map3);
 
 
@@ -402,7 +419,7 @@ function populateLayer(endpoint, layerGroup, iconPath, element_type, priority=0)
 
 
 // Helper function for adding normal layers
-function populateLayerSwitches(endpoint, layerGroup, highlightMonitored, element_type, priority=0) {
+function populateLayerSwitches(endpoint, layerGroup, highlightMonitored, element_type, map_obj, priority=0) {
   $.getJSON( endpoint, function(elements, error) {
     elements.forEach(function(element) {
       // We want to ignore a few elements
@@ -446,10 +463,14 @@ function populateLayerSwitches(endpoint, layerGroup, highlightMonitored, element
           marker.setZIndexOffset(800);
         }
         layerGroup.addLayer(marker);
+        // console.log("Adding Marker to Map " + element['name']);
+        // switches.push({key: element['name'], value: marker});
+        map_obj["switches"].push({key: element['name'], value: marker});
       } else {
         // console.log(element['name'] + " Does Not Have Location Coordinates!!");
       }
     });
+    // map_obj["switches"] = switches;
   });
 }
 
@@ -500,6 +521,65 @@ function populateRegions(endpoint, layerGroup, predict_state) {
       });
     }
   });
+}
+
+function setSwitchStates(config, time) {
+  console.log("Setting switch states for config " + config + " and time " + time);
+
+  if (switchConfigs[0] == {}) {
+    console.log("NOT READY TO CHANGE STATE");
+  }
+  // console.log((switchConfigs[time])[config]);
+  switchSet = (switchConfigs[0])[config];
+  // console.log((maps[1])['switches']);
+  (maps[0])['switches'].forEach(function(element) {
+    // console.log(element);
+    swName = element['key']
+    if (switchSet[swName] == "0") {
+      // console.log("Found Match" + swName);
+      element['value'].setIcon(switchIconMonitoredClosed);
+    }
+    if (switchSet[swName] == "1") {
+      // console.log("Found Match" + swName);
+      element['value'].setIcon(switchIconMonitoredOpen);
+    }
+
+  });
+
+  switchSet = (switchConfigs[time])[config];
+  (maps[1])['switches'].forEach(function(element) {
+    if (monitoredList.indexOf(element['key'])> -1) {
+      // console.log(element);
+      swName = element['key']
+      if (switchSet[swName] == "0") {
+        // console.log("Found Match" + swName);
+        element['value'].setIcon(switchIconMonitoredClosed);
+      }
+      if (switchSet[swName] == "1") {
+        // console.log("Found Match" + swName);
+        element['value'].setIcon(switchIconMonitoredOpen);
+      }
+    } else {
+      // console.log(element);
+      swName = element['key']
+      if (switchSet[swName] == "0") {
+        // console.log("Found Match" + swName);
+        element['value'].setIcon(switchIconUnmonitoredClosed);
+      }
+      if (switchSet[swName] == "1") {
+        // console.log("Found Match" + swName);
+        element['value'].setIcon(switchIconUnmonitoredOpen);
+      }
+    }
+
+  });
+
+}
+
+function getSwitchByName(map_obj, switchName) {
+  map_obj['switches'].forEach(function(element) {
+    console.log(element);
+  })
 }
 
 // Adds each of the layers to each of the maps
@@ -596,8 +676,8 @@ maps.forEach(function(map_obj){
 
 });
 
-populateLayerSwitches(switchApiEndpoint, (maps[0].overlay["Switches"]), highlightMonitored=false, "switch", priority=2);
-populateLayerSwitches(switchApiEndpoint, (maps[1].overlay["Switches"]), highlightMonitored=true, "switch", priority=1);
+populateLayerSwitches(switchApiEndpoint, (maps[0].overlay["Switches"]), highlightMonitored=false, "switch", maps[0], priority=2);
+populateLayerSwitches(switchApiEndpoint, (maps[1].overlay["Switches"]), highlightMonitored=true, "switch", maps[1], priority=1);
 
 
 
@@ -617,6 +697,86 @@ maps.forEach(function(map_obj){
     map_obj.map.sync(syncMapTo.map);
   });
 });
+
+function getSwitchStatesFromUrl(index, configFileUrl) {
+  switchStates = [];
+  $.ajax({
+          type: "GET",
+          url: configFileUrl,
+          dataType: "text",
+          success: function(data) {
+            switchStates = $.csv.toObjects(data);
+            switchConfigs[index] = switchStates;
+            // console.log(switchStates);
+          }
+       });
+  return switchStates;
+}
+
+function processData(allText) {
+    var allTextLines = allText.split(/\r\n|\n/);
+    var headers = allTextLines[0].split(',');
+    var lines = [];
+
+    for (var i=1; i<allTextLines.length; i++) {
+        var data = allTextLines[i].split(',');
+        if (data.length == headers.length) {
+
+            var tarr = [];
+            for (var j=0; j<headers.length; j++) {
+                tarr.push(headers[j]+":"+data[j]);
+            }
+            lines.push(tarr);
+        }
+    }
+    // alert(lines);
+}
+
+
+$( function() {
+  var handle = $( "#starting-slider-handle" );
+  $( "#starting-slider" ).slider({
+    min: 0,
+    max: 89,
+    step: 1,
+    create: function() {
+      handle.text( $( this ).slider( "value" ) );
+      currentConfig = $( this ).slider( "value" );
+    },
+    slide: function( event, ui ) {
+      handle.text( ui.value );
+      currentConfig = ui.value;
+      setSwitchStates(currentConfig, currentTime);
+    }
+  });
+} );
+
+$( function() {
+  labels = {"0":"Real Time", "1":"+15 Minutes", "2":"+30 Minutes", "3":"+1 Hour",
+            "4":"+2 Hours", "5":"+3 Hours", "6":"+5 Hours", "7":"+1 Day", "8":"+2 Days"};
+  var handle2 = $( "#time-slider-handle" );
+  $( "#time-slider" ).slider({
+    min: 0,
+    max: 8,
+    step: 1,
+    create: function() {
+      handle2.text( labels[$( this ).slider( "value" )] );
+      currentTime = $( this ).slider( "value" );
+    },
+    slide: function( event, ui ) {
+      handle2.text( labels[ui.value] );
+      currentTime = ui.value;
+      setSwitchStates(currentConfig, currentTime);
+    }
+  });
+} );
+
+$( document ).ready(function() {
+  for (index = 0; index < switchConfigsUrls.length; index +=1) {
+    getSwitchStatesFromUrl(index, switchConfigFileEndpoint+switchConfigsUrls[index]);
+  }
+});
+
 
 
 console.log("Done, but waiting on web requests");

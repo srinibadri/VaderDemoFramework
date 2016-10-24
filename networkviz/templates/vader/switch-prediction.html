@@ -74,6 +74,8 @@
 <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
 <script src="{% static 'networkviz/gent/vendors/jquery-sparkline/dist/jquery.sparkline.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/L.Map.Sync.js' %}"></script>
+<script src="{% static 'js/jquery-ui.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.csv.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/switch-prediction.js' %}"></script>
 <script>
     $("#menu-toggle").click(function(e) {
@@ -81,41 +83,4 @@
         $("#wrapper").toggleClass("toggled");
     });
 </script>
-<script src="{% static 'js/jquery-ui.js' %}"></script>
-
-  <script>
-  $( function() {
-    var handle = $( "#starting-slider-handle" );
-    $( "#starting-slider" ).slider({
-      min: 0,
-      max: 40,
-      step: 1,
-      create: function() {
-        handle.text( $( this ).slider( "value" ) );
-      },
-      slide: function( event, ui ) {
-        handle.text( ui.value );
-      }
-    });
-  } );
-  </script>
-
-  <script>
-  $( function() {
-    labels = {"0":"Real Time", "1":"+15 Minutes", "2":"+30 Minutes", "3":"+1 Hour",
-              "4":"+2 Hours", "5":"+3 Hours", "6":"+5 Hours", "7":"+1 Day", "8":"+2 Days"}
-    var handle2 = $( "#time-slider-handle" );
-    $( "#time-slider" ).slider({
-      min: 0,
-      max: 8,
-      step: 1,
-      create: function() {
-        handle2.text( labels[$( this ).slider( "value" )] );
-      },
-      slide: function( event, ui ) {
-        handle2.text( labels[ui.value] );
-      }
-    });
-  } );
-  </script>
 {% endblock %}
