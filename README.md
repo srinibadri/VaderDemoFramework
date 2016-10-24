@@ -36,7 +36,7 @@ Install Docker (https://docs.docker.com/engine/installation/)
 
 1. $ cd VaderDemoFramework/docker
 1. $ docker build -t vader .
-1. $ docker run -p 8000:8000 app python VaderDemoFramework/manage.py runserver 0.0.0.0:8000
+1. $ docker run -p 8000:8000 vader python VaderDemoFramework/manage.py runserver 0.0.0.0:8000
 
 You can also replace the '8000's above with whatever port number you would like. The '-p 8000:8000' is -p <hostport>:<containerport>
 
