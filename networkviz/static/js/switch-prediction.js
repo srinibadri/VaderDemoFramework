@@ -796,6 +796,7 @@ function getConnectedRegions(map_obj) {
       console.log("ERROR, OVERLAPPING YELLOW AND BLUE " + value);
     }
     if(value == 4) blueSet.add(0);
+    if(value == 5) blueSet.add(6);
     // console.log("BlueSet Item: " + value);
   }
   for (value of greenSet) {
@@ -809,6 +810,7 @@ function getConnectedRegions(map_obj) {
       console.log("ERROR, OVERLAPPING YELLOW AND GREEN " + value);
     }
     if(value == 4) greenSet.add(0);
+    if(value == 5) greenSet.add(6);
     // console.log("greenSet Item: " + value);
   }
   for (value of redSet) {
@@ -822,6 +824,7 @@ function getConnectedRegions(map_obj) {
       console.log("ERROR, OVERLAPPING YELLOW AND RED " + value);
     }
     if(value == 4) redSet.add(0);
+    if(value == 5) redSet.add(6);
     // console.log("redSet Item: " + value);
   }
 
@@ -836,6 +839,7 @@ function getConnectedRegions(map_obj) {
       console.log("ERROR, OVERLAPPING RED AND YELLOW " + value);
     }
     if(value == 4) yellowSet.add(0);
+    if(value == 5) yellowSet.add(6);
     // console.log("yellowSet Item: " + value);
   }
 
