@@ -682,7 +682,7 @@
                 "</description>
                 <styleUrl>#node_g</styleUrl>
                 <Point>
-                    <coordinates>-118.995300,35.386933</coordinates>
+                    <coordinates>-118.995300,35.38228</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -700,7 +700,7 @@
                 "</description>
                 <styleUrl>#node_g</styleUrl>
                 <Point>
-                    <coordinates>-118.996067,35.386933</coordinates>
+                    <coordinates>-118.996067,35.38228</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -718,7 +718,7 @@
                 "</description>
                 <styleUrl>#node_g</styleUrl>
                 <Point>
-                    <coordinates>-118.996817,35.386933</coordinates>
+                    <coordinates>-118.996817,35.38228</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -1138,7 +1138,7 @@
                 "</description>
                 <styleUrl>#capacitor_g</styleUrl>
                 <Point>
-                    <coordinates>-118.994217,35.387383</coordinates>
+                    <coordinates>-118.994217,35.38272</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -1157,7 +1157,7 @@
                 "</description>
                 <styleUrl>#capacitor_g</styleUrl>
                 <Point>
-                    <coordinates>-118.995100,35.387517</coordinates>
+                    <coordinates>-118.995100,35.382854</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -1176,7 +1176,7 @@
                 "</description>
                 <styleUrl>#capacitor_g</styleUrl>
                 <Point>
-                    <coordinates>-118.995783,35.387717</coordinates>
+                    <coordinates>-118.995783,35.383054</coordinates>
                 </Point>
             </Placemark>
         </Folder>
@@ -3124,7 +3124,7 @@
                     <extrude>0</extrude>
                     <tessellate>0</tessellate>
                     <altitudeMode>relative</altitudeMode>
-                    <coordinates>-118.992867,35.388850,50 -118.992867,35.386933,50</coordinates>
+                    <coordinates>-118.992867,35.388850,50 -118.992867,35.38228,50</coordinates>
                 </LineString>
             </Placemark>
             <Placemark>
@@ -3286,7 +3286,7 @@
                     <extrude>0</extrude>
                     <tessellate>0</tessellate>
                     <altitudeMode>relative</altitudeMode>
-                    <coordinates>-118.992133,35.385967,50 -118.989950,35.385450,50</coordinates>
+                    <coordinates>-118.992133,35.385967,50 -118.989950,35.380787,50</coordinates>
                 </LineString>
             </Placemark>
             <Placemark>
@@ -3340,7 +3340,7 @@
                     <extrude>0</extrude>
                     <tessellate>0</tessellate>
                     <altitudeMode>relative</altitudeMode>
-                    <coordinates>-118.989950,35.385450,50 -118.989517,35.386700,50</coordinates>
+                    <coordinates>-118.989950,35.380787,50 -118.989517,35.386700,50</coordinates>
                 </LineString>
             </Placemark>
             <Placemark>
@@ -3362,12 +3362,12 @@
         ]]>
                 "</description>
                 <styleUrl>#overhead_line_g</styleUrl>>
-                <coordinates>-118.993625,35.386933</coordinates>
+                <coordinates>-118.993625,35.38228</coordinates>
                 <LineString>
                     <extrude>0</extrude>
                     <tessellate>0</tessellate>
                     <altitudeMode>relative</altitudeMode>
-                    <coordinates>-118.992867,35.386933,50 -118.994383,35.386933,50</coordinates>
+                    <coordinates>-118.992867,35.38228,50 -118.994383,35.38228,50</coordinates>
                 </LineString>
             </Placemark>
             <Placemark>
@@ -3394,7 +3394,7 @@
                     <extrude>0</extrude>
                     <tessellate>0</tessellate>
                     <altitudeMode>relative</altitudeMode>
-                    <coordinates>-118.994383,35.386933,50 -118.994217,35.387383,50</coordinates>
+                    <coordinates>-118.994383,35.38228,50 -118.994217,35.38272,50</coordinates>
                 </LineString>
             </Placemark>
             <Placemark>
@@ -3416,12 +3416,12 @@
         ]]>
                 "</description>
                 <styleUrl>#overhead_line_g</styleUrl>>
-                <coordinates>-118.994842,35.386933</coordinates>
+                <coordinates>-118.994842,35.38228</coordinates>
                 <LineString>
                     <extrude>0</extrude>
                     <tessellate>0</tessellate>
                     <altitudeMode>relative</altitudeMode>
-                    <coordinates>-118.994383,35.386933,50 -118.995300,35.386933,50</coordinates>
+                    <coordinates>-118.994383,35.38228,50 -118.995300,35.38228,50</coordinates>
                 </LineString>
             </Placemark>
             <Placemark>
@@ -3448,7 +3448,7 @@
                     <extrude>0</extrude>
                     <tessellate>0</tessellate>
                     <altitudeMode>relative</altitudeMode>
-                    <coordinates>-118.995300,35.386933,50 -118.995100,35.387517,50</coordinates>
+                    <coordinates>-118.995300,35.38228,50 -118.995100,35.382854,50</coordinates>
                 </LineString>
             </Placemark>
             <Placemark>
@@ -3470,12 +3470,12 @@
         ]]>
                 "</description>
                 <styleUrl>#overhead_line_g</styleUrl>>
-                <coordinates>-118.995683,35.386933</coordinates>
+                <coordinates>-118.995683,35.38228</coordinates>
                 <LineString>
                     <extrude>0</extrude>
                     <tessellate>0</tessellate>
                     <altitudeMode>relative</altitudeMode>
-                    <coordinates>-118.995300,35.386933,50 -118.996067,35.386933,50</coordinates>
+                    <coordinates>-118.995300,35.38228,50 -118.996067,35.38228,50</coordinates>
                 </LineString>
             </Placemark>
             <Placemark>
@@ -3502,7 +3502,7 @@
                     <extrude>0</extrude>
                     <tessellate>0</tessellate>
                     <altitudeMode>relative</altitudeMode>
-                    <coordinates>-118.996067,35.386933,50 -118.995783,35.387717,50</coordinates>
+                    <coordinates>-118.996067,35.38228,50 -118.995783,35.383054,50</coordinates>
                 </LineString>
             </Placemark>
             <Placemark>
@@ -3524,12 +3524,12 @@
         ]]>
                 "</description>
                 <styleUrl>#overhead_line_g</styleUrl>>
-                <coordinates>-118.996442,35.386933</coordinates>
+                <coordinates>-118.996442,35.38228</coordinates>
                 <LineString>
                     <extrude>0</extrude>
                     <tessellate>0</tessellate>
                     <altitudeMode>relative</altitudeMode>
-                    <coordinates>-118.996067,35.386933,50 -118.996817,35.386933,50</coordinates>
+                    <coordinates>-118.996067,35.38228,50 -118.996817,35.38228,50</coordinates>
                 </LineString>
             </Placemark>
             <Placemark>
@@ -3556,7 +3556,7 @@
                     <extrude>0</extrude>
                     <tessellate>0</tessellate>
                     <altitudeMode>relative</altitudeMode>
-                    <coordinates>-118.996817,35.386933,50 -118.996567,35.387650,50</coordinates>
+                    <coordinates>-118.996817,35.38228,50 -118.996567,35.382987,50</coordinates>
                 </LineString>
             </Placemark>
             <Placemark>
@@ -3578,12 +3578,12 @@
         ]]>
                 "</description>
                 <styleUrl>#overhead_line_g</styleUrl>>
-                <coordinates>-118.997325,35.386933</coordinates>
+                <coordinates>-118.997325,35.38228</coordinates>
                 <LineString>
                     <extrude>0</extrude>
                     <tessellate>0</tessellate>
                     <altitudeMode>relative</altitudeMode>
-                    <coordinates>-118.996817,35.386933,50 -118.997833,35.386933,50</coordinates>
+                    <coordinates>-118.996817,35.38228,50 -118.997833,35.38228,50</coordinates>
                 </LineString>
             </Placemark>
             <Placemark>
@@ -3610,7 +3610,7 @@
                     <extrude>0</extrude>
                     <tessellate>0</tessellate>
                     <altitudeMode>relative</altitudeMode>
-                    <coordinates>-118.997833,35.386933,50 -118.997833,35.387483,50</coordinates>
+                    <coordinates>-118.997833,35.38228,50 -118.997833,35.38282,50</coordinates>
                 </LineString>
             </Placemark>
             <Placemark>
@@ -4316,7 +4316,7 @@
                     <extrude>0</extrude>
                     <tessellate>0</tessellate>
                     <altitudeMode>relative</altitudeMode>
-                    <coordinates>-118.994250,35.386800,50 -118.993933,35.387717,50</coordinates>
+                    <coordinates>-118.994250,35.386800,50 -118.993933,35.383054,50</coordinates>
                 </LineString>
             </Placemark>
             <Placemark>
@@ -4343,7 +4343,7 @@
                     <extrude>0</extrude>
                     <tessellate>0</tessellate>
                     <altitudeMode>relative</altitudeMode>
-                    <coordinates>-118.993933,35.387717,50 -118.995300,35.388033,50</coordinates>
+                    <coordinates>-118.993933,35.383054,50 -118.995300,35.388033,50</coordinates>
                 </LineString>
             </Placemark>
             <Placemark>
@@ -5294,7 +5294,7 @@
                 "</description>
                 <styleUrl>#load_g</styleUrl>
                 <Point>
-                    <coordinates>-118.993933,35.387717</coordinates>
+                    <coordinates>-118.993933,35.383054</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -5598,7 +5598,7 @@
                 "</description>
                 <styleUrl>#load_g</styleUrl>
                 <Point>
-                    <coordinates>-118.989950,35.385450</coordinates>
+                    <coordinates>-118.989950,35.380787</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -5636,7 +5636,7 @@
                 "</description>
                 <styleUrl>#load_g</styleUrl>
                 <Point>
-                    <coordinates>-118.992867,35.386933</coordinates>
+                    <coordinates>-118.992867,35.38228</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -5655,7 +5655,7 @@
                 "</description>
                 <styleUrl>#load_g</styleUrl>
                 <Point>
-                    <coordinates>-118.994383,35.386933</coordinates>
+                    <coordinates>-118.994383,35.38228</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -5674,7 +5674,7 @@
                 "</description>
                 <styleUrl>#load_g</styleUrl>
                 <Point>
-                    <coordinates>-118.994217,35.387383</coordinates>
+                    <coordinates>-118.994217,35.38272</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -5693,7 +5693,7 @@
                 "</description>
                 <styleUrl>#load_g</styleUrl>
                 <Point>
-                    <coordinates>-118.995100,35.387517</coordinates>
+                    <coordinates>-118.995100,35.382854</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -5712,7 +5712,7 @@
                 "</description>
                 <styleUrl>#load_g</styleUrl>
                 <Point>
-                    <coordinates>-118.995783,35.387717</coordinates>
+                    <coordinates>-118.995783,35.383054</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -5731,7 +5731,7 @@
                 "</description>
                 <styleUrl>#load_g</styleUrl>
                 <Point>
-                    <coordinates>-118.996567,35.387650</coordinates>
+                    <coordinates>-118.996567,35.382987</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -5750,7 +5750,7 @@
                 "</description>
                 <styleUrl>#load_g</styleUrl>
                 <Point>
-                    <coordinates>-118.997833,35.386933</coordinates>
+                    <coordinates>-118.997833,35.38228</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -5769,7 +5769,7 @@
                 "</description>
                 <styleUrl>#load_g</styleUrl>
                 <Point>
-                    <coordinates>-118.997833,35.387483</coordinates>
+                    <coordinates>-118.997833,35.38282</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -13664,7 +13664,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.993933,35.387717</coordinates>
+                    <coordinates>-118.993933,35.383054</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -13707,7 +13707,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.993933,35.387717</coordinates>
+                    <coordinates>-118.993933,35.383054</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -13750,7 +13750,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.993933,35.387717</coordinates>
+                    <coordinates>-118.993933,35.383054</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -13793,7 +13793,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.993933,35.387717</coordinates>
+                    <coordinates>-118.993933,35.383054</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -13836,7 +13836,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.993933,35.387717</coordinates>
+                    <coordinates>-118.993933,35.383054</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -13879,7 +13879,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.993933,35.387717</coordinates>
+                    <coordinates>-118.993933,35.383054</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -13922,7 +13922,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.993933,35.387717</coordinates>
+                    <coordinates>-118.993933,35.383054</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -17663,7 +17663,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.989950,35.385450</coordinates>
+                    <coordinates>-118.989950,35.380787</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -17706,7 +17706,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.989950,35.385450</coordinates>
+                    <coordinates>-118.989950,35.380787</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -17921,7 +17921,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.992867,35.386933</coordinates>
+                    <coordinates>-118.992867,35.38228</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -17964,7 +17964,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.992867,35.386933</coordinates>
+                    <coordinates>-118.992867,35.38228</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -18007,7 +18007,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.994383,35.386933</coordinates>
+                    <coordinates>-118.994383,35.38228</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -18050,7 +18050,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.994383,35.386933</coordinates>
+                    <coordinates>-118.994383,35.38228</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -18093,7 +18093,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.994383,35.386933</coordinates>
+                    <coordinates>-118.994383,35.38228</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -18136,7 +18136,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.994383,35.386933</coordinates>
+                    <coordinates>-118.994383,35.38228</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -18179,7 +18179,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.994217,35.387383</coordinates>
+                    <coordinates>-118.994217,35.38272</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -18222,7 +18222,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.994217,35.387383</coordinates>
+                    <coordinates>-118.994217,35.38272</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -18265,7 +18265,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.994217,35.387383</coordinates>
+                    <coordinates>-118.994217,35.38272</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -18308,7 +18308,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.994217,35.387383</coordinates>
+                    <coordinates>-118.994217,35.38272</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -18351,7 +18351,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.995100,35.387517</coordinates>
+                    <coordinates>-118.995100,35.382854</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -18394,7 +18394,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.995100,35.387517</coordinates>
+                    <coordinates>-118.995100,35.382854</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -18437,7 +18437,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.995100,35.387517</coordinates>
+                    <coordinates>-118.995100,35.382854</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -18480,7 +18480,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.995100,35.387517</coordinates>
+                    <coordinates>-118.995100,35.382854</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -18523,7 +18523,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.995783,35.387717</coordinates>
+                    <coordinates>-118.995783,35.383054</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -18566,7 +18566,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.995783,35.387717</coordinates>
+                    <coordinates>-118.995783,35.383054</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -18609,7 +18609,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.995783,35.387717</coordinates>
+                    <coordinates>-118.995783,35.383054</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -18652,7 +18652,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.995783,35.387717</coordinates>
+                    <coordinates>-118.995783,35.383054</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -18695,7 +18695,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.996567,35.387650</coordinates>
+                    <coordinates>-118.996567,35.382987</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -18738,7 +18738,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.996567,35.387650</coordinates>
+                    <coordinates>-118.996567,35.382987</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -18781,7 +18781,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.996567,35.387650</coordinates>
+                    <coordinates>-118.996567,35.382987</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -18824,7 +18824,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.996567,35.387650</coordinates>
+                    <coordinates>-118.996567,35.382987</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -18867,7 +18867,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.997833,35.386933</coordinates>
+                    <coordinates>-118.997833,35.38228</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -18910,7 +18910,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.997833,35.386933</coordinates>
+                    <coordinates>-118.997833,35.38228</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -18953,7 +18953,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.997833,35.387483</coordinates>
+                    <coordinates>-118.997833,35.38282</coordinates>
                 </Point>
             </Placemark>
             <Placemark>
@@ -18996,7 +18996,7 @@
                 "</description>
                 <styleUrl>#triplex_meter_g</styleUrl>
                 <Point>
-                    <coordinates>-118.997833,35.387483</coordinates>
+                    <coordinates>-118.997833,35.38282</coordinates>
                 </Point>
             </Placemark>
             <Placemark>

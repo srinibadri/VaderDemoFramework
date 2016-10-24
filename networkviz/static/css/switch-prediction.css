@@ -1,0 +1,46 @@
+
+#starting-slider {
+    width: 80%;
+    /*float: left;*/
+    margin: 1em;
+    margin-left: 3em;
+}
+
+#time-slider {
+    width: 80%;
+    /*float: left;*/
+    margin: 1em;
+    margin-left: 3em;
+}
+
+.slider-label {
+  margin-left: 2em;
+}
+
+.slider-text {
+  padding: 1em;
+}
+
+.ui-draggable, .ui-droppable {
+	background-position: top;
+}
+
+#starting-slider-handle {
+    width: 3em;
+    height: 1.6em;
+    top: 50%;
+    margin-top: -.8em;
+    margin-left: -1em;
+    text-align: center;
+    line-height: 1.6em;
+  }
+
+  #time-slider-handle {
+      width: 6em;
+      height: 1.6em;
+      top: 50%;
+      margin-top: -.8em;
+      margin-left: -3em;
+      text-align: center;
+      line-height: 1.6em;
+    }

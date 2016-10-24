@@ -14,14 +14,32 @@ var meterApiEndpoint = "/static/data/cache/meters.json",
     loadApiEndpoint = "/static/data/cache/load.json",
     nodeApiEndpoint = "/static/data/cache/node.json",
     houseApiEndpoint = "/static/data/cache/house.json",
-    lineApiEndpoint = "/static/data/model.geo.json",
-    feederApiEndpoint = "/static/data/cache/feeder.json";
+    lineApiEndpoint = "/static/data/model2.geo.json",
+    substationApiEndpoint = "/static/data/cache/substations.json";
 
+var switchConfigFileEndpoint = "/static/data/switch_data/";
+// var switchConfigFileEndpoint = "/vader/api/switch/state/";
 var sensorApiEndpoint = "/vader/api/sensor/",
     regionApiEndpoint = "/vader/api/region/";
-    var sensor_list = [];
+var sensor_list = [];
 
+var ignoreList = ["sw61to6101", "node_6101", "line60to61", "node_610", "node_61"];
 
+var monitoredList = ["sw13to152","sw151to300","sw450to451","sw95to195"];
+
+var switchStateList = {"sw15001to149":"OPEN","sw250to251":"OPEN","sw300to350":"OPEN","sw450to451":"OPEN","sw95to195":"OPEN","sw13to152":"OPEN","sw18to135":"OPEN","sw60to160":"OPEN","sw61to6101":"OPEN","sw97to197":"OPEN","sw54to94":"OPEN","sw151to300":"OPEN"};
+var switchStateList2 = {"sw15001to149":"OPEN","sw250to251":"OPEN","sw300to350":"OPEN","sw450to451":"OPEN","sw95to195":"OPEN","sw13to152":"OPEN","sw18to135":"OPEN","sw60to160":"OPEN","sw61to6101":"OPEN","sw97to197":"OPEN","sw54to94":"OPEN","sw151to300":"OPEN"};
+
+var switchConfigsUrls = ["RT_configs.csv",
+      "15M_configs.csv", "30M_configs.csv",
+      "1HR_configs.csv", "2HR_configs.csv",
+      "3HR_configs.csv", "5HR_configs.csv",
+      "1D_configs.csv",  "2D_configs.csv"];
+
+var switchMarkerList = [];
+var switchConfigs = [{},{},{},{},{},{},{},{},{}];
+var currentConfig = 0;
+var currentTime = 0;
 //
 // var meterApiEndpoint = "/vader/api/meter/\*",
 //     switchApiEndpoint = "/vader/api/switch/\*",
@@ -46,13 +64,17 @@ var geojsonMarkerOptions = {
 };
 
 var normalIconSize = 20,
-    bigIconSize = 30;
+    bigIconSize = 30,
+    megaIconSize = 60;
 var normalIconDimens = [normalIconSize, normalIconSize],
     normalIconAnchor = [normalIconSize/2, normalIconSize/2],
     normalIconPopup  = [0, -normalIconSize/2 + 3];
 var bigIconDimens = [bigIconSize, bigIconSize],
     bigIconAnchor = [bigIconSize/2, bigIconSize/2],
     bigIconPopup  = [0, -bigIconSize/2 + 3];
+var megaIconDimens = [megaIconSize, megaIconSize],
+    megaIconAnchor = [megaIconSize/2, megaIconSize/2],
+    megaIconPopup  = [0, -megaIconSize/2 + 3];
 
 var NormalGridIcon = L.Icon.extend({
     options: {
@@ -76,12 +98,35 @@ var BigGridIcon = L.Icon.extend({
       popupAnchor:  bigIconPopup // point from which the popup should open relative to the iconAnchor
     }
 });
+var MegaGridIcon = L.Icon.extend({
+    options: {
+      iconUrl: '/static/images/icons/substation.png',
+      // shadowUrl: 'leaf-shadow.png',
+      iconSize:     megaIconDimens, // size of the icon
+      // shadowSize:   [50, 64], // size of the shadow
+      iconAnchor:   megaIconAnchor, // point of the icon which will correspond to marker's location
+      // shadowAnchor: [4, 62],  // the same for the shadow
+      popupAnchor:  megaIconPopup // point from which the popup should open relative to the iconAnchor
+    }
+});
+
 
 var meterIcon = new NormalGridIcon({iconUrl: '/static/images/icons/meter.png'}),
     nodeIcon = new NormalGridIcon({iconUrl: '/static/images/icons/node.png'}),
     loadIcon = new NormalGridIcon({iconUrl: '/static/images/icons/load.png'}),
     houseIcon = new NormalGridIcon({iconUrl: '/static/images/icons/house.png'}),
-    switchIcon = new BigGridIcon({iconUrl: '/static/images/icons/switch.png'});
+    switchIcon = new BigGridIcon({iconUrl: '/static/images/icons/switch.png'}),
+    switchIconUnmonitored = new BigGridIcon({iconUrl: '/static/images/icons/switch-unmonitored.png'}),
+    switchIconUnmonitoredOpen = new BigGridIcon({iconUrl: '/static/images/icons/switch-unmonitored-open.png'}),
+    switchIconUnmonitoredClosed = new BigGridIcon({iconUrl: '/static/images/icons/switch-unmonitored-closed.png'}),
+
+    switchIconMonitored = new BigGridIcon({iconUrl: '/static/images/icons/switch-monitored.png'}),
+    switchIconMonitoredClosed = new BigGridIcon({iconUrl: '/static/images/icons/switch-monitored-closed.png'}),
+    switchIconMonitoredOpen = new BigGridIcon({iconUrl: '/static/images/icons/switch-monitored-open.png'}),
+    switchIconClosed = new BigGridIcon({iconUrl: '/static/images/icons/switch-monitored-closed.png'}),
+    switchIconOpen = new BigGridIcon({iconUrl: '/static/images/icons/switch-monitored-open.png'}),
+
+    substationIcon = new MegaGridIcon({iconUrl: '/static/images/icons/substation.png'});
 
 console.log("General Settings Finished");
 
@@ -171,6 +216,7 @@ var overlayLayers1 = {
     // "Houses": L.layerGroup([]),
     "Lines": L.layerGroup([]),
     "Line Sensors": L.layerGroup([]),
+    "Substations": L.layerGroup([]),
     "Regions": L.layerGroup([])
 };
 var overlayLayers2 = {
@@ -181,6 +227,7 @@ var overlayLayers2 = {
     // "Houses": L.layerGroup([]),
     "Lines": L.layerGroup([]),
     "Line Sensors": L.layerGroup([]),
+    "Substations": L.layerGroup([]),
     "Regions": L.layerGroup([])
 };
 
@@ -193,9 +240,16 @@ console.log("Layers Finished");
 
 
 var map1 = L.map('map1', {
-    layers: [baseLayers1["Mapbox Theme"], overlayLayers1["Meters"],
-    // overlayLayers1["Nodes"], overlayLayers1["Loads"],
-    overlayLayers1["Switches"], overlayLayers1["Line Sensors"], overlayLayers1["Lines"], overlayLayers1["Regions"]],
+    layers: [baseLayers1["Mapbox Theme"],
+    overlayLayers1["Meters"],
+    // overlayLayers1["Nodes"],
+    overlayLayers1["Loads"],
+    overlayLayers1["Switches"],
+    overlayLayers1["Line Sensors"],
+    overlayLayers1["Lines"],
+    overlayLayers1["Substations"],
+    overlayLayers1["Regions"]
+    ],
     center: center,
     zoom: zoom,
     scrollWheelZoom: false
@@ -204,9 +258,14 @@ map1.attributionControl.setPrefix('');
 var map2 = L.map('map2', {
     layers: [baseLayers2["OpenMap Theme"],
     //overlayLayers2["Meters"],
-    overlayLayers2["Nodes"],
+    // overlayLayers2["Nodes"],
     // overlayLayers2["Loads"],
-    overlayLayers2["Switches"], overlayLayers2["Line Sensors"], overlayLayers2["Lines"], overlayLayers2["Regions"]],
+    overlayLayers2["Switches"],
+    // overlayLayers2["Line Sensors"],
+    overlayLayers2["Lines"],
+    overlayLayers2["Substations"],
+    overlayLayers2["Regions"]
+    ],
     center: center,
     zoom: zoom,
     scrollWheelZoom: false,
@@ -215,8 +274,8 @@ var map2 = L.map('map2', {
 
 
 // Add each map to the map array. This will be useful for scalable calling later
-maps.push({"map":map1, "base":baseLayers1, "overlay":overlayLayers1, "popup":L.popup(), "predict_state": "actual"});
-maps.push({"map":map2, "base":baseLayers2, "overlay":overlayLayers2, "popup":L.popup(), "predict_state": "predicted"});
+maps.push({"map":map1, "base":baseLayers1, "overlay":overlayLayers1, "popup":L.popup(), "predict_state": "actual", "switches":[], "regions":[], switchStateList });
+maps.push({"map":map2, "base":baseLayers2, "overlay":overlayLayers2, "popup":L.popup(), "predict_state": "predicted", "switches":[], "regions":[], "switchStateList": switchStateList2 });
 // maps.push(map3);
 
 
@@ -335,6 +394,11 @@ console.log("Controls Finished");
 function populateLayer(endpoint, layerGroup, iconPath, element_type, priority=0) {
   $.getJSON( endpoint, function(elements, error) {
     elements.forEach(function(element) {
+      // We want to ignore a few elements
+      if (ignoreList.indexOf(element['name'])> -1) {
+        console.log("FOUND Element to Ignore" + element['name'])
+        return;
+      }
       if (('latitude' in element) && ('longitude' in element)) {
         latlong = [parseFloat(element['latitude']), parseFloat(element['longitude'])];
         marker = L.marker(latlong, {
@@ -355,23 +419,597 @@ function populateLayer(endpoint, layerGroup, iconPath, element_type, priority=0)
   });
 }
 
-var region_colors = ['red', 'blue', 'yellow','yellow', 'red', 'green', 'green', 'green', 'orange'];
-var region_colors2 =['red', 'blue', 'blue','yellow', 'red', 'green', 'green', 'green', 'orange'];
+
+// Helper function for adding normal layers
+function populateLayerSwitches(endpoint, layerGroup, highlightMonitored, element_type, map_obj, priority=0) {
+  $.getJSON( endpoint, function(elements, error) {
+    elements.forEach(function(element) {
+      // We want to ignore a few elements
+      if (ignoreList.indexOf(element['name'])> -1) {
+        console.log("FOUND Element to Ignore" + element['name'])
+        return;
+      }
+      monitored = false;
+      icon = switchIconOpen;
+      // We want to highlight a few elements
+      if (highlightMonitored) {
+        if (monitoredList.indexOf(element['name'])> -1) {
+          console.log("FOUND Element to Monitor" + element['name'])
+          monitored = true;
+          if (element['status'] == "OPEN") {
+            icon = switchIconMonitoredOpen;
+          } else {
+            icon = switchIconMonitoredClosed;
+          }
+        } else {
+          icon = switchIconUnmonitored;
+        }
+      } else {
+        if (element['status'] == "OPEN") {
+          icon = switchIconOpen;
+        } else {
+          icon = switchIconClosed;
+        }
+      }
+
+      if (('latitude' in element) && ('longitude' in element)) {
+        latlong = [parseFloat(element['latitude']), parseFloat(element['longitude'])];
+        marker = L.marker(latlong, {
+          icon: icon,
+          alt:JSON.stringify({"type":element_type,"name":element['name']})
+        }).bindPopup(element['name'] + " loading..."); //.bindTooltip(element['name']);
+        if (priority == 1) {
+          marker.setZIndexOffset(700);
+        }
+        if (priority > 1 || monitored) {
+          marker.setZIndexOffset(800);
+        }
+        layerGroup.addLayer(marker);
+        // console.log("Adding Marker to Map " + element['name']);
+        // switches.push({key: element['name'], value: marker});
+        map_obj["switches"].push({key: element['name'], value: marker});
+      } else {
+        // console.log(element['name'] + " Does Not Have Location Coordinates!!");
+      }
+    });
+    // map_obj["switches"] = switches;
+  });
+}
+
+// Helper function for adding normal layers
+function populateLayerSubstation(endpoint, layerGroup, iconPath, element_type, priority=0) {
+  $.getJSON( endpoint, function(elements, error) {
+    elements.forEach(function(element) {
+      // We want to ignore a few elements
+      if (ignoreList.indexOf(element['name'])> -1) {
+        console.log("FOUND Element to Ignore" + element['name'])
+        return;
+      }
+      if (('latitude' in element) && ('longitude' in element)) {
+        latlong = [parseFloat(element['latitude']), parseFloat(element['longitude'])];
+        marker = L.marker(latlong, {
+          icon: new MegaGridIcon({iconUrl: '/static/images/icons/substation-'+element['color']+'.png'}),
+          alt:JSON.stringify({"type":element_type,"name":element['name']})
+        }).bindPopup(element['name'] + " loading..."); //.bindTooltip(element['name']);
+        if (priority == 1) {
+          marker.setZIndexOffset(700);
+        }
+        if (priority > 1) {
+          marker.setZIndexOffset(800);
+        }
+        layerGroup.addLayer(marker);
+      } else {
+        // console.log(element['name'] + " Does Not Have Location Coordinates!!");
+      }
+    });
+  });
+}
 
 
-function populateRegions(endpoint, layerGroup, predict_state) {
+var region_colors = ['red', 'blue', 'yellow','black', 'white', 'green', 'orange', 'green', 'orange'];
+var region_colors2 = region_colors;
+// var region_colors2 =['red', 'blue', 'blue','yellow', 'red', 'green', 'green', 'green', 'orange'];
+
+
+function populateRegions(endpoint, layerGroup, regions_list) {
   console.log("populateRegions");
   $.getJSON( endpoint, function(elements, error) {
-    if(predict_state == "actual") {
-      elements.forEach(function(element) {
-        layerGroup.addLayer(L.polygon(element.points, {color: region_colors[element.group_num]}))
-      });
-    } else {
-      elements.forEach(function(element) {
-        layerGroup.addLayer(L.polygon(element.points, {color: region_colors2[element.group_num]}))
-      });
-    }
+    elements.forEach(function(element) {
+      region = L.polygon(element.points, {color: "#777"});
+      regions_list.push(region);
+      layerGroup.addLayer(region);
+    });
   });
+}
+
+
+function setRegionColors(config, time) {
+  console.log("Setting region colors for config " + config + " and time " + time);
+
+  if (switchConfigs[0] == {}) {
+    console.log("NOT READY TO CHANGE STATE");
+  }
+  // console.log((switchConfigs[time])[config]);
+  switchSet = (switchConfigs[0])[config];
+  // console.log((maps[1])['switches']);
+  (maps[0])['switches'].forEach(function(element) {
+    // console.log(element);
+    swName = element['key']
+    if (switchSet[swName] == "0") {
+      // console.log("Found Match" + swName);
+      element['value'].setIcon(switchIconMonitoredClosed);
+    }
+    if (switchSet[swName] == "1") {
+      // console.log("Found Match" + swName);
+      element['value'].setIcon(switchIconMonitoredOpen);
+    }
+
+  });
+
+}
+
+// Connectivity graph
+/*
+
+Sub0 ---> sw15001to149 ---> region0
+
+region0 ---> sw15001to149 ---> Sub0
+region0 ---> sw13to152 ---> region1
+region0 ---> sw13to152 ---> region2
+
+
+region1 ---> sw13to152 ---> region0
+region1 ---> sw13to152 ---> region2
+region1 ---> sw18to135 ---> region2
+region1 ---> sw18to135 ---> region3
+
+region2 ---> sw13to152 ---> region0
+region2 ---> sw13to152 ---> region1
+region2 ---> sw18to135 ---> region1
+region2 ---> sw18to135 ---> region3
+region2 ---> sw54to94 ---> region2
+region2 ---> sw54to94 ---> region4
+region2 ---> sw151to300 ---> region5
+
+region3 ---> sw18to135 ---> region1
+region3 ---> sw18to135 ---> region2
+region3 ---> sw250to251 ---> Sub1
+
+Sub1 ---> sw250to251 ---> region3
+
+region4 ---> sw54to94 ---> region2
+region4 ---> sw60to160 ---> region6
+
+region5 ---> sw151to300 ---> region2
+region5 ---> sw97to197 ---> region6
+
+region6 ---> sw60to160 ---> region4
+region6 ---> sw97to197 ---> region5
+region6 ---> sw450to451 ---> Sub2
+region6 ---> sw95to195 ---> Sub3
+
+Sub2 ---> sw450to451 ---> region6
+
+Sub3 ---> sw95to195 ---> region6
+*/
+var closedStr = "CLOSED";
+function getConnectedRegions(map_obj) {
+  region = ["","","","","","",""];
+  closedStr = "CLOSED";
+  blueSet = new Set();
+  if ((map_obj['switchStateList'])['sw15001to149'] == closedStr) {
+    // console.log("SWITCH CLOSED");
+
+    blueSet.add(0);
+    if((map_obj['switchStateList'])['sw13to152'] == closedStr) {
+      blueSet.add(1);
+      if((map_obj['switchStateList'])['sw18to135'] == closedStr) {
+        blueSet.add(3);
+        if((map_obj['switchStateList'])['sw250to251'] == closedStr) {
+          console.log("ERROR. Path from Blue to Green");
+        }
+        blueSet.add(4);
+        if((map_obj['switchStateList'])['sw151to300'] == closedStr) {
+          blueSet.add(6);
+          if((map_obj['switchStateList'])['sw97to197'] == closedStr) {
+            blueSet.add(7);
+            if((map_obj['switchStateList'])['sw450to451'] == closedStr) {
+              console.log("ERROR. Path from Blue to Red");
+            }
+            blueSet.add(8);
+            if((map_obj['switchStateList'])['sw95to195'] == closedStr) {
+              console.log("ERROR. Path from Blue to Yellow");
+            }
+            if((map_obj['switchStateList'])['sw60to160'] == closedStr) {
+              blueSet.add(5);
+            }
+          }
+        }// End 4
+      }// End 1
+
+      blueSet.add(2);
+      if((map_obj['switchStateList'])['sw54to94'] == closedStr) {
+        blueSet.add(4);
+        if((map_obj['switchStateList'])['sw151to300'] == closedStr) {
+          blueSet.add(6);
+          if((map_obj['switchStateList'])['sw97to197'] == closedStr) {
+            blueSet.add(7);
+            if((map_obj['switchStateList'])['sw450to451'] == closedStr) {
+              console.log("ERROR. Path from Blue to Red");
+            }
+            blueSet.add(8);
+            if((map_obj['switchStateList'])['sw95to195'] == closedStr) {
+              console.log("ERROR. Path from Blue to Yellow");
+            }
+            if((map_obj['switchStateList'])['sw60to160'] == closedStr) {
+              blueSet.add(5);
+            }
+          }
+        }// End 4
+
+        blueSet.add(5);
+        if((map_obj['switchStateList'])['sw60to160'] == closedStr) {
+          blueSet.add(8);
+          if((map_obj['switchStateList'])['sw95to195'] == closedStr) {
+            console.log("ERROR. Path from Blue to Yellow");
+          }
+
+          if((map_obj['switchStateList'])['sw97to197'] == closedStr) {
+            blueSet.add(6);
+
+            blueSet.add(7);
+            if((map_obj['switchStateList'])['sw450to451'] == closedStr) {
+              console.log("ERROR. Path from Blue to Red");
+            }
+            console.log("ERROR. Path from Blue to Yellow");
+          }
+        }
+      }
+    }
+  }
+
+
+  greenSet = new Set();
+  if ((map_obj['switchStateList'])['sw250to251'] == closedStr) {
+    // console.log("SWITCH CLOSED");
+
+    greenSet.add(3);
+    if ((map_obj['switchStateList'])['sw18to135'] == closedStr) {
+      greenSet.add(1);
+      if ((map_obj['switchStateList'])['sw13to152'] == closedStr) {
+        greenSet.add(0);
+        if((map_obj['switchStateList'])['sw15001to149'] == closedStr) {
+          console.log("ERROR. Path from Blue to Red");
+        }
+        greenSet.add(2);
+        if((map_obj['switchStateList'])['sw54to94'] == closedStr) {
+          greenSet.add(5);
+        }
+      }// End 1
+
+      greenSet.add(4);
+      if((map_obj['switchStateList'])['sw54to94'] == closedStr) {
+        greenSet.add(5);
+        if((map_obj['switchStateList'])['sw60to160'] == closedStr) {
+          greenSet.add(8);
+          if((map_obj['switchStateList'])['sw95to195'] == closedStr) {
+            console.log("ERROR. Path from green to Yellow");
+          }
+          if((map_obj['switchStateList'])['sw97to197'] == closedStr) {
+            greenSet.add(6);
+            greenSet.add(7);
+            if((map_obj['switchStateList'])['sw450to451'] == closedStr) {
+              console.log("ERROR. Path from green to Red");
+            }
+          }
+        } // End 5
+
+      }
+      if((map_obj['switchStateList'])['sw151to300'] == closedStr) {
+        greenSet.add(6);
+        if((map_obj['switchStateList'])['sw97to197'] == closedStr) {
+          greenSet.add(7);
+          if((map_obj['switchStateList'])['sw450to451'] == closedStr) {
+            console.log("ERROR. Path from green to Red");
+          }
+          greenSet.add(8);
+          if((map_obj['switchStateList'])['sw95to195'] == closedStr) {
+            console.log("ERROR. Path from green to Yellow");
+          }
+          if((map_obj['switchStateList'])['sw60to160'] == closedStr) {
+            greenSet.add(5);
+          }
+        }
+      }// End 4
+    }
+  }
+
+
+
+
+  redSet = new Set();
+  if ((map_obj['switchStateList'])['sw450to451'] == closedStr) {
+    // console.log("SWITCH CLOSED");
+
+    redSet.add(7);
+    if ((map_obj['switchStateList'])['sw97to197'] == closedStr) {
+      redSet.add(6);
+      if ((map_obj['switchStateList'])['sw151to300'] == closedStr) {
+        redSet.add(4);
+        if((map_obj['switchStateList'])['sw54to94'] == closedStr) {
+          redSet.add(5);
+          redSet.add(2);
+          if((map_obj['switchStateList'])['sw13to152'] == closedStr) {
+            redSet.add(0);
+            if((map_obj['switchStateList'])['sw15001to149'] == closedStr) {
+              console.log("ERROR. Path from Red to Blue");
+            }
+            redSet.add(1);
+          }
+        }
+        if((map_obj['switchStateList'])['sw18to135'] == closedStr) {
+          redSet.add(3);
+          if((map_obj['switchStateList'])['sw250to251'] == closedStr) {
+            console.log("ERROR. Path from Red to Green");
+          }
+          redSet.add(1);
+          if((map_obj['switchStateList'])['sw13to152'] == closedStr) {
+            redSet.add(0);
+            if((map_obj['switchStateList'])['sw15001to149'] == closedStr) {
+              console.log("ERROR. Path from Red to Blue");
+            }
+            redSet.add(2);
+          }
+        }
+      }
+
+      // End 6
+
+      redSet.add(8);
+      if((map_obj['switchStateList'])['sw95to195'] == closedStr) {
+        console.log("ERROR. Path from Red to Yellow");
+      }
+      if((map_obj['switchStateList'])['sw60to160'] == closedStr) {
+        redSet.add(5);
+        if((map_obj['switchStateList'])['sw54to94'] == closedStr) {
+          redSet.add(2);
+          if((map_obj['switchStateList'])['sw13to152'] == closedStr) {
+            redSet.add(0);
+            if((map_obj['switchStateList'])['sw15001to149'] == closedStr) {
+              console.log("ERROR. Path from Red to Blue");
+            }
+            redSet.add(1);
+          }
+
+          redSet.add(4);
+          if((map_obj['switchStateList'])['sw18to135'] == closedStr) {
+            redSet.add(1);
+            redSet.add(3);
+            if((map_obj['switchStateList'])['sw250to251'] == closedStr) {
+              console.log("ERROR. Path from Red to Green");
+            }
+          }
+        }
+      }
+      // End 8
+    }
+  }
+
+  yellowSet = new Set();
+  if ((map_obj['switchStateList'])['sw95to195'] == closedStr) {
+    // console.log("SWITCH CLOSED");
+
+    yellowSet.add(8);
+    if((map_obj['switchStateList'])['sw60to160'] == closedStr) {
+      yellowSet.add(5);
+      if((map_obj['switchStateList'])['sw54to94'] == closedStr) {
+        yellowSet.add(2);
+        if((map_obj['switchStateList'])['sw13to152'] == closedStr) {
+          yellowSet.add(0);
+          if((map_obj['switchStateList'])['sw15001to149'] == closedStr) {
+            console.log("ERROR. Path from yellowSet to Blue");
+          }
+          yellowSet.add(1);
+        }
+
+        yellowSet.add(4);
+        if((map_obj['switchStateList'])['sw18to135'] == closedStr) {
+          yellowSet.add(1);
+          yellowSet.add(3);
+          if((map_obj['switchStateList'])['sw250to251'] == closedStr) {
+            console.log("ERROR. Path from yellowSet to Green");
+          }
+        }
+      }
+    }
+
+    if((map_obj['switchStateList'])['sw97to197'] == closedStr) {
+      yellowSet.add(7);
+      if((map_obj['switchStateList'])['sw450to451'] == closedStr) {
+        console.log("ERROR. Path from Yellow to Red");
+      }
+
+      yellowSet.add(6);
+      if ((map_obj['switchStateList'])['sw151to300'] == closedStr) {
+        yellowSet.add(4);
+        if((map_obj['switchStateList'])['sw54to94'] == closedStr) {
+          yellowSet.add(5);
+          yellowSet.add(2);
+          if((map_obj['switchStateList'])['sw13to152'] == closedStr) {
+            yellowSet.add(0);
+            if((map_obj['switchStateList'])['sw15001to149'] == closedStr) {
+              console.log("ERROR. Path from yellowSet to Blue");
+            }
+            yellowSet.add(1);
+          }
+        }
+        if((map_obj['switchStateList'])['sw18to135'] == closedStr) {
+          yellowSet.add(3);
+          if((map_obj['switchStateList'])['sw250to251'] == closedStr) {
+            console.log("ERROR. Path from yellowSet to Green");
+          }
+          yellowSet.add(1);
+          if((map_obj['switchStateList'])['sw13to152'] == closedStr) {
+            yellowSet.add(0);
+            if((map_obj['switchStateList'])['sw15001to149'] == closedStr) {
+              console.log("ERROR. Path from yellowSet to Blue");
+            }
+            yellowSet.add(2);
+          }
+        }
+      }
+
+    }
+  }
+
+  console.log("FINISHED Traversal. ");
+
+  for (value of blueSet) {
+    if(greenSet.has(value)){
+      console.log("ERROR, OVERLAPPING GREEN AND BLUE " + value);
+    }
+    if(redSet.has(value)){
+      console.log("ERROR, OVERLAPPING RED AND BLUE " + value);
+    }
+    if(yellowSet.has(value)){
+      console.log("ERROR, OVERLAPPING YELLOW AND BLUE " + value);
+    }
+    // console.log("BlueSet Item: " + value);
+  }
+  for (value of greenSet) {
+    if(blueSet.has(value)){
+      console.log("ERROR, OVERLAPPING BLUE AND GREE " + value);
+    }
+    if(redSet.has(value)){
+      console.log("ERROR, OVERLAPPING RED AND GREEN " + value);
+    }
+    if(yellowSet.has(value)){
+      console.log("ERROR, OVERLAPPING YELLOW AND GREEN " + value);
+    }
+    // console.log("greenSet Item: " + value);
+  }
+  for (value of redSet) {
+    if(blueSet.has(value)){
+      console.log("ERROR, OVERLAPPING BLUE AND RED " + value);
+    }
+    if(greenSet.has(value)){
+      console.log("ERROR, OVERLAPPING GREEN AND RED " + value);
+    }
+    if(yellowSet.has(value)){
+      console.log("ERROR, OVERLAPPING YELLOW AND RED " + value);
+    }
+    // console.log("redSet Item: " + value);
+  }
+
+  for (value of yellowSet) {
+    if(blueSet.has(value)){
+      console.log("ERROR, OVERLAPPING BLUE AND YELLOW " + value);
+    }
+    if(greenSet.has(value)){
+      console.log("ERROR, OVERLAPPING GREEN AND YELLOW " + value);
+    }
+    if(redSet.has(value)){
+      console.log("ERROR, OVERLAPPING RED AND YELLOW " + value);
+    }
+    // console.log("yellowSet Item: " + value);
+  }
+
+
+  regionsList = ((map_obj['regions']));
+  for(region = 0; region < regionsList.length; region += 1) {
+    regionsList[region].setStyle({color: "white"}).redraw();
+  }
+
+  redSet.forEach(function(region) {
+    regionsList[region].setStyle({color: "red"}).redraw();
+  })
+
+
+  greenSet.forEach(function(region) {
+    regionsList[region].setStyle({color: "green"}).redraw();
+  })
+
+  blueSet.forEach(function(region) {
+    regionsList[region].setStyle({color: "blue"}).redraw();
+  })
+
+  yellowSet.forEach(function(region) {
+    regionsList[region].setStyle({color: "yellow"}).redraw();
+  })
+
+
+
+}
+
+
+function setSwitchStates(config, time) {
+  console.log("Setting switch states for config " + config + " and time " + time);
+
+  if (switchConfigs[0] == {}) {
+    console.log("NOT READY TO CHANGE STATE");
+  }
+  // console.log((switchConfigs[time])[config]);
+  switchSet = (switchConfigs[0])[config];
+  // console.log((maps[1])['switches']);
+  (maps[0])['switches'].forEach(function(element) {
+    // console.log(element);
+    swName = element['key']
+    if (switchSet[swName] == "1") {
+      // console.log("Found Match" + swName);
+      element['value'].setIcon(switchIconMonitoredClosed);
+      (maps[0]['switchStateList'])[swName] = "CLOSED";
+      // (map_obj['switchStateList'])[swName] = "CLOSED";
+    }
+    if (switchSet[swName] == "0") {
+      // console.log("Found Match" + swName);
+      element['value'].setIcon(switchIconMonitoredOpen);
+      (maps[0]['switchStateList'])[swName] = "OPEN";
+      // (map_obj['switchStateList'])[swName] = "OPEN";
+    }
+
+  });
+
+  switchSet = (switchConfigs[time])[config];
+  (maps[1])['switches'].forEach(function(element) {
+    if (monitoredList.indexOf(element['key'])> -1) {
+      // console.log(element);
+      swName = element['key']
+      if (switchSet[swName] == "1") {
+        // console.log("Found Match" + swName);
+        element['value'].setIcon(switchIconMonitoredClosed);
+        (maps[1]['switchStateList'])[swName] = "CLOSED";
+      }
+      if (switchSet[swName] == "0") {
+        // console.log("Found Match" + swName);
+        element['value'].setIcon(switchIconMonitoredOpen);
+        (maps[1]['switchStateList'])[swName] = "OPEN";
+      }
+    } else {
+      // console.log(element);
+      swName = element['key']
+      if (switchSet[swName] == "1") {
+        // console.log("Found Match" + swName);
+        element['value'].setIcon(switchIconUnmonitoredClosed);
+        (maps[1]['switchStateList'])[swName] = "CLOSED";
+      }
+      if (switchSet[swName] == "0") {
+        // console.log("Found Match" + swName);
+        element['value'].setIcon(switchIconUnmonitoredOpen);
+        (maps[1]['switchStateList'])[swName] = "OPEN";
+      }
+    }
+
+  });
+
+  //   Time to shade the regions!
+  getConnectedRegions(maps[0]);
+  getConnectedRegions(maps[1]);
+}
+
+function getSwitchByName(map_obj, switchName) {
+  map_obj['switches'].forEach(function(element) {
+    console.log(element);
+  })
 }
 
 // Adds each of the layers to each of the maps
@@ -391,6 +1029,11 @@ maps.forEach(function(map_obj){
       map_obj.overlay["Lines"].addLayer(L.geoJSON(geo_json_data,
           {filter: function(feature, layer) {return feature.geometry.type == "LineString";},
               onEachFeature: function(feature, layer) {
+                // We want to ignore a few elements
+                if (ignoreList.indexOf(feature.properties.name)> -1) {
+                  console.log("FOUND Element to Ignore" + feature.properties.name)
+                  return;
+                }
                   sensorName = (feature.properties.name).replace("line","sensor");
                   // console.log(sensorName);
                   if (sensor_list.indexOf(sensorName) > -1) {
@@ -424,6 +1067,11 @@ maps.forEach(function(map_obj){
       map_obj.overlay["Lines"].addLayer(L.geoJSON(geo_json_data,
           {filter: function(feature, layer) {return feature.geometry.type == "LineString";},
               onEachFeature: function(feature, layer) {
+                // We want to ignore a few elements
+                if (ignoreList.indexOf(feature.properties.name)> -1) {
+                  console.log("FOUND Element to Ignore" + feature.properties.name)
+                  return;
+                }
                     layer.bindPopup(feature.properties.name);
                     // layer.bindTooltip(feature.properties.name);
               },
@@ -440,12 +1088,15 @@ maps.forEach(function(map_obj){
   setTimeout(function(){ map_obj.jsonPromise.abort(); }, 2000);
 
   // Add each of the desired layers
-  populateLayer(switchApiEndpoint, (map_obj.overlay["Switches"]), switchIcon, "switch", priority=2);
+  // populateLayerSwitches(switchApiEndpoint, (map_obj.overlay["Switches"]), switchIcon, switchIcon, "switch", priority=2);
+  // populateLayer(switchApiEndpoint, (map_obj.overlay["Switches"]), switchIcon, "switch", priority=2);
   populateLayer(meterApiEndpoint, (map_obj.overlay["Meters"]), meterIcon, "meter", priority=1);
   populateLayer(nodeApiEndpoint, (map_obj.overlay["Nodes"]), nodeIcon, "node");
   populateLayer(loadApiEndpoint, (map_obj.overlay["Loads"]), loadIcon, "load");
 
-  populateRegions(regionApiEndpoint, (map_obj.overlay["Regions"]), map_obj.predict_state);
+  populateLayerSubstation(substationApiEndpoint, (map_obj.overlay["Substations"]), substationIcon, "substation");
+
+  populateRegions(regionApiEndpoint, (map_obj.overlay["Regions"]), map_obj["regions"]);
 
   console.log("Overlay meters done")
 
@@ -455,23 +1106,107 @@ maps.forEach(function(map_obj){
 
 });
 
+populateLayerSwitches(switchApiEndpoint, (maps[0].overlay["Switches"]), highlightMonitored=false, "switch", maps[0], priority=2);
+populateLayerSwitches(switchApiEndpoint, (maps[1].overlay["Switches"]), highlightMonitored=true, "switch", maps[1], priority=1);
+
+
 
 maps.forEach(function(map_obj){
   layerControl = L.control.layers(map_obj.base, map_obj.overlay).addTo(map_obj.map);
   // layerControl.addTo(map_obj.map);
 
   // Can't figure out how to do the map click popups, but they are annoying anyway
-  // map_obj.map.on('click', function(e, map_obj) {
-  //   onMapClick(e, map_obj);
-  // });
-  map_obj.map.on('popupopen', function(e) {
-    pop_up(e);
+  map_obj.map.on('click', function(e, map_obj) {
+    onMapClick(e, map_obj);
   });
+  // map_obj.map.on('popupopen', function(e) {
+  //   pop_up(e);
+  // });
   // Sync to Other Maps
   maps.forEach(function(syncMapTo){
     map_obj.map.sync(syncMapTo.map);
   });
 });
+
+function getSwitchStatesFromUrl(index, configFileUrl) {
+  switchStates = [];
+  $.ajax({
+          type: "GET",
+          url: configFileUrl,
+          dataType: "text",
+          success: function(data) {
+            switchStates = $.csv.toObjects(data);
+            switchConfigs[index] = switchStates;
+            // console.log(switchStates);
+          }
+       });
+  return switchStates;
+}
+
+function processData(allText) {
+    var allTextLines = allText.split(/\r\n|\n/);
+    var headers = allTextLines[0].split(',');
+    var lines = [];
+
+    for (var i=1; i<allTextLines.length; i++) {
+        var data = allTextLines[i].split(',');
+        if (data.length == headers.length) {
+
+            var tarr = [];
+            for (var j=0; j<headers.length; j++) {
+                tarr.push(headers[j]+":"+data[j]);
+            }
+            lines.push(tarr);
+        }
+    }
+    // alert(lines);
+}
+
+
+$( function() {
+  var handle = $( "#starting-slider-handle" );
+  $( "#starting-slider" ).slider({
+    min: 0,
+    max: 87,
+    step: 1,
+    create: function() {
+      handle.text( $( this ).slider( "value" ) );
+      currentConfig = $( this ).slider( "value" );
+    },
+    slide: function( event, ui ) {
+      handle.text( ui.value );
+      currentConfig = ui.value;
+      setSwitchStates(currentConfig, currentTime);
+    }
+  });
+} );
+
+$( function() {
+  labels = {"0":"Real Time", "1":"+15 Minutes", "2":"+30 Minutes", "3":"+1 Hour",
+            "4":"+2 Hours", "5":"+3 Hours", "6":"+5 Hours", "7":"+1 Day", "8":"+2 Days"};
+  var handle2 = $( "#time-slider-handle" );
+  $( "#time-slider" ).slider({
+    min: 0,
+    max: 8,
+    step: 1,
+    create: function() {
+      handle2.text( labels[$( this ).slider( "value" )] );
+      currentTime = $( this ).slider( "value" );
+    },
+    slide: function( event, ui ) {
+      handle2.text( labels[ui.value] );
+      currentTime = ui.value;
+      setSwitchStates(currentConfig, currentTime);
+    }
+  });
+} );
+
+$( document ).ready(function() {
+  for (index = 0; index < switchConfigsUrls.length; index +=1) {
+    getSwitchStatesFromUrl(index, switchConfigFileEndpoint+switchConfigsUrls[index]);
+  }
+});
+
 
 
 console.log("Done, but waiting on web requests");

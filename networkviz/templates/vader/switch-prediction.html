@@ -4,15 +4,18 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/leaflet.css' %}" />
 <link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}" />
 <link rel="stylesheet" type="text/css" href="{% static 'css/tabordion.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/switch-prediction.css' %}" />
 {% endblock %}
 
 {% block content %}
 {% include "vader/_navbar.html" %}
 <style type="text/css">
-    #topo-select { width: 3%; height: 87%; float: left; margin-right: 1%;}
-    .map { width: 45.5%; height: 87%; float: left; margin-right: 1%;}
+    /*#topo-select { width: 3%; height: 87%; float: left; margin-right: 1%;}*/
+    .map { width: 49%; height: 87%; float: left; margin-right: 1%;}
     .lastmap { margin-right: 0; float: right; }
 </style>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
 
 <div id="wrapper" class="toggled">
     {% include "vader/_sidebar.html" %}
@@ -27,55 +30,37 @@
         <img class="card-img-top" src="{% static 'images/pvdisagg.png' %}" alt="PV DisAgg" width="80%">
         </div> -->
       </div>
-      <div class="tabordion" id="topo-select">
-        <section id="section1">
-        <input type="radio" name="sections" id="option1" checked>
-        <label for="option1">1</label>
-        <input type="radio" name="sections" name="2" id="option2">
-        <label for="option2">2</label>
-        <input type="radio" name="sections" id="option3">
-        <label for="option3">3</label>
-        <input type="radio" name="sections" id="option4">
-        <label for="option4">4</label>
-        <input type="radio" name="sections" id="option5">
-        <label for="option5">5</label>
-        <input type="radio" name="sections" id="option6">
-        <label for="option6">6</label>
-        <input type="radio" name="sections" id="option7">
-        <label for="option7">7</label>
-        <input type="radio" name="sections" id="option8">
-        <label for="option8">8</label>
-        <input type="radio" name="sections" id="option9">
-        <label for="option9">9</label>
-        <input type="radio" name="sections" id="option10">
-        <label for="option10">10</label>
-        <input type="radio" name="sections" id="option11">
-        <label for="option11">11</label>
-        <input type="radio" name="sections" id="option12">
-        <label for="option12">12</label>
-        <input type="radio" name="sections" id="option13">
-        <label for="option13">13</label>
-        <input type="radio" name="sections" id="option14">
-        <label for="option14">14</label>
-        <input type="radio" name="sections" id="option15">
-        <label for="option15">15</label>
-        <input type="radio" name="sections" id="option16">
-        <label for="option16">16</label>
-        <input type="radio" name="sections" id="option17">
-        <label for="option17">17</label>
 
-</section>
-           <!-- <select multiple class="form-control" id="sel2">
-             <option>1</option>
-             <option>2</option>
-             <option>3</option>
-             <option>4</option>
-             <option>5</option>
-           </select> -->
-         </div>
+<!-- <div class="row"> -->
+  <div class="col-md-6 left_col" role="main">
+    <label for="minbeds" class="slider-label">Starting Switch Configuration: </label><br>
+    <!-- <form id="starting-slider">
+<label for="minbeds">Starting Switch Configuration: </label>
+<select name="minbeds" id="minbeds">
+  <option>1</option>
+</select>
+</form> -->
+<div id="starting-slider">
+<div id="starting-slider-handle" class="ui-slider-handle custom-handle"></div>
+</div>
+
+  </div>
+  <div class="col-md-6 right_col" role="main">
+    <label for="minbeds" class="">Prediction Time: </label><br>
+    <div id="time-slider">
+    <div id="time-slider-handle" class="ui-slider-handle custom-handle"></div>
+    </div>
+  </div>
+
+<!-- </div> -->
+
+<!-- <div class="row">
+  <div class="col-md-12 left_col" role="main"> -->
         <div class="map" id="map1"></div>
         <div class="map lastmap" id="map2"></div>
         <!-- <div class="map lastmap" id="map3"></div> -->
+        <!-- </div>
+        </div> -->
     </div>
 </div>
 {% endblock %}
@@ -89,6 +74,8 @@
 <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
 <script src="{% static 'networkviz/gent/vendors/jquery-sparkline/dist/jquery.sparkline.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/L.Map.Sync.js' %}"></script>
+<script src="{% static 'js/jquery-ui.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.csv.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/switch-prediction.js' %}"></script>
 <script>
     $("#menu-toggle").click(function(e) {
