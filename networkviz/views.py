@@ -72,19 +72,20 @@ def get_live_data(request):
         return HttpResponse(connection.get_property(category, name))
     except:
         return HttpResponse('')
+
+
+def structure(requeest):
+    return HttpResponse(json.dumps(analyze.analyze_table('ieee123', 'scada', 'capacitor')));
         
 def get_history_data(request):
     result = []
-    try:
-        request.GET.get('simulation_name')
-        request.GET.get('database')
-        database.connect_to_database('ieee123', 'ami');
-        request.GET.get('table')
-        request.GET.get('field')
-        request.GET.get('condition')
-        result = helper.convert_decimal_list_to_float(database.query_database('ieee123', 'ami', 'cast(measured_voltage_1 as decimal(8,2))', 'meter', 'where t <= NOW() and name="meter_1"'), 0)
-    except:
-        result = []
+    simulation_name = request.GET.get('simulation_name')
+    db = request.GET.get('database')
+    database.connect_to_database(simulation_name, db);
+    table = request.GET.get('table')
+    field = request.GET.get('field')
+    condition = request.GET.get('condition')
+    result = helper.convert_decimal_list_to_float(database.query_database(simulation_name, db, field, table, condition), 0)
     return HttpResponse(json.dumps(result));
 
 def pvdisagg(request):

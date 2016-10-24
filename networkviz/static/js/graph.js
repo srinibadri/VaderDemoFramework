@@ -1,17 +1,37 @@
-function getHistoryData(dataset) {
+function getHistoryData(dataset, simulation_name, database, table, field, condition) {
     $.ajax({
         type: 'GET',
-        data: {},
+        data: {
+            simulation_name: simulation_name,
+            database: database,
+            table: table,
+            field: field,
+            condition: condition
+        },
         url: '/vader/getdata/history',
         dataType: 'json',
         async: false,
         success: function(data) {
             console.log(data.length);
-            for (var i = Math.max(0, data.length-672), j = 0; i < data.length; i++) {
+            //interval = Math.ceil(Math.max(1, data.length / 200));
+            //console.log(interval)
+            for (var i = 0, j = 0; i < data.length; i++) {
                 dataset.push({x: j++, y: data[i]});
             }
         }
     });
+}
+
+function getYLabel(column) {
+    if (column == 'Demand' || column == 'Energy') {
+        return column + ' (Wh)';
+    } else if (column == 'Power'){
+        return 'Power (W)'
+    } else if (column == 'Current') {
+        return 'Current (A)'
+    } else {
+        return 'Voltage (V)';
+    }
 }
 
 function getLiveData(category, name) {
@@ -34,16 +54,38 @@ function getLiveData(category, name) {
 
 var realTimeInterval = [];
 
-function graphHistory(title, style, ylabel) {
-    document.getElementById('graghLabel').innerHTML = title;
+function graphHistory(table, name, column) {
+    document.getElementById('graghLabel').innerHTML = name + ' ' + column + ' (Last 15 minutes)';
 
     var dataset = [];
 
-    getHistoryData(dataset);
+    var db, simulation_name='ieee123', field, style='line', ylabel=getYLabel(column);
+    var condition = 'where t >= DATE_SUB(CURDATE(), INTERVAL 15 MINUTE) and name="' + name + '"';
+
+    switch(table) {
+        case 'meter': db = 'ami'; break;
+        case 'sensor': db = 'scada'; break;
+        default: table = 'capacitor'; db = 'scada';
+    }
+
+    switch(column) {
+        case 'Demand': field = 'cast(measured_demand as decimal(8,1))'; break;
+        case 'Energy': field = 'cast(measured_real_energy as decimal(8,1))'; break;
+        case 'Voltage 1': field = 'cast(measured_voltage_1 as decimal(8,2))'; break;
+        case 'Voltage 2': field = 'cast(measured_voltage_2 as decimal(8,2))'; break;
+        case 'Voltage': field = 'cast(measured_voltage as decimal(8,2))'; break;
+        case 'Current': field = 'cast(measured_current as decimal(8,2))'; break;
+        case 'Power': field = 'cast(measured_power as decimal(8,2))'; break;
+        case 'Voltage A': field = 'cast(voltage_A as decimal(8,2))'; break;
+        case 'Voltage B': field = 'cast(voltage_B as decimal(8,2))'; break;
+        case 'Voltage C': field = 'cast(voltage_C as decimal(8,2))'; break;
+    }
+
+    getHistoryData(dataset, simulation_name, db, table, field, condition);
 
     var margin = {top: 20, right: 20, bottom: 30, left: 60},
 
-    width = 540 - margin.left - margin.right,
+    width = 1080 - margin.left - margin.right,
     height = 320 - margin.top - margin.bottom;
 
     var x = d3.scale.linear()
@@ -95,16 +137,36 @@ function graphHistory(title, style, ylabel) {
           .attr("d", line);
 }
 
-function CapacitorGraph(category, style, ylabel) {
-    document.getElementById('graghLabel').innerHTML = category;
+function graphLive(name, column) {
+    document.getElementById('graghLabel').innerHTML = name + ' ' + column;
     document.getElementById('graphArea').innerHTML = '';
-    graphLive(category, 'voltage_A[V,2fM]', 'Voltage A', style, ylabel, 360, 240, 0.1);
-    graphLive(category, 'voltage_B[V,2fM]', 'Voltage B', style, ylabel, 360, 240, 0.1);
-    graphLive(category, 'voltage_C[V,2fM]', 'Voltage C', style, ylabel, 360, 240, 0.1);
+    var width = 1080 , height = 320;
+    var style = 'line', scale, ylabel = getYLabel(column), item;
+    switch(column) {
+        case 'Demand': item = 'measured_demand'; scale = 1; break;
+        case 'Energy': item = 'measured_real_energy[Wh,2f]'; scale = 1; break;
+        case 'Voltage 1': item = 'measured_voltage_1[V,3fM]'; scale = 0.01; break;
+        case 'Voltage 2': item = 'measured_voltage_2[V,3fM]'; scale = 0.01; break;
+        case 'Voltage': item = 'measured_voltage[V,3fM]'; scale = 0.1; break;
+        case 'Current': item = 'measured_current[A,4fM]'; scale = 0.01; break;
+        case 'Power': item = 'measured_power[W,1fM]'; scale = 1; break;
+        case 'Voltage A': item = 'voltage_A[V,3fM]'; scale = 0.01; break;
+        case 'Voltage B': item = 'voltage_B[V,3fM]'; scale = 0.01; break;
+        case 'Voltage C': item = 'voltage_C[V,3fM]'; scale = 0.01; break;
+    }
+    graphLiveFormat(name, item, '', style, ylabel, width, height, scale);
+}
+
+function CapacitorGraph(name, style, ylabel) {
+    document.getElementById('graghLabel').innerHTML = name;
+    document.getElementById('graphArea').innerHTML = '';
+    graphLiveFormat(name, 'voltage_A[V,2fM]', 'Voltage A', style, ylabel, 360, 240, 0.1);
+    graphLiveFormat(name, 'voltage_B[V,2fM]', 'Voltage B', style, ylabel, 360, 240, 0.1);
+    graphLiveFormat(name, 'voltage_C[V,2fM]', 'Voltage C', style, ylabel, 360, 240, 0.1);
     // 540, 320
 }
 
-function graphLive(category, name, title, style, ylabel, widthAbs, heightAbs, scale) {
+function graphLiveFormat(name, column, title, style, ylabel, widthAbs, heightAbs, scale) {
     var dataset = [], i = 0;
 
     var margin = {top: 20, right: 20, bottom: 30, left: 60},
@@ -168,7 +230,8 @@ function graphLive(category, name, title, style, ylabel, widthAbs, heightAbs, sc
           .attr("d", line);
 
     realTimeInterval.push(setInterval(function() {
-        var result = getLiveData(category, name);
+        var result = getLiveData(name, column);
+        console.log(result)
         if (result != '') {
             dataset.push({x: i++, y: Number(result)});
             if (dataset.length > 40)

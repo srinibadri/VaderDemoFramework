@@ -18,17 +18,17 @@ $(document).ready(function(){
         queryDataTable($categoryName, $simulationName);
     });
 
-    function buildGraphIcon($categoryName, $itemName){
-        var $icon = '<div class="col-md-6">';
-        $icon += '<a onclick="graphHistory("ami", $categoryName, $itemName, "", "", "")" data-toggle="modal" data-target="#graph">';
-        $icon += '<i class="fa fa-history graph-icon" aria-hidden="true"></i></a>';
-        $icon += '</div>';
+    function buildGraphIcon(categoryName, itemName, colName){
+        var icon = '<div class="col-md-6">';
+        icon += '<a onclick="graphHistory(\''+categoryName + '\', \'' + itemName + '\', \'' + colName + '\')" data-toggle="modal" data-target="#graph">';
+        icon += '<i class="fa fa-history graph-icon" aria-hidden="true"></i></a>';
+        icon += '</div>';
 
-        $icon += '<div class="col-md-6">';
-        $icon += '<a onclick="graphLive("", $categoryName, "", "", "", "")" data-toggle="modal" data-target="#graph">';
-        $icon += '<i class="fa fa-history graph-icon" aria-hidden="true"></i></a>';
-        $icon += '</div>';
-        return $icon;
+        icon += '<div class="col-md-6">';
+        icon += '<a onclick="graphLive(\'' + itemName + '\', \'' + colName + '\')" data-toggle="modal" data-target="#graph">';
+        icon += '<i class="fa fa-line-chart graph-icon" aria-hidden="true"></i></a>';
+        icon += '</div>';
+        return icon;
     }
 
     function queryDataTable($categoryName, $simulationName){
@@ -44,11 +44,10 @@ $(document).ready(function(){
                 console.log(data);
                 if($categoryName == 'meter') {
                     for (var i = 0; i < data.length; i++) {
-                        var $icon = buildGraphIcon($categoryName, data[i][0]);
-                        data[i].push($icon);
-                        data[i].push($icon);
-                        data[i].push($icon);
-                        data[i].push($icon);
+                        data[i].push(buildGraphIcon($categoryName, data[i][0], 'Demand'));
+                        data[i].push(buildGraphIcon($categoryName, data[i][0], 'Energy'));
+                        data[i].push(buildGraphIcon($categoryName, data[i][0], 'Voltage 1'));
+                        data[i].push(buildGraphIcon($categoryName, data[i][0], 'Voltage 2'));
                     }
                     $('#meter-table').DataTable(
                         {
@@ -67,11 +66,10 @@ $(document).ready(function(){
                 else if($categoryName == 'cap'){
                     console.log(data);
                     for (i = 0; i < data.length; i++) {
-                        var $icon = buildGraphIcon($categoryName, data[i][0]);
-                        data[i].push($icon);
-                        data[i].push($icon);
-                        data[i].push($icon);
-                        data[i].push($icon);
+                        data[i].push(buildGraphIcon($categoryName, data[i][0], 'Voltage A'));
+                        data[i].push(buildGraphIcon($categoryName, data[i][0], 'Voltage B'));
+                        data[i].push(buildGraphIcon($categoryName, data[i][0], 'Voltage C'));
+                        data[i].push(buildGraphIcon($categoryName, data[i][0], 'Voltage C'));
                     }
                     $('#meter-table').DataTable(
                         {
@@ -91,11 +89,11 @@ $(document).ready(function(){
                     console.log(data);
                     for (i = 0; i < data.length; i++) {
                         var $icon = buildGraphIcon($categoryName, data[i][0]);
-                        data[i].push($icon);
-                        data[i].push($icon);
-                        data[i].push($icon);
-                        data[i].push($icon);
-                        data[i].push($icon);
+                        data[i].push(buildGraphIcon($categoryName, data[i][0], 'Voltage'));
+                        data[i].push(buildGraphIcon($categoryName, data[i][0], 'Current'));
+                        data[i].push(buildGraphIcon($categoryName, data[i][0], 'Power'));
+                        data[i].push(buildGraphIcon($categoryName, data[i][0], 'Power'));
+                        data[i].push(buildGraphIcon($categoryName, data[i][0], 'Power'));
                     }
                     $('#meter-table').DataTable(
                         {
