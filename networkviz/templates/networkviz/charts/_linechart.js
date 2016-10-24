@@ -1,7 +1,7 @@
 <!-- Flot -->
 <script>
 $(document).ready(function() {
-    var supply = [], demand = [];
+    var supply = [], demand = [], dataset = [];
     var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
     $.ajax({
         type: 'GET',
@@ -10,6 +10,7 @@ $(document).ready(function() {
         dataType: 'json',
         async: false,
         success: function(data) {
+            dataset = data;
             for (var i = 0; i < 672; i++) {
                 supply.push({x: parseDate(data[i].time), y: data[i].real_power/1000});
                 demand.push({x: parseDate(data[i].time), y: data[i].demand/1000})
@@ -44,7 +45,6 @@ $(document).ready(function() {
         .tickPadding(5);
 
     var line = d3.svg.area().interpolate("basis").x(function(d) { return x(d.x); }).y0(height).y1(function(d) { return y(d.y); });
-    d3.select("svg").remove();
     var svg = d3.select("#canvas_dahs").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)

@@ -34,3 +34,8 @@
 .tick line {
     opacity: 0.5
 }
+
+#graphArea {
+    display: table;
+    margin: 0 auto;
+}
