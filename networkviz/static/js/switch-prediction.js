@@ -515,7 +515,7 @@ function populateRegions(endpoint, layerGroup, regions_list) {
   console.log("populateRegions");
   $.getJSON( endpoint, function(elements, error) {
     elements.forEach(function(element) {
-      region = L.polygon(element.points, {color: region_colors[element.group_num]});
+      region = L.polygon(element.points, {color: "#777"});
       regions_list.push(region);
       layerGroup.addLayer(region);
     });
