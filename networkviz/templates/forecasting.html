@@ -28,7 +28,22 @@
         </div> -->
       </div>
       <div class="row">
-        <div class="col-md-2 left_col" role="main">
+        <div class="col-md-2 left_col" role="main" id="control-bar">
+          <h2>Data Controls</h2>
+            <fieldset>
+              <label for="radio" class="">Select Data Subset: </label><br>
+              <label for="radio-date">By Date</label>
+              <input type="radio" name="radio-1" class="datetimeradio" id="radio-date" checked>
+              <label for="radio-time">By Time of Day</label>
+              <input type="radio" name="radio-1" class="datetimeradio" id="radio-time">
+              <!-- <label for="radio-hours">By Hours Ahead</label>
+              <input type="radio" name="radio-1" class="datetimeradio" id="radio-hours"> -->
+              <label for="radio-month">Show Month</label>
+              <input type="radio" name="radio-1" class="datetimeradio" id="radio-month">
+
+            </fieldset>
+
+          <div id="date-selector">
           Date:
           <fieldset>
             <div class="control-group">
@@ -40,10 +55,13 @@
                 </div>
               </div>
             </div>
+            </div>
 
+            <div id="time-selector">
           <label for="minbeds" class="">Time: </label><br>
           <div id="time-slider">
           <div id="time-slider-handle" class="ui-slider-handle custom-handle"></div>
+          </div>
           </div>
 
           <!-- <div class="ui-widget"> -->
@@ -69,7 +87,8 @@
 
           <label for="zips">Zip code: </label><br>
              <select name="zips" id="zips">
-               <option selected="selected">93309</option>
+               <option selected="selected">all zips</option>
+               <option>93309</option>
                <option>93307</option>
                <option>94585</option>
                <option>93635</option>
