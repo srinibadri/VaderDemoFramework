@@ -60,5 +60,6 @@ urlpatterns = [
     url(r'^climate', views.query_for_climate, name='climate'),
     url(r'^getdata/live', views.get_live_data),
     url(r'^getdata/history', views.get_history_data),
-    url(r'^structure', views.structure)
+    url(r'^structure', views.structure),
+    url(r'^getdata/total-power', views.get_total_power)
 ]

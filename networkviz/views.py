@@ -78,6 +78,14 @@ def get_live_data(request):
 def structure(requeest):
     return HttpResponse(json.dumps(analyze.analyze_table('ieee123', 'scada', 'capacitor')));
 
+def get_total_power(request):
+    res = helper.get_demand_and_energy_by_time('ieee123')
+    converted_res = helper.add_column_name_to_result(res, 'time', 'demand', 'real_power')
+    # power_list = helper.select_two_column_from_result(res, 0, 1)
+    # demand_list = helper.select_two_column_from_result(res, 0, 2)
+    # converted_res = helper.wrapper_lists_and_add_name(['power', 'demand'], power_list, demand_list)
+    return HttpResponse(json.dumps(converted_res))
+        
 def get_history_data(request):
     result = []
     simulation_name = request.GET.get('simulation_name')
