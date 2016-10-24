@@ -18,6 +18,18 @@ $(document).ready(function(){
         queryDataTable($categoryName, $simulationName);
     });
 
+    function buildGraphIcon($categoryName, $itemName){
+        var $icon = '<div class="col-md-6">';
+        $icon += '<a onclick="graphHistory("ami", $categoryName, $itemName, "", "", "")" data-toggle="modal" data-target="#graph">';
+        $icon += '<i class="fa fa-history graph-icon" aria-hidden="true"></i></a>';
+        $icon += '</div>';
+
+        $icon += '<div class="col-md-6">';
+        $icon += '<a onclick="graphLive("", $categoryName, "", "", "", "")" data-toggle="modal" data-target="#graph">';
+        $icon += '<i class="fa fa-history graph-icon" aria-hidden="true"></i></a>';
+        $icon += '</div>';
+        return $icon;
+    }
 
     function queryDataTable($categoryName, $simulationName){
         $.ajax({
@@ -30,19 +42,13 @@ $(document).ready(function(){
             },
             success : function(data){
                 console.log(data);
-
-                var icon = '<div class="col-md-6">' +
-                    '<a onclick="graphConfig(30, 100, "90 B", "line", "Voltage (V)")" data-toggle="modal" data-target="#graph"><i class="fa fa-history graph-icon" aria-hidden="true"></i></a>' +
-                    '</div>' +
-                    '<div class="col-md-6">' +
-                    '<a onclick="graphConfig(30, 100, "90 B", "line", "Voltage (V)")" data-toggle="modal" data-target="#graph"><i class="fa fa-line-chart graph-icon" aria-hidden="true"></i></a>' +
-                    '</div>';
                 if($categoryName == 'meter') {
                     for (var i = 0; i < data.length; i++) {
-                        data[i].push(icon);
-                        data[i].push(icon);
-                        data[i].push(icon);
-                        data[i].push(icon);
+                        var $icon = buildGraphIcon($categoryName, data[i][0]);
+                        data[i].push($icon);
+                        data[i].push($icon);
+                        data[i].push($icon);
+                        data[i].push($icon);
                     }
                     $('#meter-table').DataTable(
                         {
@@ -58,13 +64,14 @@ $(document).ready(function(){
                             data: data
                         });
                 }
-                else if($categoryName == "cap"){
-                    console.log("come in");
+                else if($categoryName == 'cap'){
+                    console.log(data);
                     for (i = 0; i < data.length; i++) {
-                        data[i].push(icon);
-                        data[i].push(icon);
-                        data[i].push(icon);
-                        data[i].push(icon);
+                        var $icon = buildGraphIcon($categoryName, data[i][0]);
+                        data[i].push($icon);
+                        data[i].push($icon);
+                        data[i].push($icon);
+                        data[i].push($icon);
                     }
                     $('#meter-table').DataTable(
                         {
@@ -81,12 +88,14 @@ $(document).ready(function(){
                         });
                 }
                 else{
+                    console.log(data);
                     for (i = 0; i < data.length; i++) {
-                        data[i].push(icon);
-                        data[i].push(icon);
-                        data[i].push(icon);
-                        data[i].push(icon);
-                        data[i].push(icon);
+                        var $icon = buildGraphIcon($categoryName, data[i][0]);
+                        data[i].push($icon);
+                        data[i].push($icon);
+                        data[i].push($icon);
+                        data[i].push($icon);
+                        data[i].push($icon);
                     }
                     $('#meter-table').DataTable(
                         {
