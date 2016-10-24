@@ -376,17 +376,17 @@ def is_int(s):
         return False
 
 
-def query_for_dataTable(request):
-    context = {}
+def query_for_datatable(request):
     simulation_name = request.GET.get('simulation_name')
     category_name = request.GET.get('category')
     object_list = analyze.get_object_list(simulation_name, category_name)
     data = []
     data_list = []
-    for object in object_list:
-        data.append(object)
-        service_status = connection.get_property(object, 'service_status')
-        data.append(service_status)
+    for object_item in object_list:
+        data.append(object_item)
+        if category_name == 'meter' or category_name == 'cap':
+            service_status = connection.get_property(object_item, 'service_status')
+            data.append(service_status)
         data_list.append(data)
         data = []
     print data_list

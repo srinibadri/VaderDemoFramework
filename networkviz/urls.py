@@ -54,6 +54,6 @@ urlpatterns = [
     url(r'^api/capacitor/$', views.api_capacitors),
 
     url(r'^api/feeder/$', views.query_for_feeder, name='feeder'),
-    url(r'^datatable', views.query_for_dataTable, name='datatable'),
+    url(r'^datatable', views.query_for_datatable, name='datatable'),
     url(r'^climate', views.query_for_climate, name='climate'),
 ]
