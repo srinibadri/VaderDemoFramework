@@ -23,9 +23,9 @@ function getHistoryData(dataset, simulation_name, database, table, field, condit
 }
 
 function getYLabel(column) {
-    if (column == 'Demand' || column == 'Energy') {
+    if (column == 'Energy') {
         return column + ' (Wh)';
-    } else if (column == 'Power'){
+    } else if (column == 'Power' || column == 'Demand'){
         return 'Power (W)'
     } else if (column == 'Current') {
         return 'Current (A)'
@@ -143,7 +143,7 @@ function graphLive(name, column) {
     var width = 1080 , height = 320;
     var style = 'line', scale, ylabel = getYLabel(column), item;
     switch(column) {
-        case 'Demand': item = 'measured_demand'; scale = 1; break;
+        case 'Demand': item = 'measured_demand[W,1fM]'; scale = 1; break;
         case 'Energy': item = 'measured_real_energy[Wh,2f]'; scale = 1; break;
         case 'Voltage 1': item = 'measured_voltage_1[V,3fM]'; scale = 0.01; break;
         case 'Voltage 2': item = 'measured_voltage_2[V,3fM]'; scale = 0.01; break;
@@ -163,7 +163,6 @@ function CapacitorGraph(name, style, ylabel) {
     graphLiveFormat(name, 'voltage_A[V,2fM]', 'Voltage A', style, ylabel, 360, 240, 0.1);
     graphLiveFormat(name, 'voltage_B[V,2fM]', 'Voltage B', style, ylabel, 360, 240, 0.1);
     graphLiveFormat(name, 'voltage_C[V,2fM]', 'Voltage C', style, ylabel, 360, 240, 0.1);
-    // 540, 320
 }
 
 function graphLiveFormat(name, column, title, style, ylabel, widthAbs, heightAbs, scale) {
