@@ -18,16 +18,14 @@
             <div class="">
                 <div class="page-title">
                     <div class="title_left">
-                        <h3 id="simulation-name">
-                            'IEEE123' Live Dashboard
+                        <h3>
+                            '<span id="simulation-name">ieee123</span>' Live Dashboard
                             <small class="dropdown">
                                 <a class="dropdown-toggle simulation-dropdown" data-toggle="dropdown">
                                     (Change Model)
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="change-model">ieee123s</a></li>
-                                    <li><a class="change-model">ieee123z</a></li>
-                                    <li><a class="change-model">ieee123zs</a></li>
+
                                 </ul>
                             </small>
                         </h3>
@@ -73,6 +71,9 @@
 {% endblock %}
 
 {% block script %}
+    <!-- Initial function -->
+    <script type="text/javascript" src="{% static 'js/init.js' %}"></script>
+
     <script type="text/javascript" src="{% static 'js/datatable.js' %}"></script>
     <!-- Javascript Imports (so many!) -->
     {% block imports-js %} {% include "networkviz/_imports-js.html" %} {% endblock %}
