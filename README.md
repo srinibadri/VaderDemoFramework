@@ -33,6 +33,7 @@
 ### Docker
 
 Install Docker (https://docs.docker.com/engine/installation/)
+MacOS: https://download.docker.com/mac/stable/Docker.dmg
 
 1. $ cd VaderDemoFramework/docker
 1. $ docker build -t vader .
