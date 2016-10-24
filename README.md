@@ -6,7 +6,11 @@
 ### Mac
 
 1. $ git clone https://github.com/slacgismo/VaderDemoFramework
-1. $ pip2 install django pykml mysql-connector-python-rf mysql untangle requests lxml mysql mysql-connector-python-rf pandas scipy cvxopt ConfigParser
+1. $ brew update
+1. $ brew upgrade
+1. $ brew install <<<INCOMPLETE LIST>>>
+1. $ pip2 install --upgrade pip
+1. $ pip2 install django untangle requests lxml pykml mysql-connector mysql mysql-connector-python-rf pandas scipy cvxopt
 1. $ cd VaderDemoFramework
 1. $ git checkout master
 1. $ python2 manage.py runserver
@@ -22,6 +26,7 @@
 1. $ pip install django untangle requests lxml pykml mysql-connector mysql mysql-connector-python-rf pandas scipy cvxopt
 1. $ git clone https://github.com/slacgismo/VaderDemoFramework.git
 1. $ cd VaderDemoFramework
+1. $ git checkout master
 1. $ python manage.py runserver
 
 

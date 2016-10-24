@@ -3,8 +3,8 @@
 {% load staticfiles %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/leaflet.css' %}" />
 <link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}" />
-<link rel="stylesheet" type="text/css" href="{% static 'css/tabordion.css' %}" />
 <link rel="stylesheet" type="text/css" href="{% static 'css/switch-prediction.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/jquery-ui.css' %}" />
 {% endblock %}
 
 {% block content %}
@@ -14,7 +14,6 @@
     .map { width: 49%; height: 87%; float: left; margin-right: 1%;}
     .lastmap { margin-right: 0; float: right; }
 </style>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 
 <div id="wrapper" class="toggled">
@@ -22,7 +21,7 @@
     <div class="page-content-wrapper">
 
       <div class="jumbotron text-center" style="padding: 35px; padding-bottom: 20px; margin-bottom: 0px;">
-        <p>This demo presents a machine learning tool that can switch configurations and region connectivity with minimal data.</p>
+        <p>This demo presents a machine learning tool that can predict switch configurations and region connectivity with minimal data.</p>
 
         <p><b>Left side is actual state</b> populated from complete information, the <b>right side is predicted</b> using data from a small number of sensors</p>
 
