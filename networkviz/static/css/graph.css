@@ -3,6 +3,20 @@
     stroke: #1abb9c;
 }
 
+.supply {
+    fill: green;
+    opacity: 0.38;
+    stroke: #1abb9c;
+    stroke-width: 2px;
+}
+
+.demand {
+    fill: red;
+    opacity: 0.38;
+    stroke: #ff0000;
+    stroke-width: 2px;
+}
+
 .line {
     fill: none;
     stroke: #1abb9c;
