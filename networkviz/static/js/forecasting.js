@@ -310,10 +310,12 @@ console.log("Done, but waiting on web requests");
 
 
 // ##################### Forecasting Business Logic
-var currentDate = "11-01-2011";
-var currentTime = "10:00";
+var currentDate = "2011-11-01";
+var currentTime = "10:00:00";
 var currentMeter = 0;
 var currentAlgo = "SVR";
+var currentFilter = "radio-date";
+var currentZip = "all-zips";
 var currentPredictRange = 1;
 var meterToZip = [
   93309,93309,93309,93309,93309,93309,93309,93309,93309,93309,93309,93309,93309,
@@ -327,30 +329,59 @@ var meterToZip = [
 var hoursInDay = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24];
 var temperature;
 var trueValues = {};
+
+// [meter_0[hour_0,hour_1],meter_1[hour_0,hour_1]]
 var trueValuesInvert  = new Array(100);
 for(index = 0; index < trueValuesInvert.length; index +=1) {
   trueValuesInvert[index] = new Array(720);
 }
 var tempByZipUrl = "/static/data/temp_by_zip.csv";
 var loadTrueUrl = "/static/data/load_true.csv";
-var algorithmTypes = [
-  "AdaBoostDTR", "AdaptiveLinear", "DecisionTreeRegressor",
-    "GradientBoostingRegressor", "KNeighborsRegressor", "LassoLarsIC",
-    "OLS", "SVR"];
+var algorithmTypes = ["SVR"];
+  // "AdaBoostDTR", "AdaptiveLinear", "DecisionTreeRegressor",
+  //   "GradientBoostingRegressor", "KNeighborsRegressor", "LassoLarsIC",
+  //   "OLS", "SVR"];
 var algorithmBaseUrl = "/static/data/forecast_demo/";
 
-// Note, this has NOT been CSV parsed
+var trueFiltered, predictFiltered;
+
+// {Algorithm:{predict_range1:[time0[meter_0,meter_1],time1],predict_range2},Algorithm}
 var predictionData = {};
+
+// {Algorithm:[predict_range1[meter_0[hour_0[index,value],hour_1],meter_1],predict_range2],Algorithm}
 var predictionDataInvert = {};
 
 var graphsEnabled = false;
 
 function updateGraphs() {
-  showGraphs(meter=currentMeter,
-    date_time=(currentDate+" "+currentTime),
-    predict_range=currentPredictRange,
-    algorithm=currentAlgo);
+  if (currentFilter == "radio-date") {
+    $("#date-selector").css('visibility', 'visible');
+    $("#time-selector").css('visibility', 'hidden');
+    showGraphsDaily(meter=currentMeter,
+      date=(currentDate),
+      predict_range=currentPredictRange,
+      algorithm=currentAlgo);
+  } else if (currentFilter == "radio-time") {
+    $("#date-selector").css('visibility', 'hidden');
+    $("#time-selector").css('visibility', 'visible');
+
+    showGraphsHourly(meter=currentMeter,
+      time=(currentTime),
+      predict_range=currentPredictRange,
+      algorithm=currentAlgo);
+  } else if (currentFilter == "radio-month") {
+    $("#date-selector").css('visibility', 'hidden');
+    $("#time-selector").css('visibility', 'hidden');
+    showGraphs(meter=currentMeter,
+      date_time=(currentDate+" "+currentTime),
+      predict_range=currentPredictRange,
+      algorithm=currentAlgo);
+  }
 }
+
+// function updateGraphsTime() {
+// }
+
 
 function showGraphs(meter, date_time, predict_range, algorithm) {
   if (!graphsEnabled) {
@@ -373,6 +404,94 @@ function showGraphs(meter, date_time, predict_range, algorithm) {
   // drawChart(trueValuesInvert[0], 0);
 }
 
+function showGraphsDaily(meter, date, predict_range, algorithm) {
+  if (!graphsEnabled) {
+    console.log("Try again soon");
+    return;
+  }
+  console.log("Updating graph for meter: " +meter + ", date: " + date +
+  ", predict_range: "+ predict_range + ", algorithm: " + algorithm);
+  // console.log(trueValuesInvert[meter]);
+
+  i = 0
+  trueFiltered = new Array();
+  for (key in trueValues) {
+    if(key.split(' ')[0] == date) {
+      trueFiltered.push([i, trueValues[key][meter]]);
+      i += 1;
+    }
+  }
+  i = 0
+  predictFiltered = new Array();
+  predictionValues = predictionData[algorithm][predict_range]
+  for (key in predictionValues) {
+    if(key.split(' ')[0] == date) {
+      predictFiltered.push([i, predictionValues[key][meter]]);
+      i += 1;
+    }
+  }
+
+
+  // for (key in trueFiltered) {
+  //   console.log(key + " " + trueFiltered[key]);
+  // }
+  // for (key in predictFiltered) {
+  //   console.log(key + " " + predictFiltered[key]);
+  // }
+  difference = new Array(trueFiltered.length);
+  for (index = 0; index < trueFiltered.length; index += 1) {
+    difference[index] = [index,(predictFiltered[index][1] - trueFiltered[index][1])];
+  }
+  // console.log(difference);
+  $.plot("#graph0", [trueFiltered, predictFiltered]);
+  $.plot("#graph1", [difference]);
+  // drawChart(trueValuesInvert[0], 0);
+}
+
+
+function showGraphsHourly(meter, time, predict_range, algorithm) {
+  if (!graphsEnabled) {
+    console.log("Try again soon");
+    return;
+  }
+  console.log("Updating graph for meter: " +meter + ", time: " + time +
+  ", predict_range: "+ predict_range + ", algorithm: " + algorithm);
+  // console.log(trueValuesInvert[meter]);
+
+  i = 0
+  trueFiltered = new Array();
+  for (key in trueValues) {
+    if(key.split(' ')[1] == time) {
+      trueFiltered.push([i, trueValues[key][meter]]);
+      i += 1;
+    }
+  }
+  i = 0
+  predictFiltered = new Array();
+  predictionValues = predictionData[algorithm][predict_range]
+  for (key in predictionValues) {
+    if(key.split(' ')[1] == time) {
+      predictFiltered.push([i, predictionValues[key][meter]]);
+      i += 1;
+    }
+  }
+
+
+  // for (key in trueFiltered) {
+  //   console.log(key + " " + trueFiltered[key]);
+  // }
+  // for (key in predictFiltered) {
+  //   console.log(key + " " + predictFiltered[key]);
+  // }
+  difference = new Array(trueFiltered.length);
+  for (index = 0; index < trueFiltered.length; index += 1) {
+    difference[index] = [index,(predictFiltered[index][1] - trueFiltered[index][1])];
+  }
+  // console.log(difference);
+  $.plot("#graph0", [trueFiltered, predictFiltered]);
+  $.plot("#graph1", [difference]);
+  // drawChart(trueValuesInvert[0], 0);
+}
 
 $( function() {
 
@@ -423,7 +542,7 @@ $( function() {
         predictionData[algo] = {};
         predictionDataInvert[algo] = {};
         hoursInDay.forEach(function (hour) {
-          ((predictionData[algo])[hour]) = {};
+          ((predictionData[algo])[hour]) = new Array(720);
           ((predictionDataInvert[algo])[hour]) = new Array(100);
           for(index = 0; index < 100; index +=1) {
             ((predictionDataInvert[algo])[hour])[index] = new Array(720);
@@ -444,16 +563,21 @@ $( function() {
                         flo = parseFloat(parsed[datum])
                        numbered[datum-1] = flo;
                        (((predictionDataInvert[algo])[hour])[datum-1])[index-1] = [index-1,flo];
+
                       }
+                      // console.log(numbered);
                       ((predictionData[algo])[hour])[parsed[0]] = numbered;
 
                     }
                     // console.log(lines[0]);
 
 
-                    (predictionData[algo])[hour] = data;
+                    // (predictionData[algo])[hour] = data;
                     // console.log(temperature);
                     graphsEnabled = true;
+                    if(algo=="SVR" && hour == 1) {
+                      updateGraphs();
+                    }
                   }
                });
         })
@@ -516,6 +640,13 @@ $( function() {
     change: function( event, data ) { currentZip = data.item.value; updateGraphs(); }});
   $( "#algors" ).selectmenu({
     change: function( event, data ) { currentAlgo = data.item.value; updateGraphs(); }});
+    $( ".datetimeradio" ).checkboxradio({
+          icon: false,
+        }).click(function() {
+            currentFilter = $("input[name=radio-1]:checked")[0].id;
+            updateGraphs();
+            // alert($("input[name=radio-1]:checked").val());
+        });
 //     var availableTags = [
 // 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99    ];
 //     $( "#tags" ).val('4').selectmenu({
@@ -559,35 +690,39 @@ $( "#time-slider" ).slider({
             slide: function(e, ui) {
                 var hours1 = Math.floor(ui.values[0] / 60);
                 var minutes1 = ui.values[0] - (hours1 * 60);
-                if(hours1.length == 1) hours1 = '0' + hours1;
+                var minutesDisplay = minutes1,
+                    hoursDisplay = hours1;
+                if(hours1.length == 1) hoursDisplay = '0' + hours1;
                 if(minutes1.length == 1) minutes1 = '0' + minutes1;
                 if(minutes1 == 0) minutes1 = '00';
 
                 if(hours1 >= 12){
 
                     if (hours1 == 12){
-                        hours1 = hours1;
-                        minutes1 = minutes1 + " PM";
+                        hoursDisplay = hours1;
+                        minutesDisplay = minutes1 + " PM";
                     } else if (hours1 == 24){
-                        hours1 = hours1;
-                        minutes1 = minutes1 + " AM";
+                        hoursDisplay = hours1;
+                        minutesDisplay = minutes1 + " AM";
                     } else{
-                        hours1 = hours1 - 12;
-                        minutes1 = minutes1 + " PM";
+                        hoursDisplay = hours1 - 12;
+                        minutesDisplay = minutes1 + " PM";
                     }
                 }
 
                 else{
 
-                    hours1 = hours1;
-                    minutes1 = minutes1 + " AM";
+                    hoursDisplay = hours1;
+                    minutesDisplay = minutes1 + " AM";
                 }
                 if (hours1 == 0){
-                    hours1 = 12;
-                    minutes1 = minutes1;
+                    hoursDisplay = 12;
+                    minutesDisplay = minutes1 + " AM";
                 }
-                currentTime = hours1+':'+minutes1+":00";
-                $('.custom-handle').html(hours1+':'+minutes1);
+                if(hours1 < 10) {
+                  currentTime = "0"+hours1+':'+minutes1+":00";
+                } else { currentTime = hours1+':'+minutes1+":00"; }
+                $('.custom-handle').html(hoursDisplay+':'+minutesDisplay);
                 updateGraphs();
             }
     });
