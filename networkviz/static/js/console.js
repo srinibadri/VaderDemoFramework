@@ -67,7 +67,7 @@ $(document).ready(function(){
                 '<div class="col-md-3 col-sm-3 col-xs-12 console-item">closed</div>' +
                 '<div class="col-md-3 col-sm-3 col-xs-12 console-item">' +
                 '<label class="toggle"><input type="checkbox"><div class="slider round"></div></label></div>' +
-                '<div class="col-md-3 col-sm-3 col-xs-12 console-item"><a onclick="graphConfig(20, 100, "83 A", "line", "Voltage (V)")" data-toggle="modal" data-target="#graph"><i class="fa fa-line-chart graph-icon" aria-hidden="true"></i></a></div>';
+                '<div class="col-md-3 col-sm-3 col-xs-12 console-item"><a onclick="CapacitorGraph(' + cap + ', "line", "Voltage (V)")" data-toggle="modal" data-target="#graph"><i class="fa fa-line-chart graph-icon" aria-hidden="true"></i></a></div>';
         }
         $(".capacitor").append(innerHtml);
     }

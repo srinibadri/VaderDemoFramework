@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from django.template import loader
 import untangle, requests, json
-from utilities import analyze, connection, database, simulation, climate
+from utilities import analyze, connection, database, simulation, climate, helper
 import pickle
 import pandas as pd
 import time
@@ -12,6 +12,7 @@ from SolarDisaggregation import *
 import datetime
 from vaderviz.settings import PICKLE_FOLDER
 import numpy as np
+import json
 
 # Create your views here.
 
@@ -64,7 +65,27 @@ def ieee123(request):
     context = {}
     return HttpResponse(template.render(context, request))
 
-
+def get_live_data(request):
+    try:
+        category = request.GET.get('category')
+        name = request.GET.get('name')
+        return HttpResponse(connection.get_property(category, name))
+    except:
+        return HttpResponse('')
+        
+def get_history_data(request):
+    result = []
+    try:
+        request.GET.get('simulation_name')
+        request.GET.get('database')
+        database.connect_to_database('ieee123', 'ami');
+        request.GET.get('table')
+        request.GET.get('field')
+        request.GET.get('condition')
+        result = helper.convert_decimal_list_to_float(database.query_database('ieee123', 'ami', 'cast(measured_voltage_1 as decimal(8,2))', 'meter', 'where t <= NOW() and name="meter_1"'), 0)
+    except:
+        result = []
+    return HttpResponse(json.dumps(result));
 
 def pvdisagg(request):
     ##data=disaggregateRegion(region_id)
