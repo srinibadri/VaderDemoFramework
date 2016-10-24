@@ -145,3 +145,8 @@ header{
     padding-bottom: 20px;
     background-color: #8C1515;
 }
+
+.graph-icon {
+    font-size: 20px;
+    cursor: pointer;
+}

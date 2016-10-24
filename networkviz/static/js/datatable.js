@@ -3,7 +3,7 @@ $(document).ready(function(){
     var $simulationName = 'ieee123';
 
     // Get "meter" when page is rendered default
-    queryDataTable("meter", $simulationName);
+    queryDataTable("sensor", $simulationName);
 
     $('.table-tab').click(function () {
         $('.nav-tabs').children().removeClass("active");
