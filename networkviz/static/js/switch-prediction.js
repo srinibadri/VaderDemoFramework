@@ -27,7 +27,7 @@ var ignoreList = ["sw61to6101", "node_6101", "line60to61", "node_610", "node_61"
 
 var monitoredList = ["sw13to152","sw151to300","sw450to451","sw95to195"];
 
-var switchStateList = ["sw15001to149","sw250to251","sw300to350","sw450to451","sw95to195","sw13to152","sw18to135","sw60to160","sw61to6101","sw97to197","sw54to94","sw151to300"];
+var switchStateList = {"sw15001to149":"OPEN","sw250to251":"OPEN","sw300to350":"OPEN","sw450to451":"OPEN","sw95to195":"OPEN","sw13to152":"OPEN","sw18to135":"OPEN","sw60to160":"OPEN","sw61to6101":"OPEN","sw97to197":"OPEN","sw54to94":"OPEN","sw151to300":"OPEN"};
 var switchConfigsUrls = ["RT_configs.csv",
       "15M_configs.csv", "30M_configs.csv",
       "1HR_configs.csv", "2HR_configs.csv",
@@ -256,10 +256,10 @@ map1.attributionControl.setPrefix('');
 var map2 = L.map('map2', {
     layers: [baseLayers2["OpenMap Theme"],
     //overlayLayers2["Meters"],
-    overlayLayers2["Nodes"],
+    // overlayLayers2["Nodes"],
     // overlayLayers2["Loads"],
     overlayLayers2["Switches"],
-    overlayLayers2["Line Sensors"],
+    // overlayLayers2["Line Sensors"],
     overlayLayers2["Lines"],
     overlayLayers2["Substations"],
     overlayLayers2["Regions"]
@@ -272,8 +272,8 @@ var map2 = L.map('map2', {
 
 
 // Add each map to the map array. This will be useful for scalable calling later
-maps.push({"map":map1, "base":baseLayers1, "overlay":overlayLayers1, "popup":L.popup(), "predict_state": "actual", "switches":[] });
-maps.push({"map":map2, "base":baseLayers2, "overlay":overlayLayers2, "popup":L.popup(), "predict_state": "predicted", "switches":[] });
+maps.push({"map":map1, "base":baseLayers1, "overlay":overlayLayers1, "popup":L.popup(), "predict_state": "actual", "switches":[], "regions":[] });
+maps.push({"map":map2, "base":baseLayers2, "overlay":overlayLayers2, "popup":L.popup(), "predict_state": "predicted", "switches":[], "regions":[] });
 // maps.push(map3);
 
 
@@ -504,27 +504,25 @@ function populateLayerSubstation(endpoint, layerGroup, iconPath, element_type, p
 }
 
 
-var region_colors = ['red', 'blue', 'yellow','yellow', 'red', 'green', 'green', 'green', 'orange'];
-var region_colors2 =['red', 'blue', 'blue','yellow', 'red', 'green', 'green', 'green', 'orange'];
+var region_colors = ['red', 'blue', 'yellow','black', 'white', 'green', 'orange', 'green', 'orange'];
+var region_colors2 = region_colors;
+// var region_colors2 =['red', 'blue', 'blue','yellow', 'red', 'green', 'green', 'green', 'orange'];
 
 
-function populateRegions(endpoint, layerGroup, predict_state) {
+function populateRegions(endpoint, layerGroup, regions_list) {
   console.log("populateRegions");
   $.getJSON( endpoint, function(elements, error) {
-    if(predict_state == "actual") {
-      elements.forEach(function(element) {
-        layerGroup.addLayer(L.polygon(element.points, {color: region_colors[element.group_num]}))
-      });
-    } else {
-      elements.forEach(function(element) {
-        layerGroup.addLayer(L.polygon(element.points, {color: region_colors2[element.group_num]}))
-      });
-    }
+    elements.forEach(function(element) {
+      region = L.polygon(element.points, {color: region_colors[element.group_num]});
+      regions_list.push(region);
+      layerGroup.addLayer(region);
+    });
   });
 }
 
-function setSwitchStates(config, time) {
-  console.log("Setting switch states for config " + config + " and time " + time);
+
+function setRegionColors(config, time) {
+  console.log("Setting region colors for config " + config + " and time " + time);
 
   if (switchConfigs[0] == {}) {
     console.log("NOT READY TO CHANGE STATE");
@@ -546,6 +544,464 @@ function setSwitchStates(config, time) {
 
   });
 
+}
+
+// Connectivity graph
+/*
+
+Sub0 ---> sw15001to149 ---> region0
+
+region0 ---> sw15001to149 ---> Sub0
+region0 ---> sw13to152 ---> region1
+region0 ---> sw13to152 ---> region2
+
+
+region1 ---> sw13to152 ---> region0
+region1 ---> sw13to152 ---> region2
+region1 ---> sw18to135 ---> region2
+region1 ---> sw18to135 ---> region3
+
+region2 ---> sw13to152 ---> region0
+region2 ---> sw13to152 ---> region1
+region2 ---> sw18to135 ---> region1
+region2 ---> sw18to135 ---> region3
+region2 ---> sw54to94 ---> region2
+region2 ---> sw54to94 ---> region4
+region2 ---> sw151to300 ---> region5
+
+region3 ---> sw18to135 ---> region1
+region3 ---> sw18to135 ---> region2
+region3 ---> sw250to251 ---> Sub1
+
+Sub1 ---> sw250to251 ---> region3
+
+region4 ---> sw54to94 ---> region2
+region4 ---> sw60to160 ---> region6
+
+region5 ---> sw151to300 ---> region2
+region5 ---> sw97to197 ---> region6
+
+region6 ---> sw60to160 ---> region4
+region6 ---> sw97to197 ---> region5
+region6 ---> sw450to451 ---> Sub2
+region6 ---> sw95to195 ---> Sub3
+
+Sub2 ---> sw450to451 ---> region6
+
+Sub3 ---> sw95to195 ---> region6
+*/
+var closedStr = "CLOSED";
+function getConnectedRegions() {
+  region = ["","","","","","",""];
+  closedStr = "CLOSED";
+  blueSet = new Set();
+  if (switchStateList['sw15001to149'] == closedStr) {
+    console.log("SWITCH CLOSED");
+
+    blueSet.add(0);
+    if(switchStateList['sw13to152'] == closedStr) {
+      blueSet.add(1);
+      if(switchStateList['sw18to135'] == closedStr) {
+        blueSet.add(3);
+        if(switchStateList['sw250to251'] == closedStr) {
+          console.log("ERROR. Path from Blue to Green");
+        }
+        blueSet.add(4);
+        if(switchStateList['sw151to300'] == closedStr) {
+          blueSet.add(6);
+          if(switchStateList['sw97to197'] == closedStr) {
+            blueSet.add(7);
+            if(switchStateList['sw450to451'] == closedStr) {
+              console.log("ERROR. Path from Blue to Red");
+            }
+            blueSet.add(8);
+            if(switchStateList['sw95to195'] == closedStr) {
+              console.log("ERROR. Path from Blue to Yellow");
+            }
+            if(switchStateList['sw60to160'] == closedStr) {
+              blueSet.add(5);
+            }
+          }
+        }// End 4
+      }// End 1
+
+      blueSet.add(2);
+      if(switchStateList['sw54to94'] == closedStr) {
+        blueSet.add(4);
+        if(switchStateList['sw151to300'] == closedStr) {
+          blueSet.add(6);
+          if(switchStateList['sw97to197'] == closedStr) {
+            blueSet.add(7);
+            if(switchStateList['sw450to451'] == closedStr) {
+              console.log("ERROR. Path from Blue to Red");
+            }
+            blueSet.add(8);
+            if(switchStateList['sw95to195'] == closedStr) {
+              console.log("ERROR. Path from Blue to Yellow");
+            }
+            if(switchStateList['sw60to160'] == closedStr) {
+              blueSet.add(5);
+            }
+          }
+        }// End 4
+
+        blueSet.add(5);
+        if(switchStateList['sw60to160'] == closedStr) {
+          blueSet.add(8);
+          if(switchStateList['sw95to195'] == closedStr) {
+            console.log("ERROR. Path from Blue to Yellow");
+          }
+
+          if(switchStateList['sw97to197'] == closedStr) {
+            blueSet.add(6);
+
+            blueSet.add(7);
+            if(switchStateList['sw450to451'] == closedStr) {
+              console.log("ERROR. Path from Blue to Red");
+            }
+            console.log("ERROR. Path from Blue to Yellow");
+          }
+        }
+      }
+    }
+  }
+
+
+  greenSet = new Set();
+  if (switchStateList['sw250to251'] == closedStr) {
+    console.log("SWITCH CLOSED");
+
+    greenSet.add(3);
+    if (switchStateList['sw18to135'] == closedStr) {
+      greenSet.add(1);
+      if (switchStateList['sw13to152'] == closedStr) {
+        greenSet.add(0);
+        if(switchStateList['sw15001to149'] == closedStr) {
+          console.log("ERROR. Path from Blue to Red");
+        }
+        greenSet.add(2);
+        if(switchStateList['sw54to94'] == closedStr) {
+          greenSet.add(5);
+        }
+      }// End 1
+
+      greenSet.add(4);
+      if(switchStateList['sw54to94'] == closedStr) {
+        greenSet.add(5);
+        if(switchStateList['sw60to160'] == closedStr) {
+          greenSet.add(8);
+          if(switchStateList['sw95to195'] == closedStr) {
+            console.log("ERROR. Path from green to Yellow");
+          }
+          if(switchStateList['sw97to197'] == closedStr) {
+            greenSet.add(6);
+            greenSet.add(7);
+            if(switchStateList['sw450to451'] == closedStr) {
+              console.log("ERROR. Path from green to Red");
+            }
+          }
+        } // End 5
+
+      }
+      if(switchStateList['sw151to300'] == closedStr) {
+        greenSet.add(6);
+        if(switchStateList['sw97to197'] == closedStr) {
+          greenSet.add(7);
+          if(switchStateList['sw450to451'] == closedStr) {
+            console.log("ERROR. Path from green to Red");
+          }
+          greenSet.add(8);
+          if(switchStateList['sw95to195'] == closedStr) {
+            console.log("ERROR. Path from green to Yellow");
+          }
+          if(switchStateList['sw60to160'] == closedStr) {
+            greenSet.add(5);
+          }
+        }
+      }// End 4
+    }
+  }
+
+
+
+
+  redSet = new Set();
+  if (switchStateList['sw450to451'] == closedStr) {
+    console.log("SWITCH CLOSED");
+
+    redSet.add(7);
+    if (switchStateList['sw97to197'] == closedStr) {
+      redSet.add(6);
+      if (switchStateList['sw151to300'] == closedStr) {
+        redSet.add(4);
+        if(switchStateList['sw54to94'] == closedStr) {
+          redSet.add(5);
+          redSet.add(2);
+          if(switchStateList['sw13to152'] == closedStr) {
+            redSet.add(0);
+            if(switchStateList['sw15001to149'] == closedStr) {
+              console.log("ERROR. Path from Red to Blue");
+            }
+            redSet.add(1);
+          }
+        }
+        if(switchStateList['sw18to135'] == closedStr) {
+          redSet.add(3);
+          if(switchStateList['sw250to251'] == closedStr) {
+            console.log("ERROR. Path from Red to Green");
+          }
+          redSet.add(1);
+          if(switchStateList['sw13to152'] == closedStr) {
+            redSet.add(0);
+            if(switchStateList['sw15001to149'] == closedStr) {
+              console.log("ERROR. Path from Red to Blue");
+            }
+            redSet.add(2);
+          }
+        }
+      }
+
+      // End 6
+
+      redSet.add(8);
+      if(switchStateList['sw95to195'] == closedStr) {
+        console.log("ERROR. Path from Red to Yellow");
+      }
+      if(switchStateList['sw60to160'] == closedStr) {
+        redSet.add(5);
+        if(switchStateList['sw54to94'] == closedStr) {
+          redSet.add(2);
+          if(switchStateList['sw13to152'] == closedStr) {
+            redSet.add(0);
+            if(switchStateList['sw15001to149'] == closedStr) {
+              console.log("ERROR. Path from Red to Blue");
+            }
+            redSet.add(1);
+          }
+
+          redSet.add(4);
+          if(switchStateList['sw18to135'] == closedStr) {
+            redSet.add(1);
+            redSet.add(3);
+            if(switchStateList['sw250to251'] == closedStr) {
+              console.log("ERROR. Path from Red to Green");
+            }
+          }
+        }
+      }
+      // End 8
+    }
+  }
+
+  yellowSet = new Set();
+  if (switchStateList['sw95to195'] == closedStr) {
+    console.log("SWITCH CLOSED");
+
+    yellowSet.add(8);
+    if(switchStateList['sw60to160'] == closedStr) {
+      yellowSet.add(5);
+      if(switchStateList['sw54to94'] == closedStr) {
+        yellowSet.add(2);
+        if(switchStateList['sw13to152'] == closedStr) {
+          yellowSet.add(0);
+          if(switchStateList['sw15001to149'] == closedStr) {
+            console.log("ERROR. Path from yellowSet to Blue");
+          }
+          yellowSet.add(1);
+        }
+
+        yellowSet.add(4);
+        if(switchStateList['sw18to135'] == closedStr) {
+          yellowSet.add(1);
+          yellowSet.add(3);
+          if(switchStateList['sw250to251'] == closedStr) {
+            console.log("ERROR. Path from yellowSet to Green");
+          }
+        }
+      }
+    }
+
+    if(switchStateList['sw97to197'] == closedStr) {
+      yellowSet.add(7);
+      if(switchStateList['sw450to451'] == closedStr) {
+        console.log("ERROR. Path from Yellow to Red");
+      }
+
+      yellowSet.add(6);
+      if (switchStateList['sw151to300'] == closedStr) {
+        yellowSet.add(4);
+        if(switchStateList['sw54to94'] == closedStr) {
+          yellowSet.add(5);
+          yellowSet.add(2);
+          if(switchStateList['sw13to152'] == closedStr) {
+            yellowSet.add(0);
+            if(switchStateList['sw15001to149'] == closedStr) {
+              console.log("ERROR. Path from yellowSet to Blue");
+            }
+            yellowSet.add(1);
+          }
+        }
+        if(switchStateList['sw18to135'] == closedStr) {
+          yellowSet.add(3);
+          if(switchStateList['sw250to251'] == closedStr) {
+            console.log("ERROR. Path from yellowSet to Green");
+          }
+          yellowSet.add(1);
+          if(switchStateList['sw13to152'] == closedStr) {
+            yellowSet.add(0);
+            if(switchStateList['sw15001to149'] == closedStr) {
+              console.log("ERROR. Path from yellowSet to Blue");
+            }
+            yellowSet.add(2);
+          }
+        }
+      }
+
+    }
+  }
+
+  console.log("FINISHED Traversal. ");
+
+  for (value of blueSet) {
+    if(greenSet.has(value)){
+      console.log("ERROR, OVERLAPPING GREEN AND BLUE " + value);
+    }
+    if(redSet.has(value)){
+      console.log("ERROR, OVERLAPPING RED AND BLUE " + value);
+    }
+    if(yellowSet.has(value)){
+      console.log("ERROR, OVERLAPPING YELLOW AND BLUE " + value);
+    }
+    // console.log("BlueSet Item: " + value);
+  }
+  for (value of greenSet) {
+    if(blueSet.has(value)){
+      console.log("ERROR, OVERLAPPING BLUE AND GREE " + value);
+    }
+    if(redSet.has(value)){
+      console.log("ERROR, OVERLAPPING RED AND GREEN " + value);
+    }
+    if(yellowSet.has(value)){
+      console.log("ERROR, OVERLAPPING YELLOW AND GREEN " + value);
+    }
+    // console.log("greenSet Item: " + value);
+  }
+  for (value of redSet) {
+    if(blueSet.has(value)){
+      console.log("ERROR, OVERLAPPING BLUE AND RED " + value);
+    }
+    if(greenSet.has(value)){
+      console.log("ERROR, OVERLAPPING GREEN AND RED " + value);
+    }
+    if(yellowSet.has(value)){
+      console.log("ERROR, OVERLAPPING YELLOW AND RED " + value);
+    }
+    // console.log("redSet Item: " + value);
+  }
+
+  for (value of yellowSet) {
+    if(blueSet.has(value)){
+      console.log("ERROR, OVERLAPPING BLUE AND YELLOW " + value);
+    }
+    if(greenSet.has(value)){
+      console.log("ERROR, OVERLAPPING GREEN AND YELLOW " + value);
+    }
+    if(redSet.has(value)){
+      console.log("ERROR, OVERLAPPING RED AND YELLOW " + value);
+    }
+    // console.log("yellowSet Item: " + value);
+  }
+
+
+  regionsList = ((maps[1]['regions']));
+  for(region = 0; region < (maps[1]['regions']).length; region += 1) {
+    regionsList[region].setStyle({color: "white"}).redraw();
+  }
+
+  redSet.forEach(function(region) {
+    regionsList[region].setStyle({color: "red"}).redraw();
+  })
+
+
+  greenSet.forEach(function(region) {
+    regionsList[region].setStyle({color: "green"}).redraw();
+  })
+
+  blueSet.forEach(function(region) {
+    regionsList[region].setStyle({color: "blue"}).redraw();
+  })
+
+  yellowSet.forEach(function(region) {
+    regionsList[region].setStyle({color: "yellow"}).redraw();
+  })
+
+
+  // region = ["","","","","","",""];
+  //
+  // if (sw15001to149 == "CLOSED") {
+  //   if(region[0] == "") {region[0] = "sub0"; } else {console.log("ERROR");}
+  // }
+  // if (sw250to251 == "CLOSED") {
+  //   if(region[3] == "") {region[3] = "sub1"; } else {console.log("ERROR");}
+  // }
+  // if (sw450to451 == "CLOSED") {
+  //   if(region[6] == "") {region[6] = "sub0"; } else {console.log("ERROR");}
+  // }
+  // if (sw15001to149 == "CLOSED") {
+  //   if(region[0] == "") {region[0] = "sub0"; } else {console.log("ERROR");}
+  // }
+  //
+  // if (sw13to152 == "CLOSED") {
+  //   if(region[1] == "") {region[1] = region[0]; } else {
+  //     if(region[0] == "") {region[0] = region[1]; } else {
+  //        console.log("ERROR");
+  //      }
+  //   }
+  //   if(region[2] == "") {region[2] = region[0]; } else {
+  //     if(region[0] == "") {region[0] = region[1]; } else {
+  //        console.log("ERROR");
+  //      }
+  //   }
+  // }
+
+  /*
+  / getAttachedSwitches(). forEach ({
+      if (switchClosed()) {
+      newRegions = switch.regions() - startRegion
+      list.add(newRegions)
+      newRegions.forEach()
+    }
+  })
+
+*/
+}
+
+
+function setSwitchStates(config, time) {
+  console.log("Setting switch states for config " + config + " and time " + time);
+
+  if (switchConfigs[0] == {}) {
+    console.log("NOT READY TO CHANGE STATE");
+  }
+  // console.log((switchConfigs[time])[config]);
+  switchSet = (switchConfigs[0])[config];
+  // console.log((maps[1])['switches']);
+  (maps[0])['switches'].forEach(function(element) {
+    // console.log(element);
+    swName = element['key']
+    if (switchSet[swName] == "0") {
+      // console.log("Found Match" + swName);
+      element['value'].setIcon(switchIconMonitoredClosed);
+      // switchStateList[swName] = "CLOSED";
+    }
+    if (switchSet[swName] == "1") {
+      // console.log("Found Match" + swName);
+      element['value'].setIcon(switchIconMonitoredOpen);
+      // switchStateList[swName] = "OPEN";
+    }
+
+  });
+
   switchSet = (switchConfigs[time])[config];
   (maps[1])['switches'].forEach(function(element) {
     if (monitoredList.indexOf(element['key'])> -1) {
@@ -554,10 +1010,12 @@ function setSwitchStates(config, time) {
       if (switchSet[swName] == "0") {
         // console.log("Found Match" + swName);
         element['value'].setIcon(switchIconMonitoredClosed);
+        switchStateList[swName] = "CLOSED";
       }
       if (switchSet[swName] == "1") {
         // console.log("Found Match" + swName);
         element['value'].setIcon(switchIconMonitoredOpen);
+        switchStateList[swName] = "OPEN";
       }
     } else {
       // console.log(element);
@@ -565,10 +1023,12 @@ function setSwitchStates(config, time) {
       if (switchSet[swName] == "0") {
         // console.log("Found Match" + swName);
         element['value'].setIcon(switchIconUnmonitoredClosed);
+        switchStateList[swName] = "CLOSED";
       }
       if (switchSet[swName] == "1") {
         // console.log("Found Match" + swName);
         element['value'].setIcon(switchIconUnmonitoredOpen);
+        switchStateList[swName] = "OPEN";
       }
     }
 
@@ -666,7 +1126,7 @@ maps.forEach(function(map_obj){
 
   populateLayerSubstation(substationApiEndpoint, (map_obj.overlay["Substations"]), substationIcon, "substation");
 
-  populateRegions(regionApiEndpoint, (map_obj.overlay["Regions"]), map_obj.predict_state);
+  populateRegions(regionApiEndpoint, (map_obj.overlay["Regions"]), map_obj["regions"]);
 
   console.log("Overlay meters done")
 
@@ -737,7 +1197,7 @@ $( function() {
   var handle = $( "#starting-slider-handle" );
   $( "#starting-slider" ).slider({
     min: 0,
-    max: 89,
+    max: 87,
     step: 1,
     create: function() {
       handle.text( $( this ).slider( "value" ) );
@@ -747,6 +1207,7 @@ $( function() {
       handle.text( ui.value );
       currentConfig = ui.value;
       setSwitchStates(currentConfig, currentTime);
+      getConnectedRegions();
     }
   });
 } );
@@ -767,6 +1228,7 @@ $( function() {
       handle2.text( labels[ui.value] );
       currentTime = ui.value;
       setSwitchStates(currentConfig, currentTime);
+      getConnectedRegions();
     }
   });
 } );
