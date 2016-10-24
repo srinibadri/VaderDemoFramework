@@ -39,3 +39,7 @@ body{
 .table-tab{
     cursor: pointer;
 }
+
+.simulation-dropdown{
+    cursor: pointer;
+}
