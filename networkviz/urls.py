@@ -18,6 +18,8 @@ urlpatterns = [
     url(r'^real-time', views.realtime, name='real-time'),
     url(r'^PVDisagg', views.pvdisagg, name='disaggMain'),
     url(r'^MLPowerFlow', views.mlpowerflow, name='MLPowerFlow'),
+    url(r'^forecasting', views.forecasting, name='forecasting'),
+
 
     # API for VOLTAGE AND PV DISAGG demos
     url(r'^VoltageAPI/(?P<region_id>[0-9]+)/(?P<bus_id>[0-9]+)$', views.voltageWarning, name='region_disagg'),
@@ -58,5 +60,6 @@ urlpatterns = [
     url(r'^climate', views.query_for_climate, name='climate'),
     url(r'^getdata/live', views.get_live_data),
     url(r'^getdata/history', views.get_history_data),
-    url(r'^structure', views.structure)
+    url(r'^structure', views.structure),
+    url(r'^getdata/total-power', views.get_total_power)
 ]

@@ -8,13 +8,13 @@ def convert_decimal_list_to_string(input_arg, index):
 
 
 def convert_decimal_list_to_float(input_arg, index):
-    return [(float(x[index]) if x[index] else None) for x in input_arg]
+    return [(float(x[index]) if x[index] else 0) for x in input_arg]
 
 
 def get_demand_and_energy_by_time(simulation_name):
     database.connect_to_database(simulation_name, 'ami')
     res = database.query_database(simulation_name, 'ami',
-                                  fields='t, SUM(measured_demand), SUM(measured_real_power)',
+                                  fields='t, SUM(cast(measured_demand as decimal(8,1))), SUM(cast(measured_real_power as decimal(8,1)))',
                                   table='meter',
                                   conditions='group by t order by t DESC')
     database.close_connection(simulation_name, 'ami')
@@ -47,7 +47,7 @@ def convert_single_result_to_dictionary(res, *args):
     """
     dic = {}
     for i in range(0, len(res)):
-        dic[args[i]] = str(res[i]) if isinstance(res[i], datetime.datetime) else res[i]
+        dic[args[i]] = str(res[i]) if isinstance(res[i], datetime.datetime) else float(res[i])
     return dic
 
 

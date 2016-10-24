@@ -77,6 +77,14 @@ def get_live_data(request):
 
 def structure(requeest):
     return HttpResponse(json.dumps(analyze.analyze_table('ieee123', 'scada', 'capacitor')));
+
+def get_total_power(request):
+    res = helper.get_demand_and_energy_by_time('ieee123')
+    converted_res = helper.add_column_name_to_result(res, 'time', 'demand', 'real_power')
+    # power_list = helper.select_two_column_from_result(res, 0, 1)
+    # demand_list = helper.select_two_column_from_result(res, 0, 2)
+    # converted_res = helper.wrapper_lists_and_add_name(['power', 'demand'], power_list, demand_list)
+    return HttpResponse(json.dumps(converted_res))
         
 def get_history_data(request):
     result = []
@@ -88,6 +96,9 @@ def get_history_data(request):
     condition = request.GET.get('condition')
     result = helper.convert_decimal_list_to_float(database.query_database(simulation_name, db, field, table, condition), 0)
     return HttpResponse(json.dumps(result));
+
+def forecasting(request):
+    return render(request,'forecasting.html')
 
 def pvdisagg(request):
     ##data=disaggregateRegion(region_id)
@@ -369,7 +380,7 @@ def api_regions(request, element_query="list"):
     {"group_num":7,"points":[[35.39102, -118.99279],[35.39108, -118.98647],[35.39062, -118.98648],[35.39069, -118.99275]]},
     {"group_num":8,"points":[[35.38202, -118.9982],[35.38318, -118.99811],[35.38335, -118.99337],[35.38796, -118.9932],[35.38808, -118.99399],[35.39063, -118.99302],[35.39068, -118.99268],[35.39034, -118.99268],[35.39036, -118.99099],[35.38985, -118.98901],[35.38945, -118.98921],[35.38993, -118.99129],[35.38998, -118.99271],[35.38957, -118.99269],[35.38878, -118.98919],[35.38832, -118.98938],[35.38794, -118.99062],[35.38615, -118.99172],[35.38578, -118.99022],[35.38697, -118.98968],[35.38685, -118.98919],[35.38516, -118.9897],[35.38483, -118.99149],[35.38474, -118.99248],[35.3821, -118.99249],[35.38209, -118.99806]]}
     ]'''
-    print(regions)
+    # print(regions)
     return HttpResponse(regions)
 
 

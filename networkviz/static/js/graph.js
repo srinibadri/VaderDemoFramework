@@ -56,7 +56,7 @@ var realTimeInterval = [];
 
 function graphHistory(table, name, column) {
     document.getElementById('graghLabel').innerHTML = name + ' ' + column + ' (Last 15 minutes)';
-
+    document.getElementById('graphArea').innerHTML = '';
     var dataset = [];
 
     var db, simulation_name='ieee123', field, style='line', ylabel=getYLabel(column);
@@ -242,7 +242,6 @@ function graphLiveFormat(name, column, title, style, ylabel, widthAbs, heightAbs
         }
     }, 500));
 }
-
 
 $(document).on('click', '#closeGraph', function(){
     for (var i = 0; i < realTimeInterval.length; i++) {

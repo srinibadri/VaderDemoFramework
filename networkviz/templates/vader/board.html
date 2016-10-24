@@ -75,6 +75,7 @@
     <script type="text/javascript" src="{% static 'js/init.js' %}"></script>
 
     <script type="text/javascript" src="{% static 'js/datatable.js' %}"></script>
+    <script type="text/javascript" src="http://d3js.org/d3.v3.js"></script>
     <!-- Javascript Imports (so many!) -->
     {% block imports-js %} {% include "networkviz/_imports-js.html" %} {% endblock %}
     <!-- Module Code -->
@@ -83,7 +84,6 @@
     {% block inputknob-js %} {% include "networkviz/charts/_inputknob.js" %} {% endblock %}
     {% block chart-cards-js %} {% include "networkviz/charts/_chart-cards.js" %} {% endblock %}
     <script type="text/javascript" src="https://cdn.datatables.net/v/zf/dt-1.10.12/datatables.min.js"></script>
-    <script type="text/javascript" src="http://d3js.org/d3.v3.js"></script>
     <script type="text/javascript" src="{% static 'js/custom.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/graph.js' %}"></script>
 {% endblock %}
