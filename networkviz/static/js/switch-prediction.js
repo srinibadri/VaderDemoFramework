@@ -457,7 +457,7 @@ function populateLayerSwitches(endpoint, layerGroup, highlightMonitored, element
         marker = L.marker(latlong, {
           icon: icon,
           alt:JSON.stringify({"type":element_type,"name":element['name']})
-        }).bindPopup(element['name'] + " loading..."); //.bindTooltip(element['name']);
+        }).bindPopup(element['name'] + switchStateList[element['name']] ); //.bindTooltip(element['name']);
         if (priority == 1) {
           marker.setZIndexOffset(700);
         }
@@ -887,12 +887,14 @@ function setSwitchStates(config, time) {
       element['value'].setIcon(switchIconMonitoredClosed);
       (maps[0]['switchStateList'])[swName] = "CLOSED";
       // (map_obj['switchStateList'])[swName] = "CLOSED";
+
     }
     if (switchSet[swName] == "0") {
       // console.log("Found Match" + swName);
       element['value'].setIcon(switchIconMonitoredOpen);
       (maps[0]['switchStateList'])[swName] = "OPEN";
       // (map_obj['switchStateList'])[swName] = "OPEN";
+
     }
 
   });
@@ -906,11 +908,13 @@ function setSwitchStates(config, time) {
         // console.log("Found Match" + swName);
         element['value'].setIcon(switchIconMonitoredClosed);
         (maps[1]['switchStateList'])[swName] = "CLOSED";
+
       }
       if (switchSet[swName] == "0") {
         // console.log("Found Match" + swName);
         element['value'].setIcon(switchIconMonitoredOpen);
         (maps[1]['switchStateList'])[swName] = "OPEN";
+
       }
     } else {
       // console.log(element);
@@ -928,6 +932,17 @@ function setSwitchStates(config, time) {
     }
 
   });
+
+  // Configure Popups
+  mapSwitches = ((maps[0]['switches']));
+  for(index = 0; index < mapSwitches.length; index+= 1) {
+    (mapSwitches[index].value).bindPopup(mapSwitches[index].key + " " + (maps[0]['switchStateList'])[mapSwitches[index].key]);
+  }
+  mapSwitches = ((maps[1]['switches']));
+  for(index = 0; index < mapSwitches.length; index+= 1) {
+    (mapSwitches[index].value).bindPopup(mapSwitches[index].key + " " + (maps[1]['switchStateList'])[mapSwitches[index].key]);
+  }
+
 
   //   Time to shade the regions!
   getConnectedRegions(maps[0]);
@@ -1044,9 +1059,9 @@ maps.forEach(function(map_obj){
   // layerControl.addTo(map_obj.map);
 
   // Can't figure out how to do the map click popups, but they are annoying anyway
-  map_obj.map.on('click', function(e, map_obj) {
-    onMapClick(e, map_obj);
-  });
+  // map_obj.map.on('click', function(e, map_obj) {
+  //   onMapClick(e, map_obj);
+  // });
   // map_obj.map.on('popupopen', function(e) {
   //   pop_up(e);
   // });
