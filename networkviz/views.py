@@ -262,6 +262,16 @@ def voltageWarning(request, region_id=0, bus_id=7):
     return JsonResponse(json.dumps(overall), safe=False)
 
 
+################### DataPlug #####################
+
+# HTML Serving
+def dataplug(request):
+    template = loader.get_template('vader/dataplug.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
+
+
+
 ################### Switch Prediction ###############
 
 # HTML Serving
