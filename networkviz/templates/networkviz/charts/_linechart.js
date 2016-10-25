@@ -1,7 +1,7 @@
 <!-- Flot -->
 <script>
 $(document).ready(function() {
-    var supply = [], demand = [], dataset = [];
+    var supply = [], demand = [];
     var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
     $.ajax({
         type: 'GET',
@@ -10,7 +10,6 @@ $(document).ready(function() {
         dataType: 'json',
         async: false,
         success: function(data) {
-            dataset = data;
             for (var i = 0; i < 672; i++) {
                 supply.push({x: parseDate(data[i].time), y: data[i].real_power/1000});
                 demand.push({x: parseDate(data[i].time), y: data[i].demand/1000})
@@ -18,7 +17,7 @@ $(document).ready(function() {
         }
     });
 
-    ylabel = 'power(W)'
+    ylabel = 'power(kW)'
 
     var margin = {top: 20, right: 20, bottom: 30, left: 50},
         width = $("#canvas_dahs").width() - margin.left - margin.right,
@@ -75,5 +74,20 @@ $(document).ready(function() {
     x.domain(d3.extent(supply, function(d) { return d.x; }));
     y.domain([0, d3.max(supply, function(d) { return d.y; })*1.05]);
     svg.append('path').datum(supply).attr('class', 'supply').attr('d', line);
+
+    $('#total-power-generation').replaceWith('<div id = "total-power-generation" class="count">' + addCommas(Math.floor(supply[supply.length-1].y)) + ' <small><small><small>kW</small></small></small></div>');
+    $('#total-demand').replaceWith('<div id = "total-power-generation" class="count">' + addCommas(Math.floor(demand[demand.length-1].y)) + ' <small><small><small>kW</small></small></small></div>');
 });
+
+function addCommas(nStr) {
+    nStr += '';
+    var x = nStr.split('.');
+    var x1 = x[0];
+    var x2 = x.length > 1 ? '.' + x[1] : '';
+    var rgx = /(\d+)(\d{3})/;
+    while (rgx.test(x1)) {
+        x1 = x1.replace(rgx, '$1' + ',' + '$2');
+    }
+    return x1 + x2;
+}
 </script>
