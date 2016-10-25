@@ -303,7 +303,16 @@ function pop_up(e) {
   e.popup.setContent("Loading...").update();
 
   $.getJSON( "/vader/api/"+element_details['type']+"/"+element_details['name']+"", function(data) {
-    e.popup.setContent(JSON.stringify(data['name'])).update();
+    e.popup.setContent(
+    "Nominal Voltage: "+data['nominal_voltage']+"<br>"+
+    "Voltage: "+data['measured_voltage_2']+"<br>"+
+    "Current: "+data['measured_current_1']+"<br>"+
+    "Power: "+data['measured_power']+"<br>"+
+    "Power 2: "+data['indiv_measured_power_2']+"<br>"+
+    "Real Power: "+data['measured_real_power']+"<br>"+
+    "Reactive Energy: "+data['measured_reactive_energy']+"<br>"+
+    "Demand: "+data['measured_demand']
+  ).update();
   });
 
 }
@@ -534,12 +543,12 @@ maps.forEach(function(map_obj){
   // layerControl.addTo(map_obj.map);
 
   // Can't figure out how to do the map click popups, but they are annoying anyway
-  map_obj.map.on('click', function(e, map_obj) {
-    onMapClick(e, map_obj);
-  });
-  // map_obj.map.on('popupopen', function(e) {
-  //   pop_up(e);
+  // map_obj.map.on('click', function(e, map_obj) {
+  //   onMapClick(e, map_obj);
   // });
+  map_obj.map.on('popupopen', function(e) {
+    pop_up(e);
+  });
   // Sync to Other Maps
   // maps.forEach(function(syncMapTo){
   //   map_obj.map.sync(syncMapTo.map);

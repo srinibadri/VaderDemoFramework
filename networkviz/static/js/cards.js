@@ -5,6 +5,7 @@ $(document).ready(function(){
     queryCards($simulationName);
 
     function queryCards($simulationName){
+        console.log("query for cards");
         $.ajax({
             "url" : "cards",
             "contentType" : "application/json",
@@ -13,10 +14,12 @@ $(document).ready(function(){
                 "simulation_name": $simulationName
             },
             success: function(cardData){
-                var cardDataJson = $.parseJSON(cardData);
-                var $totalLoads = cardDataJson.load;
-                var $totalHouses = cardDataJson.house;
-                var $totalNodes = cardDataJson.node;
+                console.log($simulationName + "ss");
+                //var $cardDataJson = $.parseJSON(cardData);
+                var $totalLoads = cardData.load;
+                var $totalHouses = cardData.house;
+                var $totalNodes = cardData.node;
+                console.log($totalHouses);
                 $('.total-load').text($totalLoads);
                 $('.total-house').text($totalHouses);
                 $('.total-node').text($totalNodes);
