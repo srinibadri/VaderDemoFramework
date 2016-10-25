@@ -1,0 +1,128 @@
+{% extends "vader/base.html" %}
+{% block style %}
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/leaflet.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/map.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'css/topology.css' %}" />
+{% endblock %}
+
+{% block content %}
+{% include "vader/_navbar-logo.html" %}
+<style type="text/css">
+    .map { width: 49.5%; height: 75%; float: left; margin-right: 1%;}
+    .lastmap { margin-right: 0; float: right; }
+</style>
+<div class="jumbotron text-center" style="padding: 35px; padding-bottom: 20px; margin-bottom: 0px;">
+  <p>
+    Data-Driven Topology Estimation</p>
+</div>
+
+
+<div class="button" id="update-btn">
+  <button type="button" class="btn btn-primary pull-right">Update</button>
+</div>
+
+<div class="dropdown" id="noise-level">
+  <button class="btn btn-default dropdown-toggle pull-right" type="button" id="noiseLevel" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+    0.0%
+    <span class="caret"></span>
+  </button>
+  <div class="dropdown-menu pull-right" aria-labelledby="noiseLevel" id="noiseLevel-dropdown">
+    <li class="dropdown-header">Noise level</li>
+    <li><a href="#">0.0%</a></li>
+    <li><a href="#">0.1%</a></li>
+    <li><a href="#">0.5%</a></li>
+    <li><a href="#">1.0%</a></li>
+  </div>
+</div>
+
+<div class="dropdown" id="data-source">
+  <button class="btn btn-default dropdown-toggle pull-right" type="button" id="dataSource" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+    Voltage
+    <span class="caret"></span>
+  </button>
+  <div class="dropdown-menu pull-right" aria-labelledby="dataSource" id="dataSource-dropdown">
+    <li class="dropdown-header">Data source</li>
+    <li><a href="#">Voltage</a></li>
+    <li><a href="#">Voltage Magnitude</a></li>
+  </div>
+</div>
+
+
+<div id="wrapper" class="toggled">
+    {% include "vader/_sidebar.html" %}
+    <div class="page-content-wrapper">
+        <div class="map" id="map1"></div>
+        <div class="map lastmap" id="map2"></div>
+        <!-- <div class="map lastmap" id="map3"></div> -->
+    </div>
+</div>
+
+{% endblock %}
+
+
+
+{% block script %}
+<!-- jQuery Sparklines -->
+<script src="{% static 'js/leaflet.js' %}"></script>
+<script src="{% static 'js/d3.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'networkviz/gent/vendors/jquery-sparkline/dist/jquery.sparkline.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/L.Map.Sync.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/topology.js' %}"></script>
+<script>
+  $("#menu-toggle").click(function(e) {
+      e.preventDefault();
+      $("#wrapper").toggleClass("toggled");
+  });
+</script>
+
+<!-- script to update data source -->
+<script type="text/javascript">
+  var noise_level = '0.0%';
+  var data_source = 'Voltage';
+
+  var geo_path = "/static/data/model2.geo.json";
+
+  $(document).ready(function(){
+    $.getJSON(geo_path, addMap2);
+  });
+
+  $("#dataSource-dropdown li a").click(function(){
+    data_source = $(this).text();
+    $(this).parents('#data-source').find('.btn').html(data_source + ' <span class="caret"></span>');
+    $(this).parents('#data-source').find('.btn').val($(this).data('value'));
+  });
+
+  $("#noiseLevel-dropdown li a").click(function(){
+    noise_level = $(this).text();
+    $(this).parents('#noise-level').find('.btn').html(noise_level + ' <span class="caret"></span>');
+    $(this).parents("#noise-level").find('.btn').val($(this).data('value'));
+  });
+
+
+  $("#update-btn").click(function(){
+      var noiseLevel_num = parseFloat(noise_level) / 100.0;
+      console.log(noiseLevel_num);
+      if (data_source == 'Voltage')
+      {
+        geo_path = "/static/data/model2.geo.json";
+      }
+      else
+      {
+        if (noiseLevel_num < 0.005)
+        {
+          geo_path = "/static/data/model2.geo.json";
+        }
+        else
+        {
+          geo_path = "/static/data/model2.geo.json";
+        }
+      }
+
+
+      removeMap2();
+      $.getJSON(geo_path, addMap2);
+  });
+</script>
+{% endblock %}

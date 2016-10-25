@@ -102,6 +102,12 @@ def forecasting(request):
 def forecasting_pge(request):
     return render(request,'forecasting-pge.html')
 
+def topology(request):
+    template = loader.get_template('vader/topology.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
+
+
 
 def pvdisagg(request):
     ##data=disaggregateRegion(region_id)

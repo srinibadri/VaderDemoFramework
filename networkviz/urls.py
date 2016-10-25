@@ -20,7 +20,7 @@ urlpatterns = [
     url(r'^MLPowerFlow', views.mlpowerflow, name='MLPowerFlow'),
     url(r'^forecasting', views.forecasting, name='forecasting'),
     url(r'^forecasting-pge', views.forecasting_pge, name='forecasting'),
-
+    url(r'^topology', views.topology, name='topology'),
     url(r'^dataplug', views.dataplug, name='dataplug'),
 
 

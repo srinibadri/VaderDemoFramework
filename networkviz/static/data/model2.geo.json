@@ -2215,7 +2215,7 @@
                 "description": "\n                    "
             }
         },
-        
+
         {
             "type": "Feature",
             "geometry": {
@@ -4734,7 +4734,7 @@
                 "type": "Point",
                 "coordinates": [
                     -118.996567,
-                    35.38765
+                    35.38307
                 ]
             },
             "properties": {
@@ -9734,7 +9734,7 @@
                 "type": "Point",
                 "coordinates": [
                     -118.996567,
-                    35.38765
+                    35.38307
                 ]
             },
             "properties": {
@@ -9750,7 +9750,7 @@
                 "type": "Point",
                 "coordinates": [
                     -118.996567,
-                    35.38765
+                    35.38307
                 ]
             },
             "properties": {
@@ -9766,7 +9766,7 @@
                 "type": "Point",
                 "coordinates": [
                     -118.996567,
-                    35.38765
+                    35.38307
                 ]
             },
             "properties": {
@@ -9782,7 +9782,7 @@
                 "type": "Point",
                 "coordinates": [
                     -118.996567,
-                    35.38765
+                    35.38307
                 ]
             },
             "properties": {
