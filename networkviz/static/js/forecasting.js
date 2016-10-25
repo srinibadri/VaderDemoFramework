@@ -345,6 +345,18 @@ var hoursInDay = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24
 var temperature;
 var trueValues = {};
 
+var secondTrue  = new Array(100);
+for(index = 0; index < secondTrue.length; index +=1) {
+  secondTrue[index] = new Array(720);
+}
+var secondTrueInvert  = new Array(100);
+for(index = 0; index < secondTrue.length; index +=1) {
+  secondTrueInvert[index] = new Array(720);
+}
+
+var secondData = {};
+var secondDataInvert = {};
+
 // [meter_0[hour_0,hour_1],meter_1[hour_0,hour_1]]
 var trueValuesInvert  = new Array(100);
 for(index = 0; index < trueValuesInvert.length; index +=1) {
@@ -352,11 +364,12 @@ for(index = 0; index < trueValuesInvert.length; index +=1) {
 }
 var tempByZipUrl = "/static/data/temp_by_zip.csv";
 var loadTrueUrl = "/static/data/load_true.csv";
-var algorithmTypes = ["OLS"];
+var algorithmTypes = ["OLS", "LassoLarsIC", "SGDRegressor"];
   // "AdaBoostDTR", "AdaptiveLinear", "DecisionTreeRegressor",
   //   "GradientBoostingRegressor", "KNeighborsRegressor", "LassoLarsIC",
   //   "OLS", "SVR"];
 var algorithmBaseUrl = "/static/data/forecast_demo/";
+var secondUrl = "/static/data/demo_data/";
 
 var trueFiltered, predictFiltered;
 
@@ -374,6 +387,7 @@ function updateGraphs() {
     $("#time-selector").css('visibility', 'collapse');
     $("#meter-selector").css('visibility', 'visible');
     $("#region-selector").css('visibility', 'collapse');
+    $("#prediction-selector").css('visibility', 'collapse');
     showGraphsDaily(meter=currentMeter,
       date=(currentDate),
       predict_range=currentPredictRange,
@@ -383,7 +397,7 @@ function updateGraphs() {
     $("#time-selector").css('visibility', 'visible');
     $("#meter-selector").css('visibility', 'visible');
     $("#region-selector").css('visibility', 'collapse');
-
+    $("#prediction-selector").css('visibility', 'visible');
     showGraphsHourly(meter=currentMeter,
       time=(currentTime),
       predict_range=currentPredictRange,
@@ -393,6 +407,7 @@ function updateGraphs() {
     $("#time-selector").css('visibility', 'collapse');
     $("#meter-selector").css('visibility', 'visible');
     $("#region-selector").css('visibility', 'collapse');
+    $("#prediction-selector").css('visibility', 'visible');
     showGraphs(meter=currentMeter,
       date_time=(currentDate+" "+currentTime),
       predict_range=currentPredictRange,
@@ -402,6 +417,7 @@ function updateGraphs() {
       $("#time-selector").css('visibility', 'collapse');
       $("#meter-selector").css('visibility', 'collapse');
       $("#region-selector").css('visibility', 'visible');
+      $("#prediction-selector").css('visibility', 'visible');
       showGraphs(meter=currentMeter,
         date_time=(currentDate+" "+currentTime),
         predict_range=currentPredictRange,
@@ -412,7 +428,7 @@ function updateGraphs() {
 // function updateGraphsTime() {
 // }
 
-
+graphsEnabled = true;
 function showGraphs(meter, date_time, predict_range, algorithm) {
   if (!graphsEnabled) {
     console.log("Try again soon");
@@ -422,21 +438,50 @@ function showGraphs(meter, date_time, predict_range, algorithm) {
   ", predict_range: "+ predict_range + ", algorithm: " + algorithm);
   // console.log(trueValuesInvert[meter]);
 
-  truth = trueValuesInvert[meter];
-  predicted = ((predictionDataInvert[algorithm])[predict_range])[meter];
-  difference = new Array(truth.length);
-  mape_list = new Array(trueFiltered.length+1);
+  // truth = trueValuesInvert[meter];
+  // predicted = ((predictionDataInvert[algorithm])[predict_range])[meter];
+  meterData2D = ((secondData[algorithm])[meter]);
+  meterData = new Array(720);
+
+
+  difference = new Array(meterData.length);
+  mape_list = new Array(meterData.length+1);
   mape_list[0] = ["Sample", "Mape"];
-  rms_list = new Array(trueFiltered.length+1);
+  rms_list = new Array(meterData.length+1);
   rms_list[0] = ["Sample", "RMS"];
 
-  for (index = 0; index < truth.length; index += 1) {
-    diff = (predicted[index][1] - truth[index][1]);
+  // for (index = 0; index < truth.length; index += 1) {
+  //   diff = (predicted[index][1] - truth[index][1]);
+  //   difference[index] = [index,diff];
+  //   mape_list[index+1] = ["Hour " +index+"",Math.abs(diff / truth[index][1])];
+  //   rms_list[index+1] = ["Hour " +index+"",Math.pow(diff,2)];
+  // }
+
+  for (index = 0; index < meterData.length; index += 1) {
+    meterData[index] = [index, meterData2D[index][predict_range]];
+  }
+  trueData = new Array(720);
+  for (index = 0; index < trueData.length; index += 1) {
+    trueData[index] = [index, secondTrue[meter][index][predict_range]];
+  }
+  for (index = 0; index < trueData.length; index += 1) {
+    diff = (meterData[index][1] - trueData[index][1]);
     difference[index] = [index,diff];
-    mape_list[index+1] = ["Hour " +index+"",Math.abs(diff / truth[index][1])];
+    mape_list[index+1] = ["Hour " +index+"",Math.abs(diff / trueData[index][1])];
     rms_list[index+1] = ["Hour " +index+"",Math.pow(diff,2)];
   }
-  console.log(rms_list);
+
+
+
+  // for (index = 0; index < truth.length; index += 1) {
+  //   diff = (predicted[index][1] - truth[index][1]);
+  //   difference[index] = [index,diff];
+  //   mape_list[index+1] = ["Hour " +index+"",Math.abs(diff / truth[index][1])];
+  //   rms_list[index+1] = ["Hour " +index+"",Math.pow(diff,2)];
+  // }
+
+
+  // console.log(rms_list);
 
   data = google.visualization.arrayToDataTable(mape_list);
   var options = {
@@ -458,7 +503,7 @@ function showGraphs(meter, date_time, predict_range, algorithm) {
 
 
   // console.log(difference);
-  $.plot("#graph0", [{label:"actual",data:truth}, {label:"predicted",data:predicted}], {
+  $.plot("#graph0", [{label:"actual",data:trueData}, {label:"predicted",data:meterData}], {
     yaxis: {labelWidth: 30},
     xaxis: {labelHeight: 30},
     legend: {show: true}  });
@@ -490,23 +535,63 @@ function showGraphsDaily(meter, date, predict_range, algorithm) {
   ", predict_range: "+ predict_range + ", algorithm: " + algorithm);
   // console.log(trueValuesInvert[meter]);
 
-  i = 0
-  trueFiltered = new Array();
-  for (key in trueValues) {
-    if(key.split(' ')[0] == date) {
-      trueFiltered.push([i, trueValues[key][meter]]);
-      i += 1;
-    }
+  // i = 0
+  // trueFiltered = new Array();
+  // for (key in trueValues) {
+  //   if(key.split(' ')[0] == date) {
+  //     trueFiltered.push([i, trueValues[key][meter]]);
+  //     i += 1;
+  //   }
+  // }
+  // i = 0
+  // predictFiltered = new Array();
+  // predictionValues = predictionData[algorithm][predict_range]
+  // for (key in predictionValues) {
+  //   if(key.split(' ')[0] == date) {
+  //     predictFiltered.push([i, predictionValues[key][meter]]);
+  //     i += 1;
+  //   }
+  // }
+
+  meterData2D = ((secondData[algorithm])[meter]);
+  meterData = new Array(24);
+  trueData = new Array(meterData.length);
+
+  difference = new Array(meterData.length);
+  mape_list = new Array(meterData.length+1);
+  mape_list[0] = ["Sample", "Mape"];
+  rms_list = new Array(meterData.length+1);
+  rms_list[0] = ["Sample", "RMS"];
+
+  // for (index = 0; index < truth.length; index += 1) {re
+  //   diff = (predicted[index][1] - truth[index][1]);
+  //   difference[index] = [index,diff];
+  //   mape_list[index+1] = ["Hour " +index+"",Math.abs(diff / truth[index][1])];
+  //   rms_list[index+1] = ["Hour " +index+"",Math.pow(diff,2)];
+  // }
+
+  // console.log("DATE: " +date);
+  dateInt = parseInt(date.split("-")[2]);
+  // console.log("DATE: " + dateInt);
+  for (index = 0; index < 24; index += 1) {
+    meterData[index] = [index, meterData2D[dateInt*24][index]];
   }
-  i = 0
-  predictFiltered = new Array();
-  predictionValues = predictionData[algorithm][predict_range]
-  for (key in predictionValues) {
-    if(key.split(' ')[0] == date) {
-      predictFiltered.push([i, predictionValues[key][meter]]);
-      i += 1;
-    }
+  trueData = new Array(720);
+  for (index = 0; index < 24; index += 1) {
+    trueData[index] = [index, secondTrue[meter][dateInt*24][index]];
   }
+  // console.log(meterData);
+  // console.log(trueData);
+
+  for (index = 0; index < 24; index += 1) {
+    // console.log(index);
+    diff = (meterData[index][1] - trueData[index][1]);
+    difference[index] = [index,diff];
+    mape_list[index+1] = ["Hour " +index+"",Math.abs(diff / trueData[index][1])];
+    rms_list[index+1] = ["Hour " +index+"",Math.pow(diff,2)];
+  }
+
+
 
 
   // for (key in trueFiltered) {
@@ -515,28 +600,28 @@ function showGraphsDaily(meter, date, predict_range, algorithm) {
   // for (key in predictFiltered) {
   //   console.log(key + " " + predictFiltered[key]);
   // }
-  difference = new Array(trueFiltered.length);
-  mape_runner = 0;
-  rms_runner = 0;
-  mape_list = new Array(trueFiltered.length+1);
-  mape_list[0] = ["Sample", "Mape"];
-  rms_list = new Array(trueFiltered.length+1);
-  rms_list[0] = ["Sample", "RMS"];
-
-  for (index = 0; index < trueFiltered.length; index += 1) {
-    diff = (predictFiltered[index][1] - trueFiltered[index][1]);
-    difference[index] = [index,diff];
-    console.log(mape_runner + ", " + rms_runner + " " + diff);
-    mape_runner += diff / trueFiltered[index][1];
-    rms_runner += Math.pow(diff,2);
-    mape_list[index+1] = ["Hour " +index+"",Math.abs(diff / trueFiltered[index][1])];
-    rms_list[index+1] = ["Hour " +index+"",Math.pow(diff,2)];
-
-  }
-  mape = (mape_runner * 100) /  trueFiltered.length;
-  rms2 = rms_runner / trueFiltered.length;
-  rms = Math.sqrt(rms2);
-  console.log(mape_list);
+  // difference = new Array(trueFiltered.length);
+  // mape_runner = 0;
+  // rms_runner = 0;
+  // mape_list = new Array(trueFiltered.length+1);
+  // mape_list[0] = ["Sample", "Mape"];
+  // rms_list = new Array(trueFiltered.length+1);
+  // rms_list[0] = ["Sample", "RMS"];
+  //
+  // for (index = 0; index < trueFiltered.length; index += 1) {
+  //   diff = (predictFiltered[index][1] - trueFiltered[index][1]);
+  //   difference[index] = [index,diff];
+  //   console.log(mape_runner + ", " + rms_runner + " " + diff);
+  //   mape_runner += diff / trueFiltered[index][1];
+  //   rms_runner += Math.pow(diff,2);
+  //   mape_list[index+1] = ["Hour " +index+"",Math.abs(diff / trueFiltered[index][1])];
+  //   rms_list[index+1] = ["Hour " +index+"",Math.pow(diff,2)];
+  //
+  // }
+  // mape = (mape_runner * 100) /  trueFiltered.length;
+  // rms2 = rms_runner / trueFiltered.length;
+  // rms = Math.sqrt(rms2);
+  // console.log(mape_list);
 
   data = google.visualization.arrayToDataTable(mape_list);
   var options = {
@@ -557,7 +642,7 @@ function showGraphsDaily(meter, date, predict_range, algorithm) {
   chart2.draw(data2, options2);
 
 
-  $.plot("#graph0", [{label:"actual",data:trueFiltered}, {label:"predicted",data:predictFiltered}], {
+  $.plot("#graph0", [{label:"actual",data:trueData}, {label:"predicted",data:meterData}], {
     yaxis: {labelWidth: 30},
     xaxis: {labelHeight: 30},
     legend: {show: true}  });
@@ -589,25 +674,59 @@ function showGraphsHourly(meter, time, predict_range, algorithm) {
   console.log("Updating graph for meter: " +meter + ", time: " + time +
   ", predict_range: "+ predict_range + ", algorithm: " + algorithm);
   // console.log(trueValuesInvert[meter]);
+  //
+  // i = 0
+  // trueFiltered = new Array();
+  // for (key in trueValues) {
+  //   if(key.split(' ')[1] == time) {
+  //     trueFiltered.push([i, trueValues[key][meter]]);
+  //     i += 1;
+  //   }
+  // }
+  // i = 0
+  // predictFiltered = new Array();
+  // predictionValues = predictionData[algorithm][predict_range]
+  // for (key in predictionValues) {
+  //   if(key.split(' ')[1] == time) {
+  //     predictFiltered.push([i, predictionValues[key][meter]]);
+  //     i += 1;
+  //   }
+  // }
 
-  i = 0
-  trueFiltered = new Array();
-  for (key in trueValues) {
-    if(key.split(' ')[1] == time) {
-      trueFiltered.push([i, trueValues[key][meter]]);
-      i += 1;
-    }
+  // console.log(time.split(":")[0]);
+  hour = parseInt(time.split(":")[0]);
+  meterData2D = ((secondData[algorithm])[meter]);
+  mape_list = new Array(30+1);
+  mape_list[0] = ["Sample", "Mape"];
+  rms_list = new Array(30+1);
+  rms_list[0] = ["Sample", "RMS"];
+  trueData = new Array(30);
+  meterData = new Array(30);
+  difference = new Array(30);
+  i = 0;
+  for (index = hour; index < 720; index += 24) {
+    // console.log("index: " + index + " ,, i: " + i);
+    meterData[i] = [index, meterData2D[index][predict_range]];
+    i += 1;
   }
-  i = 0
-  predictFiltered = new Array();
-  predictionValues = predictionData[algorithm][predict_range]
-  for (key in predictionValues) {
-    if(key.split(' ')[1] == time) {
-      predictFiltered.push([i, predictionValues[key][meter]]);
-      i += 1;
-    }
+  i = 0;
+  trueData = new Array(31);
+  for (index = hour; index < 720; index += 24) {
+    trueData[i] = [index, secondTrue[meter][index][predict_range]];
+    i += 1;
+  }
+  // console.log(meterData);
+  // console.log(trueData);
+  for (index = 0; index < 30; index += 1) {
+    // console.log("675 i: " + index);
+    diff = (meterData[index][1] - trueData[index][1]);
+    difference[index] = [index,diff];
+    mape_list[index+1] = ["Hour " +index+"",Math.abs(diff / trueData[index][1])];
+    rms_list[index+1] = ["Hour " +index+"",Math.pow(diff,2)];
   }
 
+
+  // console.log();
 
   // for (key in trueFiltered) {
   //   console.log(key + " " + trueFiltered[key]);
@@ -616,19 +735,19 @@ function showGraphsHourly(meter, time, predict_range, algorithm) {
   //   console.log(key + " " + predictFiltered[key]);
   // }
 
-  mape_list = new Array(trueFiltered.length+1);
-  mape_list[0] = ["Sample", "Mape"];
-  rms_list = new Array(trueFiltered.length+1);
-  rms_list[0] = ["Sample", "RMS"];
-
-  difference = new Array(trueFiltered.length);
-  for (index = 0; index < trueFiltered.length; index += 1) {
-    diff = (predictFiltered[index][1] - trueFiltered[index][1])
-    difference[index] = [index,diff];
-    mape_list[index+1] = ["Hour " +index+"",Math.abs(diff / trueFiltered[index][1])];
-    rms_list[index+1] = ["Hour " +index+"",Math.pow(diff,2)];
-
-  }
+  // mape_list = new Array(trueFiltered.length+1);
+  // mape_list[0] = ["Sample", "Mape"];
+  // rms_list = new Array(trueFiltered.length+1);
+  // rms_list[0] = ["Sample", "RMS"];
+  //
+  // difference = new Array(trueFiltered.length);
+  // for (index = 0; index < trueFiltered.length; index += 1) {
+  //   diff = (predictFiltered[index][1] - trueFiltered[index][1])
+  //   difference[index] = [index,diff];
+  //   mape_list[index+1] = ["Hour " +index+"",Math.abs(diff / trueFiltered[index][1])];
+  //   rms_list[index+1] = ["Hour " +index+"",Math.pow(diff,2)];
+  //
+  // }
 
   data = google.visualization.arrayToDataTable(mape_list);
   var options = {
@@ -649,7 +768,7 @@ function showGraphsHourly(meter, time, predict_range, algorithm) {
   chart2.draw(data2, options2);
 
 
-  $.plot("#graph0", [{label:"actual",data:trueFiltered}, {label:"predicted",data:predictFiltered}], {
+  $.plot("#graph0", [{label:"actual",data:trueData}, {label:"predicted",data:meterData}], {
     yaxis: {labelWidth: 30},
     xaxis: {labelHeight: 30},
     legend: {show: true}  });
@@ -689,78 +808,191 @@ $( function() {
             // console.log(temperature);
           }
        });
-   $.ajax({
-           type: "GET",
-           url: loadTrueUrl,
-           dataType: "text",
-           success: function(data) {
-            //  console.log(data);
+       $.ajax({
+               type: "GET",
 
-             lines = data.split('\n');
-             for (index = 1; index < lines.length; index += 1) {
-               parsed = lines[index].split(',');
-               numbered = new Array(100);
-               for (datum = 1; datum < parsed.length; datum += 1) {
-                 flo = parseFloat(parsed[datum])
-                numbered[datum-1] = flo;
-                (trueValuesInvert[datum-1])[index-1] = [index-1,flo];
+               url: loadTrueUrl,
+               dataType: "text",
+               success: function(data) {
+                //  console.log(data);
+
+                 lines = data.split('\n');
+                 for (index = 1; index < lines.length; index += 1) {
+                   parsed = lines[index].split(',');
+                   numbered = new Array(100);
+                   for (datum = 1; datum < parsed.length; datum += 1) {
+                     flo = parseFloat(parsed[datum])
+                    numbered[datum-1] = flo;
+                    (trueValuesInvert[datum-1])[index-1] = [index-1,flo];
+                   }
+                   trueValues[parsed[0]] = numbered;
+
+                 }
+                //  console.log(lines[0]);
+                //  $.each(lines, function(line){
+                //     console.log(line);
+                //   });
+                //  trueValues = $.csv.toArrays(data);
+                 // console.log(temperature);
                }
-               trueValues[parsed[0]] = numbered;
+            });
 
-             }
-            //  console.log(lines[0]);
-            //  $.each(lines, function(line){
-            //     console.log(line);
-            //   });
-            //  trueValues = $.csv.toArrays(data);
-             // console.log(temperature);
-           }
-        });
+
+    // Load all the data
+    // setTimeout(function (){
+    //   algorithmTypes.forEach(function(algo) {
+    //     predictionData[algo] = {};
+    //     predictionDataInvert[algo] = {};
+    //     hoursInDay.forEach(function (hour) {
+    //       ((predictionData[algo])[hour]) = new Array(720);
+    //       ((predictionDataInvert[algo])[hour]) = new Array(100);
+    //       for(index = 0; index < 100; index +=1) {
+    //         ((predictionDataInvert[algo])[hour])[index] = new Array(720);
+    //       }
+    //
+    //       $.ajax({
+    //               type: "GET",
+    //               url: algorithmBaseUrl+algo+"/"+hour+"h_"+algo+".csv",
+    //               dataType: "text",
+    //               success: function(data) {
+    //                 // console.log(data);
+    //
+    //                 lines = data.split('\n');
+    //                 for (index = 1; index < lines.length; index += 1) {
+    //                   parsed = lines[index].split(',');
+    //                   numbered = new Array(100);
+    //                   for (datum = 1; datum < parsed.length; datum += 1) {
+    //                     flo = parseFloat(parsed[datum])
+    //                    numbered[datum-1] = flo;
+    //                    (((predictionDataInvert[algo])[hour])[datum-1])[index-1] = [index-1,flo];
+    //
+    //                   }
+    //                   // console.log(numbered);
+    //                   ((predictionData[algo])[hour])[parsed[0]] = numbered;
+    //
+    //                 }
+    //                 // console.log(lines[0]);
+    //
+    //
+    //                 // (predictionData[algo])[hour] = data;
+    //                 // console.log(temperature);
+    //                 graphsEnabled = true;
+    //                 if(algo=="OLS" && hour == 1) {
+    //                   updateGraphs();
+    //                 }
+    //               }
+    //            });
+    //     })
+    //   });
+    // }, 2000);
+
+    numMeters = 123;
     // Load all the data
     setTimeout(function (){
-      algorithmTypes.forEach(function(algo) {
-        predictionData[algo] = {};
-        predictionDataInvert[algo] = {};
-        hoursInDay.forEach(function (hour) {
-          ((predictionData[algo])[hour]) = new Array(720);
-          ((predictionDataInvert[algo])[hour]) = new Array(100);
-          for(index = 0; index < 100; index +=1) {
-            ((predictionDataInvert[algo])[hour])[index] = new Array(720);
-          }
+      secondTrue = new Array(numMeters);
+      for (met = 0; met < numMeters; met+=1) {
+        ((secondTrue)[met]) = new Array(720);
+        for(hourOfMonth = 0; hourOfMonth < 720; hourOfMonth +=1) {
+          ((secondTrue)[met])[hourOfMonth] = new Array(24);
+        }
+        $.ajax({
+                type: "GET",
+                url: secondUrl+"test_meter_"+met+".csv",
+                dataType: "text",
+                indexValue: met,
+                success: function(data) {
 
+                  lines = data.split('\n');
+                  for (index = 0; index < lines.length; index += 1) {
+                    parsed = lines[index].split(',');
+                    hourOfMonthArray = new Array(24);
+                    for (hourPredict = 0; hourPredict < parsed.length; hourPredict += 1) {
+                      hourPredictFloat = parseFloat(parsed[hourPredict]);
+                      hourOfMonthArray[hourPredict] = hourPredictFloat;
+                    }
+                    // console.log(numbered);
+                    (secondTrue[this.indexValue])[index] = hourOfMonthArray;
+                  }
+
+                  //Month down, day right
+                  // Hour of Day, start column hours ahead, down skipping by 24
+                }
+          });
+      }
+
+
+      algorithmTypes.forEach(function(algo) {
+        secondData[algo] = new Array(numMeters);
+        for (met = 0; met < numMeters; met+=1) {
+          ((secondData[algo])[met]) = new Array(720);
+          for(hourOfMonth = 0; hourOfMonth < 720; hourOfMonth +=1) {
+            ((secondData[algo])[met])[hourOfMonth] = new Array(24);
+          }
           $.ajax({
                   type: "GET",
-                  url: algorithmBaseUrl+algo+"/"+hour+"h_"+algo+".csv",
+                  url: secondUrl+"test_meter_"+met+"_"+algo+".csv",
                   dataType: "text",
+                  indexValue: met,
                   success: function(data) {
-                    // console.log(data);
 
                     lines = data.split('\n');
-                    for (index = 1; index < lines.length; index += 1) {
+                    for (index = 0; index < lines.length; index += 1) {
                       parsed = lines[index].split(',');
-                      numbered = new Array(100);
-                      for (datum = 1; datum < parsed.length; datum += 1) {
-                        flo = parseFloat(parsed[datum])
-                       numbered[datum-1] = flo;
-                       (((predictionDataInvert[algo])[hour])[datum-1])[index-1] = [index-1,flo];
-
+                      hourOfMonthArray = new Array(24);
+                      for (hourPredict = 0; hourPredict < parsed.length; hourPredict += 1) {
+                        hourPredictFloat = parseFloat(parsed[hourPredict]);
+                        hourOfMonthArray[hourPredict] = hourPredictFloat;
                       }
                       // console.log(numbered);
-                      ((predictionData[algo])[hour])[parsed[0]] = numbered;
-
+                      ((secondData[algo])[this.indexValue])[index] = hourOfMonthArray;
                     }
-                    // console.log(lines[0]);
 
-
-                    // (predictionData[algo])[hour] = data;
-                    // console.log(temperature);
-                    graphsEnabled = true;
-                    if(algo=="OLS" && hour == 1) {
-                      updateGraphs();
-                    }
+                    //Month down, day right
+                    // Hour of Day, start column hours ahead, down skipping by 24
                   }
-               });
-        })
+            });
+        }
+
+        // hoursInDay.forEach(function (hour) {
+        //   ((predictionData[algo])[hour]) = new Array(720);
+        //   ((predictionDataInvert[algo])[hour]) = new Array(100);
+        //   for(index = 0; index < 100; index +=1) {
+        //     ((predictionDataInvert[algo])[hour])[index] = new Array(720);
+        //   }
+        //
+        //   $.ajax({
+        //           type: "GET",
+        //           url: algorithmBaseUrl+algo+"/"+hour+"h_"+algo+".csv",
+        //           dataType: "text",
+        //           success: function(data) {
+        //             // console.log(data);
+        //
+        //             lines = data.split('\n');
+        //             for (index = 1; index < lines.length; index += 1) {
+        //               parsed = lines[index].split(',');
+        //               numbered = new Array(100);
+        //               for (datum = 1; datum < parsed.length; datum += 1) {
+        //                 flo = parseFloat(parsed[datum])
+        //                numbered[datum-1] = flo;
+        //                (((predictionDataInvert[algo])[hour])[datum-1])[index-1] = [index-1,flo];
+        //
+        //               }
+        //               // console.log(numbered);
+        //               ((predictionData[algo])[hour])[parsed[0]] = numbered;
+        //
+        //             }
+        //             // console.log(lines[0]);
+        //
+        //
+        //             // (predictionData[algo])[hour] = data;
+        //             // console.log(temperature);
+        //             graphsEnabled = true;
+        //             if(algo=="OLS" && hour == 1) {
+        //               updateGraphs();
+        //             }
+        //           }
+        //        });
+        // })
       });
     }, 2000);
 
@@ -997,39 +1229,39 @@ function onEachFeature(feature, layer) {
 // };
 
 
-
-function clickDrawGraph(e) {
-      // e = event
-      //console.log(feature.properties.region);
-      // You can make your ajax call declaration here
-      //$.ajax(...
-        var layer = e.target;
-        $.ajax({
-            type: 'GET',
-            url: 'PVAPI/'+layer.feature.properties.region,
-            dataType: 'json',
-            success: function (data) {
-                        $.each(JSON.parse(data), function(key,value) {
-                        drawChart(value,key);
-                    });
-                //console.log(data); // do anything you want with your parsed data
-                      // for(var i=0; i<2; i++){
-            }
-        });
-      //window.location.href = '/vader/PVDisagg/'+feature.properties.region
-      }
-
-function drawChart(dat,graphName) {
-    var plotarea = $('#graph'+graphName);
-
-
-    $.plot( plotarea , dat, { xaxis: {
-                   // mode: "time",
-                }
-            });
-
-};
 //
+// function clickDrawGraph(e) {
+//       // e = event
+//       //console.log(feature.properties.region);
+//       // You can make your ajax call declaration here
+//       //$.ajax(...
+//         var layer = e.target;
+//         $.ajax({
+//             type: 'GET',
+//             url: 'PVAPI/'+layer.feature.properties.region,
+//             dataType: 'json',
+//             success: function (data) {
+//                         $.each(JSON.parse(data), function(key,value) {
+//                         drawChart(value,key);
+//                     });
+//                 //console.log(data); // do anything you want with your parsed data
+//                       // for(var i=0; i<2; i++){
+//             }
+//         });
+//       //window.location.href = '/vader/PVDisagg/'+feature.properties.region
+//       }
+//
+// function drawChart(dat,graphName) {
+//     var plotarea = $('#graph'+graphName);
+//
+//
+//     $.plot( plotarea , dat, { xaxis: {
+//                    // mode: "time",
+//                 }
+//             });
+//
+// };
+// //
 //
 // function clickDrawGraph(e) {
 //       // e = event

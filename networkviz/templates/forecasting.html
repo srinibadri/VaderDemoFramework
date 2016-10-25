@@ -120,23 +120,20 @@
 
            <label for="algors">Prediction Algorithm: </label><br>
               <select name="algors" id="algors">
-                <option>SVR</option>
-                <option>AdaBoostDTR</option>
-                <option>AdaptiveLinear</option>
-                <option>DecisionTreeRegressor</option>
-                <option>GradientBoostingRegressor</option>
-                <option>KNeighborsRegressor</option>
+                <option>SGDRegressor</option>
                 <option>LassoLarsIC</option>
                 <option selected="selected">OLS</option>
 
               </select>
 
               <!-- <div class="ui-widget"> -->
-                <label for="tags">Prediction Length: </label><br>
+              <div id="prediction-selector">
+                <label for="tags">Hours Ahead: </label><br>
                 <!-- <input id="tags">
               </div> -->
               <div id="predict-slider">
               <div id="predict-slider-handle" class="ui-slider-handle"></div>
+              </div>
               </div>
 
         </fieldset>
