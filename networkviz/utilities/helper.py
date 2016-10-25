@@ -3,6 +3,10 @@ import datetime
 from networkviz.utilities import database
 
 
+def convert_dictionary_to_json(input_dic):
+    return json.dumps(input_dic)
+
+
 def convert_decimal_list_to_string(input_arg, index):
     return [str(x[index]) for x in input_arg]
 

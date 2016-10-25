@@ -54,6 +54,13 @@ def categorize_object_name(simulation_name):
     return categorized_res
 
 
+def categorize_object_amount(simulation_name):
+    res = categorize_object_name(simulation_name)
+    for item in res.keys():
+        res[item] = len(res[item])
+    return res
+
+
 def analyze_table(simulation_name, db_name, table):
     """
 
