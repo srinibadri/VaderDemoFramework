@@ -372,6 +372,21 @@ console.log("Done, but waiting on web requests");
 // }
 
 
+function initialDrawGraph(e) {
+        $.ajax({
+            type: 'GET',
+            url: 'VoltageAPI/'+1+"/7",
+            dataType: 'json',
+            success: function (data) {
+                        $.each(JSON.parse(data), function(key,value) {
+                        drawChart(value,key);
+                    });
+            }
+        });
+      }
+
+
+
 
 function onEachFeature(feature, layer) {
   console.console.log("On Each Feature " +feature);
@@ -394,6 +409,9 @@ function populateRegions(region_geo_json, layerGroup) {
             mouseout: resetHighlight,
             click: clickDrawGraph
         });
+        if(feature.properties.region) {
+          initialDrawGraph();
+        }
       }
   });
   console.log("Populate Created");
