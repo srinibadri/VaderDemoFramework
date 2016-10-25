@@ -3,12 +3,10 @@
     stroke: #1abb9c;
 }
 .light-green {
-    background-color: #03586A !important;
-    border: 1px solid #1ABB9C !important;
+    background-color: #26B99A;
 }
 .dark-green {
-    background-color: #26B99A !important;
-    border: 1px solid #1ABB9C !important;
+    background-color: #03586A;
 }
 .supply {
     fill: #03586A;
