@@ -14,7 +14,9 @@ $(".climate-tab").click(function() {
                 });
             },
             error: function(err){
-                alert("Get climate failed. " + err);
+              console.log("Get Climate Failed");
+              console.log(err);
+                // alert("Get climate failed. " + err);
             }
         });
     }

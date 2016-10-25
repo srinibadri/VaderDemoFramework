@@ -14,7 +14,7 @@ var meterApiEndpoint = "/static/data/cache/meters.json",
     loadApiEndpoint = "/static/data/cache/load.json",
     nodeApiEndpoint = "/static/data/cache/node.json",
     houseApiEndpoint = "/static/data/cache/house.json",
-    lineApiEndpoint = "/static/data/model.geo.json",
+    lineApiEndpoint = "/static/data/model2.geo.json",
     feederApiEndpoint = "/static/data/cache/feeder.json";
 
 var sensorApiEndpoint = "/vader/api/sensor/",

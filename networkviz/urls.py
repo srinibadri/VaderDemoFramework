@@ -11,7 +11,7 @@ urlpatterns = [
     url(r'^d3/', views.d3, name='d3'),
     url(r'^ieee123/', views.ieee123, name='ieee123'),
     url(r'^map', views.map, name='map'),
-    url(r'^switch-prediction', views.switch_prediction, name='dualmap'),
+    url(r'^switch-prediction', views.switch_prediction, name='switch-prediction'),
     url(r'^console', views.console, name='console'),
     url(r'^dashboard', views.dashboard, name='dashboard'),
     url(r'^planning', views.planning, name='planning'),
@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^forecasting-pge', views.forecasting_pge, name='forecasting'),
     url(r'^topology', views.topology, name='topology'),
     url(r'^dataplug', views.dataplug, name='dataplug'),
+    url(r'^dualmap', views.dualmap, name='dualmap'),
 
 
     # API for VOLTAGE AND PV DISAGG demos

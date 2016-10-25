@@ -458,9 +458,27 @@ function showGraphs(meter, date_time, predict_range, algorithm) {
 
 
   // console.log(difference);
-  $.plot("#graph0", [truth, predicted]);
-  $.plot("#graph1", [difference]);
-  // drawChart(trueValuesInvert[0], 0);
+  $.plot("#graph0", [truth, predicted], {
+    yaxis: {labelWidth: 30},
+    xaxis: {labelHeight: 30},
+    legend: {show: true}  });
+  $.plot("#graph1", [difference], {
+    yaxis: {labelWidth: 30},
+    xaxis: {labelHeight: 30},
+    legend: {show: true}  });
+
+  var xaxisLabel0 = $("<div class='axisLabel xaxisLabel'></div>").text("Hour of Month").appendTo($('#graph0'));
+
+  var yaxisLabel0 = $("<div class='axisLabel yaxisLabel'></div>").text("Normalized Demand").appendTo($('#graph0'));
+  yaxisLabel0.css("margin-top", yaxisLabel0.width() / 2 - 20);
+
+
+  var xaxisLabel1 = $("<div class='axisLabel xaxisLabel'></div>").text("Hour of Month").appendTo($('#graph1'));
+
+  var yaxisLabel1 = $("<div class='axisLabel yaxisLabel'></div>").text("Normalized Demand").appendTo($('#graph1'));
+  yaxisLabel1.css("margin-top", yaxisLabel1.width() / 2 - 20);
+
+
 }
 
 function showGraphsDaily(meter, date, predict_range, algorithm) {
@@ -539,32 +557,27 @@ function showGraphsDaily(meter, date, predict_range, algorithm) {
   chart2.draw(data2, options2);
 
 
-  // console.log("mape: "+ mape +" rms: " + rms);
-  // console.log(difference);
-  $.plot("#graph0", [trueFiltered, predictFiltered]);
-  $.plot("#graph1", [difference]);
+  $.plot("#graph0", [trueFiltered, predictFiltered], {
+    yaxis: {labelWidth: 30},
+    xaxis: {labelHeight: 30},
+    legend: {show: true}  });
+  $.plot("#graph1", [difference], {
+    yaxis: {labelWidth: 30},
+    xaxis: {labelHeight: 30},
+    legend: {show: true}  });
 
-  // var data33 = [ ["January", 10], ["February", 8], ["March", 4], ["April", 13], ["May", 17], ["June", 9] ];
-  //
-	// 	$.plot("#graph2", [ data33 ], {
-	// 		series: {
-	// 			bars: {
-	// 				show: true,
-	// 				barWidth: 0.6,
-	// 				align: "center"
-	// 			}
-	// 		},
-	// 		xaxis: {
-	// 			mode: "categories",
-	// 			tickLength: 0
-	// 		}
-	// 	});
-  // var d2 = [[0, 3], [4, 8], [8, 5], [9, 13]];
-  // $.plot("#graph2", {
-	// 		data: d2,
-	// 		bars: { show: true }
-	// 	});
-  // drawChart(trueValuesInvert[0], 0);
+  var xaxisLabel0 = $("<div class='axisLabel xaxisLabel'></div>").text("Hour of Day").appendTo($('#graph0'));
+
+  var yaxisLabel0 = $("<div class='axisLabel yaxisLabel'></div>").text("Normalized Demand").appendTo($('#graph0'));
+  yaxisLabel0.css("margin-top", yaxisLabel0.width() / 2 - 20);
+
+
+  var xaxisLabel1 = $("<div class='axisLabel xaxisLabel'></div>").text("Hour of Day").appendTo($('#graph1'));
+
+  var yaxisLabel1 = $("<div class='axisLabel yaxisLabel'></div>").text("Normalized Demand").appendTo($('#graph1'));
+  yaxisLabel1.css("margin-top", yaxisLabel1.width() / 2 - 20);
+
+
 }
 
 
@@ -636,10 +649,28 @@ function showGraphsHourly(meter, time, predict_range, algorithm) {
   chart2.draw(data2, options2);
 
 
-  // console.log(difference);
-  $.plot("#graph0", [trueFiltered, predictFiltered]);
-  $.plot("#graph1", [difference]);
-  // drawChart(trueValuesInvert[0], 0);
+  $.plot("#graph0", [trueFiltered, predictFiltered], {
+    yaxis: {labelWidth: 30},
+    xaxis: {labelHeight: 30},
+    legend: {show: true}  });
+  $.plot("#graph1", [difference], {
+    yaxis: {labelWidth: 30},
+    xaxis: {labelHeight: 30},
+    legend: {show: true}  });
+
+  var xaxisLabel0 = $("<div class='axisLabel xaxisLabel'></div>").text("Day of Month (Holding Time at "+time+")").appendTo($('#graph0'));
+
+  var yaxisLabel0 = $("<div class='axisLabel yaxisLabel'></div>").text("Normalized Demand").appendTo($('#graph0'));
+  yaxisLabel0.css("margin-top", yaxisLabel0.width() / 2 - 20);
+
+
+
+  var xaxisLabel1 = $("<div class='axisLabel xaxisLabel'></div>").text("Day of Month (Holding Time at "+time+")").appendTo($('#graph1'));
+
+  var yaxisLabel1 = $("<div class='axisLabel yaxisLabel'></div>").text("Normalized Demand").appendTo($('#graph1'));
+  yaxisLabel1.css("margin-top", yaxisLabel1.width() / 2 - 20);
+
+
 }
 
 $( function() {
