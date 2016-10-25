@@ -65,6 +65,7 @@ var geojsonMarkerOptions = {
 
 var normalIconSize = 20,
     bigIconSize = 30,
+    HugeIconSize = 40,
     megaIconSize = 60;
 var normalIconDimens = [normalIconSize, normalIconSize],
     normalIconAnchor = [normalIconSize/2, normalIconSize/2],
@@ -72,6 +73,10 @@ var normalIconDimens = [normalIconSize, normalIconSize],
 var bigIconDimens = [bigIconSize, bigIconSize],
     bigIconAnchor = [bigIconSize/2, bigIconSize/2],
     bigIconPopup  = [0, -bigIconSize/2 + 3];
+var HugeIconDimens = [HugeIconSize, HugeIconSize],
+    HugeIconAnchor = [HugeIconSize/2, HugeIconSize/2],
+    HugeIconPopup  = [0, -HugeIconSize/2 + 3];
+
 var megaIconDimens = [megaIconSize, megaIconSize],
     megaIconAnchor = [megaIconSize/2, megaIconSize/2],
     megaIconPopup  = [0, -megaIconSize/2 + 3];
@@ -98,6 +103,19 @@ var BigGridIcon = L.Icon.extend({
       popupAnchor:  bigIconPopup // point from which the popup should open relative to the iconAnchor
     }
 });
+
+var HugeGridIcon = L.Icon.extend({
+    options: {
+      iconUrl: '/static/images/icons/switch.png',
+      // shadowUrl: 'leaf-shadow.png',
+      iconSize:     HugeIconDimens, // size of the icon
+      // shadowSize:   [50, 64], // size of the shadow
+      iconAnchor:   HugeIconAnchor, // point of the icon which will correspond to marker's location
+      // shadowAnchor: [4, 62],  // the same for the shadow
+      popupAnchor:  HugeIconPopup // point from which the popup should open relative to the iconAnchor
+    }
+});
+
 var MegaGridIcon = L.Icon.extend({
     options: {
       iconUrl: '/static/images/icons/substation.png',
@@ -121,8 +139,8 @@ var meterIcon = new NormalGridIcon({iconUrl: '/static/images/icons/meter.png'}),
     switchIconUnmonitoredClosed = new BigGridIcon({iconUrl: '/static/images/icons/switch-unmonitored-closed.png'}),
 
     switchIconMonitored = new BigGridIcon({iconUrl: '/static/images/icons/switch-monitored.png'}),
-    switchIconMonitoredClosed = new BigGridIcon({iconUrl: '/static/images/icons/switch-monitored-closed.png'}),
-    switchIconMonitoredOpen = new BigGridIcon({iconUrl: '/static/images/icons/switch-monitored-open.png'}),
+    switchIconMonitoredClosed = new HugeGridIcon({iconUrl: '/static/images/icons/switch-monitored-closed.png'}),
+    switchIconMonitoredOpen = new HugeGridIcon({iconUrl: '/static/images/icons/switch-monitored-open.png'}),
     switchIconClosed = new BigGridIcon({iconUrl: '/static/images/icons/switch-monitored-closed.png'}),
     switchIconOpen = new BigGridIcon({iconUrl: '/static/images/icons/switch-monitored-open.png'}),
 
@@ -853,23 +871,36 @@ function setSwitchStates(config, time) {
   }
   // console.log((switchConfigs[time])[config]);
   switchSet = (switchConfigs[0])[config];
-  // console.log((maps[1])['switches']);
+
   (maps[0])['switches'].forEach(function(element) {
-    // console.log(element);
-    swName = element['key']
-    if (switchSet[swName] == "1") {
-      // console.log("Found Match" + swName);
-      element['value'].setIcon(switchIconMonitoredClosed);
-      (maps[0]['switchStateList'])[swName] = "CLOSED";
-      // (map_obj['switchStateList'])[swName] = "CLOSED";
+    if (monitoredList.indexOf(element['key'])> -1) {
+      // console.log(element);
+      swName = element['key']
+      if (switchSet[swName] == "1") {
+        // console.log("Found Match" + swName);
+        element['value'].setIcon(switchIconMonitoredClosed);
+        (maps[0]['switchStateList'])[swName] = "CLOSED";
 
-    }
-    if (switchSet[swName] == "0") {
-      // console.log("Found Match" + swName);
-      element['value'].setIcon(switchIconMonitoredOpen);
-      (maps[0]['switchStateList'])[swName] = "OPEN";
-      // (map_obj['switchStateList'])[swName] = "OPEN";
+      }
+      if (switchSet[swName] == "0") {
+        // console.log("Found Match" + swName);
+        element['value'].setIcon(switchIconMonitoredOpen);
+        (maps[0]['switchStateList'])[swName] = "OPEN";
 
+      }
+    } else {
+      // console.log(element);
+      swName = element['key']
+      if (switchSet[swName] == "1") {
+        // console.log("Found Match" + swName);
+        element['value'].setIcon(switchIconUnmonitoredClosed);
+        (maps[0]['switchStateList'])[swName] = "CLOSED";
+      }
+      if (switchSet[swName] == "0") {
+        // console.log("Found Match" + swName);
+        element['value'].setIcon(switchIconUnmonitoredOpen);
+        (maps[0]['switchStateList'])[swName] = "OPEN";
+      }
     }
 
   });
@@ -1127,10 +1158,10 @@ $( document ).ready(function() {
 
 });
 
-$( function() {
-  $.plot("#graph1", [loadsTrue1, loadsUpper1, loadsLower1],
-  {xaxis:{show: false},yaxis:{show: false}});
-});
+// $( function() {
+//   $.plot("#graph1", [loadsTrue1, loadsUpper1, loadsLower1],
+//   {xaxis:{show: false},yaxis:{show: false}});
+// });
 
 
 
