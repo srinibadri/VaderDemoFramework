@@ -19,6 +19,8 @@ urlpatterns = [
     url(r'^PVDisagg', views.pvdisagg, name='disaggMain'),
     url(r'^MLPowerFlow', views.mlpowerflow, name='MLPowerFlow'),
     url(r'^forecasting', views.forecasting, name='forecasting'),
+    url(r'^forecasting-pge', views.forecasting_pge, name='forecasting'),
+
     url(r'^dataplug', views.dataplug, name='dataplug'),
 
 

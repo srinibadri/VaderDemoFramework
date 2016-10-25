@@ -328,7 +328,7 @@ console.log("Done, but waiting on web requests");
 var currentDate = "2011-11-01";
 var currentTime = "10:00:00";
 var currentMeter = 0;
-var currentAlgo = "SVR";
+var currentAlgo = "OLS";
 var currentFilter = "radio-date";
 var currentZip = "all-zips";
 var currentPredictRange = 1;
@@ -352,7 +352,7 @@ for(index = 0; index < trueValuesInvert.length; index +=1) {
 }
 var tempByZipUrl = "/static/data/temp_by_zip.csv";
 var loadTrueUrl = "/static/data/load_true.csv";
-var algorithmTypes = ["SVR"];
+var algorithmTypes = ["OLS"];
   // "AdaBoostDTR", "AdaptiveLinear", "DecisionTreeRegressor",
   //   "GradientBoostingRegressor", "KNeighborsRegressor", "LassoLarsIC",
   //   "OLS", "SVR"];
@@ -371,26 +371,41 @@ var graphsEnabled = false;
 function updateGraphs() {
   if (currentFilter == "radio-date") {
     $("#date-selector").css('visibility', 'visible');
-    $("#time-selector").css('visibility', 'hidden');
+    $("#time-selector").css('visibility', 'collapse');
+    $("#meter-selector").css('visibility', 'visible');
+    $("#region-selector").css('visibility', 'collapse');
     showGraphsDaily(meter=currentMeter,
       date=(currentDate),
       predict_range=currentPredictRange,
       algorithm=currentAlgo);
   } else if (currentFilter == "radio-time") {
-    $("#date-selector").css('visibility', 'hidden');
+    $("#date-selector").css('visibility', 'collapse');
     $("#time-selector").css('visibility', 'visible');
+    $("#meter-selector").css('visibility', 'visible');
+    $("#region-selector").css('visibility', 'collapse');
 
     showGraphsHourly(meter=currentMeter,
       time=(currentTime),
       predict_range=currentPredictRange,
       algorithm=currentAlgo);
   } else if (currentFilter == "radio-month") {
-    $("#date-selector").css('visibility', 'hidden');
-    $("#time-selector").css('visibility', 'hidden');
+    $("#date-selector").css('visibility', 'collapse');
+    $("#time-selector").css('visibility', 'collapse');
+    $("#meter-selector").css('visibility', 'visible');
+    $("#region-selector").css('visibility', 'collapse');
     showGraphs(meter=currentMeter,
       date_time=(currentDate+" "+currentTime),
       predict_range=currentPredictRange,
       algorithm=currentAlgo);
+    } else if (currentFilter == "radio-region") {
+      $("#date-selector").css('visibility', 'collapse');
+      $("#time-selector").css('visibility', 'collapse');
+      $("#meter-selector").css('visibility', 'collapse');
+      $("#region-selector").css('visibility', 'visible');
+      showGraphs(meter=currentMeter,
+        date_time=(currentDate+" "+currentTime),
+        predict_range=currentPredictRange,
+        algorithm=currentAlgo);
   }
 }
 
@@ -410,9 +425,38 @@ function showGraphs(meter, date_time, predict_range, algorithm) {
   truth = trueValuesInvert[meter];
   predicted = ((predictionDataInvert[algorithm])[predict_range])[meter];
   difference = new Array(truth.length);
+  mape_list = new Array(trueFiltered.length+1);
+  mape_list[0] = ["Sample", "Mape"];
+  rms_list = new Array(trueFiltered.length+1);
+  rms_list[0] = ["Sample", "RMS"];
+
   for (index = 0; index < truth.length; index += 1) {
-    difference[index] = [index,(predicted[index][1] - truth[index][1])];
+    diff = (predicted[index][1] - truth[index][1]);
+    difference[index] = [index,diff];
+    mape_list[index+1] = ["Hour " +index+"",Math.abs(diff / truth[index][1])];
+    rms_list[index+1] = ["Hour " +index+"",Math.pow(diff,2)];
   }
+  console.log(rms_list);
+
+  data = google.visualization.arrayToDataTable(mape_list);
+  var options = {
+          title: 'Mape Error By Frequency',
+          legend: { position: 'none' },
+        };
+
+  var chart = new google.visualization.Histogram(document.getElementById('graph2'));
+  chart.draw(data, options);
+
+  data2 = google.visualization.arrayToDataTable(rms_list);
+  var options2 = {
+          title: 'RMS Error By Frequency',
+          legend: { position: 'none' },
+        };
+
+  var chart2 = new google.visualization.Histogram(document.getElementById('graph3'));
+  chart2.draw(data2, options2);
+
+
   // console.log(difference);
   $.plot("#graph0", [truth, predicted]);
   $.plot("#graph1", [difference]);
@@ -454,12 +498,72 @@ function showGraphsDaily(meter, date, predict_range, algorithm) {
   //   console.log(key + " " + predictFiltered[key]);
   // }
   difference = new Array(trueFiltered.length);
+  mape_runner = 0;
+  rms_runner = 0;
+  mape_list = new Array(trueFiltered.length+1);
+  mape_list[0] = ["Sample", "Mape"];
+  rms_list = new Array(trueFiltered.length+1);
+  rms_list[0] = ["Sample", "RMS"];
+
   for (index = 0; index < trueFiltered.length; index += 1) {
-    difference[index] = [index,(predictFiltered[index][1] - trueFiltered[index][1])];
+    diff = (predictFiltered[index][1] - trueFiltered[index][1]);
+    difference[index] = [index,diff];
+    console.log(mape_runner + ", " + rms_runner + " " + diff);
+    mape_runner += diff / trueFiltered[index][1];
+    rms_runner += Math.pow(diff,2);
+    mape_list[index+1] = ["Hour " +index+"",Math.abs(diff / trueFiltered[index][1])];
+    rms_list[index+1] = ["Hour " +index+"",Math.pow(diff,2)];
+
   }
+  mape = (mape_runner * 100) /  trueFiltered.length;
+  rms2 = rms_runner / trueFiltered.length;
+  rms = Math.sqrt(rms2);
+  console.log(mape_list);
+
+  data = google.visualization.arrayToDataTable(mape_list);
+  var options = {
+          title: 'Mape Error By Frequency',
+          legend: { position: 'none' },
+        };
+
+  var chart = new google.visualization.Histogram(document.getElementById('graph2'));
+  chart.draw(data, options);
+
+  data2 = google.visualization.arrayToDataTable(rms_list);
+  var options2 = {
+          title: 'RMS Error By Frequency',
+          legend: { position: 'none' },
+        };
+
+  var chart2 = new google.visualization.Histogram(document.getElementById('graph3'));
+  chart2.draw(data2, options2);
+
+
+  // console.log("mape: "+ mape +" rms: " + rms);
   // console.log(difference);
   $.plot("#graph0", [trueFiltered, predictFiltered]);
   $.plot("#graph1", [difference]);
+
+  // var data33 = [ ["January", 10], ["February", 8], ["March", 4], ["April", 13], ["May", 17], ["June", 9] ];
+  //
+	// 	$.plot("#graph2", [ data33 ], {
+	// 		series: {
+	// 			bars: {
+	// 				show: true,
+	// 				barWidth: 0.6,
+	// 				align: "center"
+	// 			}
+	// 		},
+	// 		xaxis: {
+	// 			mode: "categories",
+	// 			tickLength: 0
+	// 		}
+	// 	});
+  // var d2 = [[0, 3], [4, 8], [8, 5], [9, 13]];
+  // $.plot("#graph2", {
+	// 		data: d2,
+	// 		bars: { show: true }
+	// 	});
   // drawChart(trueValuesInvert[0], 0);
 }
 
@@ -498,10 +602,40 @@ function showGraphsHourly(meter, time, predict_range, algorithm) {
   // for (key in predictFiltered) {
   //   console.log(key + " " + predictFiltered[key]);
   // }
+
+  mape_list = new Array(trueFiltered.length+1);
+  mape_list[0] = ["Sample", "Mape"];
+  rms_list = new Array(trueFiltered.length+1);
+  rms_list[0] = ["Sample", "RMS"];
+
   difference = new Array(trueFiltered.length);
   for (index = 0; index < trueFiltered.length; index += 1) {
-    difference[index] = [index,(predictFiltered[index][1] - trueFiltered[index][1])];
+    diff = (predictFiltered[index][1] - trueFiltered[index][1])
+    difference[index] = [index,diff];
+    mape_list[index+1] = ["Hour " +index+"",Math.abs(diff / trueFiltered[index][1])];
+    rms_list[index+1] = ["Hour " +index+"",Math.pow(diff,2)];
+
   }
+
+  data = google.visualization.arrayToDataTable(mape_list);
+  var options = {
+          title: 'Mape Error By Frequency',
+          legend: { position: 'none' },
+        };
+
+  var chart = new google.visualization.Histogram(document.getElementById('graph2'));
+  chart.draw(data, options);
+
+  data2 = google.visualization.arrayToDataTable(rms_list);
+  var options2 = {
+          title: 'RMS Error By Frequency',
+          legend: { position: 'none' },
+        };
+
+  var chart2 = new google.visualization.Histogram(document.getElementById('graph3'));
+  chart2.draw(data2, options2);
+
+
   // console.log(difference);
   $.plot("#graph0", [trueFiltered, predictFiltered]);
   $.plot("#graph1", [difference]);
@@ -509,7 +643,7 @@ function showGraphsHourly(meter, time, predict_range, algorithm) {
 }
 
 $( function() {
-
+  google.charts.load("current", {packages:["corechart"]});
 });
 
 
@@ -590,7 +724,7 @@ $( function() {
                     // (predictionData[algo])[hour] = data;
                     // console.log(temperature);
                     graphsEnabled = true;
-                    if(algo=="SVR" && hour == 1) {
+                    if(algo=="OLS" && hour == 1) {
                       updateGraphs();
                     }
                   }
@@ -651,17 +785,25 @@ $( function() {
 
 
 $( function() {
-  $( "#zips" ).selectmenu({
-    change: function( event, data ) { currentZip = data.item.value; updateGraphs(); }});
+  // $( "#zips" ).selectmenu({
+  //   change: function( event, data ) { currentZip = data.item.value; updateGraphs(); }});
   $( "#algors" ).selectmenu({
     change: function( event, data ) { currentAlgo = data.item.value; updateGraphs(); }});
     $( ".datetimeradio" ).checkboxradio({
-          icon: false,
-        }).click(function() {
-            currentFilter = $("input[name=radio-1]:checked")[0].id;
-            updateGraphs();
-            // alert($("input[name=radio-1]:checked").val());
-        });
+      icon: false,
+    }).click(function() {
+        currentFilter = $("input[name=radio-1]:checked")[0].id;
+        updateGraphs();
+        // alert($("input[name=radio-1]:checked").val());
+    });
+
+    $( ".regionradio" ).checkboxradio({
+      icon: false,
+    }).click(function() {
+        currentRegion = $("input[name=radio-region]:checked")[0].id;
+        updateGraphs();
+        // alert($("input[name=radio-1]:checked").val());
+    });
 //     var availableTags = [
 // 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99    ];
 //     $( "#tags" ).val('4').selectmenu({

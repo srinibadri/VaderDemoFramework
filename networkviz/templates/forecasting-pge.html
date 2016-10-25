@@ -34,11 +34,11 @@
               <label for="radio" class="">Select Data Subset: </label><br>
               <label for="radio-date">By Date</label>
               <input type="radio" name="radio-1" class="datetimeradio" id="radio-date" checked>
-              <label for="radio-time">By Time Each Day</label>
+              <label for="radio-time">By Time of Day</label>
               <input type="radio" name="radio-1" class="datetimeradio" id="radio-time">
-              <label for="radio-region">By Region</label>
-              <input type="radio" name="radio-1" class="datetimeradio" id="radio-region">
-              <label for="radio-month">Show Whole Month</label>
+              <!-- <label for="radio-hours">By Hours Ahead</label>
+              <input type="radio" name="radio-1" class="datetimeradio" id="radio-hours"> -->
+              <label for="radio-month">Show Month</label>
               <input type="radio" name="radio-1" class="datetimeradio" id="radio-month">
 
             </fieldset>
@@ -56,7 +56,6 @@
               </div>
             </div>
             </div>
-            </fieldset>
 
             <div id="time-selector">
           <label for="minbeds" class="">Time: </label><br>
@@ -66,30 +65,12 @@
           </div>
 
           <!-- <div class="ui-widget"> -->
-          <div id="meter-selector">
             <label for="tags">Meter: </label><br>
             <!-- <input id="tags">
           </div> -->
           <div id="starting-slider">
           <div id="starting-slider-handle" class="ui-slider-handle"></div>
           </div>
-          </div>
-
-          <fieldset>
-          <div id="region-selector">
-          <label for="radio" class="">Select Region: </label><br>
-          <label for="radio-A">A</label>
-          <input type="radio" name="radio-region" class="regionradio" id="radio-A" checked>
-          <label for="radio-B">B</label>
-          <input type="radio" name="radio-region" class="regionradio" id="radio-B">
-          <label for="radio-C">C</label>
-          <input type="radio" name="radio-region" class="regionradio" id="radio-C">
-          <label for="radio-D">D</label>
-          <input type="radio" name="radio-region" class="regionradio" id="radio-D">
-          <label for="radio-E">E</label>
-          <input type="radio" name="radio-region" class="regionradio" id="radio-E">
-        </div>
-        </fieldset>
 
           <!-- <label for="meter">Meter: </label><br>
              <select name="meter" id="meter">
@@ -104,7 +85,7 @@
 
              </select> -->
 
-          <!-- <label for="zips">Zip code: </label><br>
+          <label for="zips">Zip code: </label><br>
              <select name="zips" id="zips">
                <option selected="selected">all zips</option>
                <option>93309</option>
@@ -116,18 +97,19 @@
                <option>93306</option>
                <option>94806</option>
 
-             </select> -->
+             </select>
 
            <label for="algors">Prediction Algorithm: </label><br>
               <select name="algors" id="algors">
-                <option>SVR</option>
+                <option selected="selected">SVR</option>
                 <option>AdaBoostDTR</option>
                 <option>AdaptiveLinear</option>
                 <option>DecisionTreeRegressor</option>
                 <option>GradientBoostingRegressor</option>
                 <option>KNeighborsRegressor</option>
                 <option>LassoLarsIC</option>
-                <option selected="selected">OLS</option>
+                <option>OLS</option>
+                <option>SVR</option>
 
               </select>
 
@@ -159,13 +141,12 @@
     	<div class="container graph" id="graph1"></div>
         </div>
         <div class="card text-center" style="background-color: #fff; padding: 15px; border-radius: 15px;">
-        <p><span class="glyphicon glyphicon-home"></span> Histograms of Errors</p>
+        <p><span class="glyphicon glyphicon-home"></span> Histogram of Errors</p>
     	<div class="container graph" id="graph2"></div>
-      <div class="container graph" id="graph3"></div>
         </div>
         <div class="card text-center" style="background-color: #fff; padding: 15px; border-radius: 15px;">
         <p><span class="glyphicon glyphicon-home"></span> Errors</p>
-        <!-- <div class="container graph" id="graph3"></div> -->
+        <div class="container graph" id="graph3"></div>
         </div>
 
 </div>
@@ -193,7 +174,6 @@
 <script type="text/javascript" src="{% static 'js/jquery.flot.time.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/jquery.flot.resize.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/jquery.csv.js' %}"></script>
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 <script type="text/javascript" src="{% static 'js/forecasting.js' %}"></script>
 <script>

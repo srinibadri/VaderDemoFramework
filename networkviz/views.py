@@ -99,6 +99,9 @@ def get_history_data(request):
 
 def forecasting(request):
     return render(request,'forecasting.html')
+def forecasting_pge(request):
+    return render(request,'forecasting-pge.html')
+
 
 def pvdisagg(request):
     ##data=disaggregateRegion(region_id)
