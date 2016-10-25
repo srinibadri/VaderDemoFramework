@@ -43,3 +43,7 @@ body{
 .simulation-dropdown{
     cursor: pointer;
 }
+
+.icon{
+    padding-top: 10px;
+}

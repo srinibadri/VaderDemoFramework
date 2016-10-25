@@ -52,21 +52,10 @@
                         {% include "vader/meter-table.html" %}
                     </div>
                 </div>
-{#                <!-- Mini Charts -->#}
-{#                <div class="row">#}
-{#                    <div class="col-md-12">#}
-{#                        {% block minicharts %} {% include "networkviz/charts/_minicharts.html" %} {% endblock %}#}
-{#                    </div>#}
-{#                </div>#}
-{#                <!-- Knobs -->#}
-{#                <div class="row">#}
-{#                    {% block inputknob %} {% include "networkviz/charts/_inputknob.html" %} {% endblock %}#}
-{#                </div>#}
-
-                </div>
             </div>
         </div>
     </div>
+</div>
 {% include "vader/graph.html" %}
 {% endblock %}
 
@@ -75,6 +64,7 @@
     <script type="text/javascript" src="{% static 'js/init.js' %}"></script>
 
     <script type="text/javascript" src="{% static 'js/datatable.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/cards.js' %}"></script>
     <script type="text/javascript" src="http://d3js.org/d3.v3.js"></script>
     <!-- Javascript Imports (so many!) -->
     {% block imports-js %} {% include "networkviz/_imports-js.html" %} {% endblock %}

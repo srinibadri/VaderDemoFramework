@@ -489,3 +489,10 @@ def query_for_feeder(request):
 def query_for_climate(request):
     climate_json = climate.query_climate()
     return HttpResponse(climate_json, content_type="application/json")
+
+
+def query_for_cards(request):
+    simulation_name = request.GET.get('simulation_name')
+    object_dictionary = helper.convert_dictionary_to_json(analyze.categorize_object_amount(simulation_name))
+    print object_dictionary
+    return HttpResponse(json.dumps(object_dictionary), content_type="application/json")

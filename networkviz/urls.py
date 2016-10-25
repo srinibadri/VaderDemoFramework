@@ -60,9 +60,10 @@ urlpatterns = [
 
     url(r'^api/feeder/$', views.query_for_feeder, name='feeder'),
     url(r'^datatable', views.query_for_datatable, name='datatable'),
+    url(r'^cards', views.query_for_cards, name='cards'),
     url(r'^climate', views.query_for_climate, name='climate'),
     url(r'^getdata/live', views.get_live_data),
     url(r'^getdata/history', views.get_history_data),
-    url(r'^structure', views.structure),
-    url(r'^getdata/total-power', views.get_total_power)
+    url(r'^getdata/total-power', views.get_total_power),
+    url(r'^structure', views.structure)
 ]
