@@ -492,7 +492,9 @@ def query_for_climate(request):
 
 
 def query_for_cards(request):
+    print request
+    print "come in"
     simulation_name = request.GET.get('simulation_name')
     object_dictionary = helper.convert_dictionary_to_json(analyze.categorize_object_amount(simulation_name))
     print object_dictionary
-    return HttpResponse(json.dumps(object_dictionary), content_type="application/json")
+    return JsonResponse(object_dictionary, safe=False)
