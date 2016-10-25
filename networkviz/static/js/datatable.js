@@ -111,7 +111,8 @@ $(document).ready(function(){
                 }
             },
             error : function(err) {
-                alert(err);
+              console.log("ERROR No Data Found");
+                // alert(err);
             }
         });
     }

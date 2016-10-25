@@ -13,6 +13,15 @@
     /*#topo-select { width: 3%; height: 87%; float: left; margin-right: 1%;}*/
     .map { width: 49%; height: 87%; float: left; margin-right: 1%;}
     .lastmap { margin-right: 0; float: right; }
+    .graph{
+    	height: 8%;
+    	width: 50em;
+      margin: 0;
+      margin-top: -2em;
+      margin-left: -1em;
+      margin-bottom: -1em;
+    }
+
 </style>
 
 
@@ -24,7 +33,9 @@
         <p>
           Topology Identification using:<br>
           1 - Real Time Line Sensing<br>
-          2 - Delayed Smart Meter Data (and forecasts)</p>
+          2 - Delayed Smart Meter Data (and forecasts)
+        </p>
+
       </div>
 
         <!-- <p>This demo presents a machine learning tool that can predict switch configurations and region connectivity with minimal data.</p>
@@ -42,8 +53,8 @@
     <label for="minbeds" class="slider-label">Starting Switch Configuration: </label>
     <!-- <button type="button" class="btn btn-primary" style="height=2em;">Previous</button>
     <button type="button" class="btn btn-primary" style="height=2em;">Next</button> -->
-    <span onclick="sliderPrev">Previous</span>
-    <span onclick="sliderNext">Next</span>
+    <!-- <span onclick="sliderPrev()">Previous</span>
+    <span onclick="sliderNext()">Next</span> -->
     <!-- <button type="button" class="starting-slider-button" id="starting-slider-prev" onclick="sliderPrev">Previous</button> -->
     <!-- <button type="button" class="starting-slider-button" id="starting-slider-next" onclick="sliderNext">Next</button> -->
 <br>
@@ -62,7 +73,7 @@
 <!-- </div> -->
   </div>
   <div class="col-md-6 right_col" role="main">
-    <label for="minbeds" class="">Delay from AMI Data: </label><br>
+    <label for="minbeds" class="">Delay from AMI Data: <div class="container graph" id="graph1"></div></label><br>
     <div id="time-slider">
     <div id="time-slider-handle" class="ui-slider-handle custom-handle"></div>
     </div>
@@ -91,6 +102,9 @@
 <script src="{% static 'networkviz/gent/vendors/jquery-sparkline/dist/jquery.sparkline.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/L.Map.Sync.js' %}"></script>
 <script src="{% static 'js/jquery-ui.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.flot.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.flot.time.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.flot.resize.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/jquery.csv.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/switch-prediction.js' %}"></script>
 <script>

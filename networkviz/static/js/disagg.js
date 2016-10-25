@@ -14,7 +14,7 @@ var meterApiEndpoint = "/static/data/cache/meters.json",
     loadApiEndpoint = "/static/data/cache/load.json",
     nodeApiEndpoint = "/static/data/cache/node.json",
     houseApiEndpoint = "/static/data/cache/house.json",
-    lineApiEndpoint = "/static/data/model.geo.json",
+    lineApiEndpoint = "/static/data/model2.geo.json",
     feederApiEndpoint = "/static/data/cache/feeder.json";
 
 var sensorApiEndpoint = "/vader/api/sensor/",
@@ -357,6 +357,19 @@ console.log("Done, but waiting on web requests");
 
 // ##################### Disagg Business Logic
 
+function drawGraphInitial() {
+        $.ajax({
+            type: 'GET',
+            url: 'PVAPI/1',
+            dataType: 'json',
+            success: function (data) {
+                        $.each(JSON.parse(data), function(key,value) {
+                        drawChart(value,key);
+                    });
+            }
+        });
+      }
+
 
 
 // function populateRegions(endpoint, layerGroup, predict_state) {
@@ -394,6 +407,9 @@ function populateRegions(region_geo_json, layerGroup) {
             mouseout: resetHighlight,
             click: clickDrawGraph
         });
+        if(feature.properties.region == '1') {
+          drawGraphInitial();
+        }
       }
   });
   console.log("Populate Created");
@@ -434,6 +450,8 @@ function populateRegions(region_geo_json, layerGroup) {
 //     opacity: 1,
 //     fillOpacity: 0.8
 // };
+
+
 
 
 

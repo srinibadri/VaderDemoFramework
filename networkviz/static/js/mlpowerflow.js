@@ -14,7 +14,7 @@ var meterApiEndpoint = "/static/data/cache/meters.json",
     loadApiEndpoint = "/static/data/cache/load.json",
     nodeApiEndpoint = "/static/data/cache/node.json",
     houseApiEndpoint = "/static/data/cache/house.json",
-    lineApiEndpoint = "/static/data/model.geo.json",
+    lineApiEndpoint = "/static/data/model2.geo.json",
     feederApiEndpoint = "/static/data/cache/feeder.json";
 
 var sensorApiEndpoint = "/vader/api/sensor/",
@@ -372,6 +372,21 @@ console.log("Done, but waiting on web requests");
 // }
 
 
+function initialDrawGraph(e) {
+        $.ajax({
+            type: 'GET',
+            url: 'VoltageAPI/'+1+"/7",
+            dataType: 'json',
+            success: function (data) {
+                        $.each(JSON.parse(data), function(key,value) {
+                        drawChart(value,key);
+                    });
+            }
+        });
+      }
+
+
+
 
 function onEachFeature(feature, layer) {
   console.console.log("On Each Feature " +feature);
@@ -394,6 +409,9 @@ function populateRegions(region_geo_json, layerGroup) {
             mouseout: resetHighlight,
             click: clickDrawGraph
         });
+        if(feature.properties.region) {
+          initialDrawGraph();
+        }
       }
   });
   console.log("Populate Created");
@@ -448,6 +466,7 @@ function clickDrawGraph(e) {
             url: 'VoltageAPI/'+layer.feature.properties.region+"/7",
             dataType: 'json',
             success: function (data) {
+              console.log(data);
                         $.each(JSON.parse(data), function(key,value) {
                         drawChart(value,key);
                     });
