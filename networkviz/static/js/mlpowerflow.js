@@ -466,6 +466,7 @@ function clickDrawGraph(e) {
             url: 'VoltageAPI/'+layer.feature.properties.region+"/7",
             dataType: 'json',
             success: function (data) {
+              console.log(data);
                         $.each(JSON.parse(data), function(key,value) {
                         drawChart(value,key);
                     });

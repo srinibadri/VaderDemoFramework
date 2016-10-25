@@ -458,11 +458,11 @@ function showGraphs(meter, date_time, predict_range, algorithm) {
 
 
   // console.log(difference);
-  $.plot("#graph0", [truth, predicted], {
+  $.plot("#graph0", [{label:"actual",data:truth}, {label:"predicted",data:predicted}], {
     yaxis: {labelWidth: 30},
     xaxis: {labelHeight: 30},
     legend: {show: true}  });
-  $.plot("#graph1", [difference], {
+  $.plot("#graph1", [{label:"difference",data:difference}], {
     yaxis: {labelWidth: 30},
     xaxis: {labelHeight: 30},
     legend: {show: true}  });
@@ -557,11 +557,11 @@ function showGraphsDaily(meter, date, predict_range, algorithm) {
   chart2.draw(data2, options2);
 
 
-  $.plot("#graph0", [trueFiltered, predictFiltered], {
+  $.plot("#graph0", [{label:"actual",data:trueFiltered}, {label:"predicted",data:predictFiltered}], {
     yaxis: {labelWidth: 30},
     xaxis: {labelHeight: 30},
     legend: {show: true}  });
-  $.plot("#graph1", [difference], {
+  $.plot("#graph1", [{label:"difference",data:difference}], {
     yaxis: {labelWidth: 30},
     xaxis: {labelHeight: 30},
     legend: {show: true}  });
@@ -649,11 +649,11 @@ function showGraphsHourly(meter, time, predict_range, algorithm) {
   chart2.draw(data2, options2);
 
 
-  $.plot("#graph0", [trueFiltered, predictFiltered], {
+  $.plot("#graph0", [{label:"actual",data:trueFiltered}, {label:"predicted",data:predictFiltered}], {
     yaxis: {labelWidth: 30},
     xaxis: {labelHeight: 30},
     legend: {show: true}  });
-  $.plot("#graph1", [difference], {
+  $.plot("#graph1", [{label:"difference",data:difference}], {
     yaxis: {labelWidth: 30},
     xaxis: {labelHeight: 30},
     legend: {show: true}  });
