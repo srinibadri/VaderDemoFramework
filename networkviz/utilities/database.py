@@ -25,13 +25,14 @@ def connect_to_database(simulation_name, database):
     :return: a connection
     """
     global connections
+    database_name = simulation_name + '_' + database
+    if database_name in connections:
+        print('This database has already been connected.')
+        return
     if simulation_name not in settings.DATABASES_CONFIGURATIONS:
         raise LookupError("There is no such simulation name.")
     if database not in settings.DATABASES_CONFIGURATIONS[simulation_name]:
         raise LookupError("There is no such database name.")
-    database_name = simulation_name + '_' + database
-    if database_name in connections:
-        return
     connections[database_name] = mysql.connector.connect(database=database_name,
                                                          **settings.DATABASES_BASIC_CONFIG)
 

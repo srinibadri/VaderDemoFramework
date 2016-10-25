@@ -75,8 +75,8 @@ $(document).ready(function() {
     y.domain([0, d3.max(supply, function(d) { return d.y; })*1.05]);
     svg.append('path').datum(supply).attr('class', 'supply').attr('d', line);
 
-    $('#total-power-generation').replaceWith('<div id = "total-power-generation" class="count">' + addCommas(Math.floor(supply[supply.length-1].y)) + ' <small><small><small>kW</small></small></small></div>');
-    $('#total-demand').replaceWith('<div id = "total-power-generation" class="count">' + addCommas(Math.floor(demand[demand.length-1].y)) + ' <small><small><small>kW</small></small></small></div>');
+    $('#total-power-generation').replaceWith('<div id = "total-power-generation" class="count">' + addCommas(Math.floor(supply[0].y)) + ' <small><small><small>kW</small></small></small></div>');
+    $('#total-demand').replaceWith('<div id = "total-power-generation" class="count">' + addCommas(Math.floor(demand[0].y)) + ' <small><small><small>kW</small></small></small></div>');
 });
 
 function addCommas(nStr) {
