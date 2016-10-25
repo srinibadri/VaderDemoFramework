@@ -706,13 +706,13 @@ function showGraphsHourly(meter, time, predict_range, algorithm) {
   i = 0;
   for (index = hour; index < 720; index += 24) {
     // console.log("index: " + index + " ,, i: " + i);
-    meterData[i] = [index, meterData2D[index][predict_range]];
+    meterData[i] = [index/24, meterData2D[index][predict_range]];
     i += 1;
   }
   i = 0;
   trueData = new Array(31);
   for (index = hour; index < 720; index += 24) {
-    trueData[i] = [index, secondTrue[meter][index][predict_range]];
+    trueData[i] = [index/24, secondTrue[meter][index][predict_range]];
     i += 1;
   }
   // console.log(meterData);
