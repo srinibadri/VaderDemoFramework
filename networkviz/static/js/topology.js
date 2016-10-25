@@ -22,14 +22,16 @@ var layer2 = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?a
 var map1 = L.map('map1', {
     layers: [layer1],
     center: center,
-    zoom: zoom
+    zoom: zoom,
+    scrollWheelZoom: false
 });
 map1.attributionControl.setPrefix('');
 var map2 = L.map('map2', {
     layers: [layer2],
     center: center,
     zoom: zoom,
-    zoomControl: true
+    zoomControl: true,
+    scrollWheelZoom: false
 });
 
 // Add each map to the map array. This will be useful for scalable calling later
@@ -70,7 +72,7 @@ var geojsonMarkerOptions = {
 function onEachFeature(feature, layer) {
     // does this feature have a property named popupContent?
     if (feature.properties){// && feature.properties.popupContent) {
-        layer.bindPopup("<div id=\"" + feature.properties.name + "\">" + feature.properties.name + ". This is a link: <a href='#' class='seeDetailsLink'>Click me</a></div>", {className: feature.properties.name, minWidth:500});
+        layer.bindPopup("<div id=\"" + feature.properties.name + "\">" + feature.properties.name + "", {className: feature.properties.name, minWidth:50});
     }
 }
 
@@ -124,12 +126,12 @@ function pop_up(e) {
 }
 
 maps.forEach(function(map){
-  map.on('click', function(e) {
-    onMapClick(e, map);
-  });
-  map.on('popupopen', function(e) {
-    pop_up(e);
-  });
+  // map.on('click', function(e) {
+  //   onMapClick(e, map);
+  // });
+  // map.on('popupopen', function(e) {
+  //   pop_up(e);
+  // });
   maps.forEach(function(syncMapTo){
     map.sync(syncMapTo);
   });
