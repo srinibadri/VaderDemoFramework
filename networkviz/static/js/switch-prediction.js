@@ -548,50 +548,6 @@ function setRegionColors(config, time) {
 
 }
 
-// Connectivity graph
-/*
-
-Sub0 ---> sw15001to149 ---> region0
-
-region0 ---> sw15001to149 ---> Sub0
-region0 ---> sw13to152 ---> region1
-region0 ---> sw13to152 ---> region2
-
-
-region1 ---> sw13to152 ---> region0
-region1 ---> sw13to152 ---> region2
-region1 ---> sw18to135 ---> region2
-region1 ---> sw18to135 ---> region3
-
-region2 ---> sw13to152 ---> region0
-region2 ---> sw13to152 ---> region1
-region2 ---> sw18to135 ---> region1
-region2 ---> sw18to135 ---> region3
-region2 ---> sw54to94 ---> region2
-region2 ---> sw54to94 ---> region4
-region2 ---> sw151to300 ---> region5
-
-region3 ---> sw18to135 ---> region1
-region3 ---> sw18to135 ---> region2
-region3 ---> sw250to251 ---> Sub1
-
-Sub1 ---> sw250to251 ---> region3
-
-region4 ---> sw54to94 ---> region2
-region4 ---> sw60to160 ---> region6
-
-region5 ---> sw151to300 ---> region2
-region5 ---> sw97to197 ---> region6
-
-region6 ---> sw60to160 ---> region4
-region6 ---> sw97to197 ---> region5
-region6 ---> sw450to451 ---> Sub2
-region6 ---> sw95to195 ---> Sub3
-
-Sub2 ---> sw450to451 ---> region6
-
-Sub3 ---> sw95to195 ---> region6
-*/
 
 var SW1  = 'sw15001to149';
 var SW2  = 'sw250to251';
@@ -1028,7 +984,7 @@ maps.forEach(function(map_obj){
     });
   });
 
-  setTimeout(function(){ map_obj.jsonPromise.abort(); }, 2000);
+  setTimeout(function(){ map_obj.jsonPromise.abort(); }, 1500);
 
   // Add each of the desired layers
   // populateLayerSwitches(switchApiEndpoint, (map_obj.overlay["Switches"]), switchIcon, switchIcon, "switch", priority=2);
@@ -1043,6 +999,7 @@ maps.forEach(function(map_obj){
 
   console.log("Overlay meters done")
 
+  setTimeout(function() { setSwitchStates(currentConfig, currentTime); }, 1500);
 
   // Houses do not have location information, so skip them
   // populateLayer(houseApiEndpoint, houseLayer, houseIcon, "house");
