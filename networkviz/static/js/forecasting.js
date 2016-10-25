@@ -162,7 +162,8 @@ var map1 = L.map('map1', {
     overlayLayers1["Loads"],
     // overlayLayers1["Line Sensors"],
     overlayLayers1["Lines"],
-    overlayLayers1["Regions"]],
+    overlayLayers1["Regions"]
+  ],
     center: center,
     zoom: zoom,
     scrollWheelZoom: false
@@ -177,7 +178,7 @@ map1.attributionControl.setPrefix('');
 // });
 
 // Add each map to the map array. This will be useful for scalable calling later
-maps.push({"map":map1, "base":baseLayers1, "overlay":overlayLayers1, "popup":L.popup()});
+maps.push({"map":map1, "base":baseLayers1, "overlay":overlayLayers1, "popup":L.popup(), "switches":[], "regions":[]});
 // maps.push({"map":map2, "base":baseLayers2, "overlay":overlayLayers2, "popup":L.popup()});
 // maps.push(map3);
 
@@ -247,6 +248,17 @@ function populateLayer(endpoint, layerGroup, iconPath, element_type, priority=0)
   });
 }
 
+function populateRegions(endpoint, layerGroup, regions_list) {
+  console.log("populateRegions");
+  $.getJSON( endpoint, function(elements, error) {
+    elements.forEach(function(element) {
+      region = L.polygon(element.points, {color: "#777"});
+      regions_list.push(region);
+      layerGroup.addLayer(region);
+    });
+  });
+}
+
 
 // Adds each of the layers to each of the maps
 maps.forEach(function(map_obj){
@@ -276,7 +288,10 @@ maps.forEach(function(map_obj){
   populateLayer(nodeApiEndpoint, (map_obj.overlay["Nodes"]), nodeIcon, "node");
   populateLayer(loadApiEndpoint, (map_obj.overlay["Loads"]), loadIcon, "load");
 
-  populateRegions(regions, (map_obj.overlay["Regions"]));
+  populateRegions(regionApiEndpoint, (map_obj.overlay["Regions"]), map_obj["regions"]);
+
+
+  // populateRegions(regions, (map_obj.overlay["Regions"]));
   // populateRegions(regionApiEndpoint, (map_obj.overlay["Regions"]), map_obj.predict_state);
 
   console.log("Overlay meters done")
@@ -751,29 +766,29 @@ function onEachFeature(feature, layer) {
 }
 
 
-var geojson;
-function populateRegions(region_geo_json, layerGroup) {
-  console.log("Populate" + region_geo_json);
-  geojson=L.geoJSON(region_geo_json, {
-      style: function(feature) {
-          switch (feature.properties.region) {
-              case '1': return {color: "#ff0000"};
-              case '2':   return {color: "#0000ff"};
-          }
-      },
-      onEachFeature: function(feature, layer) {
-        layer.on({
-            mouseover: highlightFeature,
-            mouseout: resetHighlight,
-            click: clickDrawGraph
-        });
-      }
-  });
-  console.log("Populate Created");
-  layerGroup.addLayer(geojson);
-
-
-}
+// var geojson;
+// function populateRegions(region_geo_json, layerGroup) {
+//   console.log("Populate" + region_geo_json);
+//   geojson=L.geoJSON(region_geo_json, {
+//       style: function(feature) {
+//           switch (feature.properties.region) {
+//               case '1': return {color: "#ff0000"};
+//               case '2':   return {color: "#0000ff"};
+//           }
+//       },
+//       onEachFeature: function(feature, layer) {
+//         layer.on({
+//             mouseover: highlightFeature,
+//             mouseout: resetHighlight,
+//             click: clickDrawGraph
+//         });
+//       }
+//   });
+//   console.log("Populate Created");
+//   layerGroup.addLayer(geojson);
+//
+//
+// }
 
 
 // maps.forEach(function(map){
