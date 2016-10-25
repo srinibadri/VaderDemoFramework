@@ -162,7 +162,8 @@ var map1 = L.map('map1', {
     overlayLayers1["Loads"],
     // overlayLayers1["Line Sensors"],
     overlayLayers1["Lines"],
-    overlayLayers1["Regions"]],
+    overlayLayers1["Regions"]
+  ],
     center: center,
     zoom: zoom,
     scrollWheelZoom: false
@@ -177,7 +178,7 @@ map1.attributionControl.setPrefix('');
 // });
 
 // Add each map to the map array. This will be useful for scalable calling later
-maps.push({"map":map1, "base":baseLayers1, "overlay":overlayLayers1, "popup":L.popup()});
+maps.push({"map":map1, "base":baseLayers1, "overlay":overlayLayers1, "popup":L.popup(), "switches":[], "regions":[]});
 // maps.push({"map":map2, "base":baseLayers2, "overlay":overlayLayers2, "popup":L.popup()});
 // maps.push(map3);
 
@@ -247,6 +248,17 @@ function populateLayer(endpoint, layerGroup, iconPath, element_type, priority=0)
   });
 }
 
+function populateRegions(endpoint, layerGroup, regions_list) {
+  console.log("populateRegions");
+  $.getJSON( endpoint, function(elements, error) {
+    elements.forEach(function(element) {
+      region = L.polygon(element.points, {color: "#777"});
+      regions_list.push(region);
+      layerGroup.addLayer(region);
+    });
+  });
+}
+
 
 // Adds each of the layers to each of the maps
 maps.forEach(function(map_obj){
@@ -276,7 +288,10 @@ maps.forEach(function(map_obj){
   populateLayer(nodeApiEndpoint, (map_obj.overlay["Nodes"]), nodeIcon, "node");
   populateLayer(loadApiEndpoint, (map_obj.overlay["Loads"]), loadIcon, "load");
 
-  populateRegions(regions, (map_obj.overlay["Regions"]));
+  populateRegions(regionApiEndpoint, (map_obj.overlay["Regions"]), map_obj["regions"]);
+
+
+  // populateRegions(regions, (map_obj.overlay["Regions"]));
   // populateRegions(regionApiEndpoint, (map_obj.overlay["Regions"]), map_obj.predict_state);
 
   console.log("Overlay meters done")
@@ -310,10 +325,12 @@ console.log("Done, but waiting on web requests");
 
 
 // ##################### Forecasting Business Logic
-var currentDate = "11-01-2011";
-var currentTime = "10:00";
+var currentDate = "2011-11-01";
+var currentTime = "10:00:00";
 var currentMeter = 0;
-var currentAlgo = "SVR";
+var currentAlgo = "OLS";
+var currentFilter = "radio-date";
+var currentZip = "all-zips";
 var currentPredictRange = 1;
 var meterToZip = [
   93309,93309,93309,93309,93309,93309,93309,93309,93309,93309,93309,93309,93309,
@@ -327,30 +344,74 @@ var meterToZip = [
 var hoursInDay = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24];
 var temperature;
 var trueValues = {};
+
+// [meter_0[hour_0,hour_1],meter_1[hour_0,hour_1]]
 var trueValuesInvert  = new Array(100);
 for(index = 0; index < trueValuesInvert.length; index +=1) {
   trueValuesInvert[index] = new Array(720);
 }
 var tempByZipUrl = "/static/data/temp_by_zip.csv";
 var loadTrueUrl = "/static/data/load_true.csv";
-var algorithmTypes = [
-  "AdaBoostDTR", "AdaptiveLinear", "DecisionTreeRegressor",
-    "GradientBoostingRegressor", "KNeighborsRegressor", "LassoLarsIC",
-    "OLS", "SVR"];
+var algorithmTypes = ["OLS"];
+  // "AdaBoostDTR", "AdaptiveLinear", "DecisionTreeRegressor",
+  //   "GradientBoostingRegressor", "KNeighborsRegressor", "LassoLarsIC",
+  //   "OLS", "SVR"];
 var algorithmBaseUrl = "/static/data/forecast_demo/";
 
-// Note, this has NOT been CSV parsed
+var trueFiltered, predictFiltered;
+
+// {Algorithm:{predict_range1:[time0[meter_0,meter_1],time1],predict_range2},Algorithm}
 var predictionData = {};
+
+// {Algorithm:[predict_range1[meter_0[hour_0[index,value],hour_1],meter_1],predict_range2],Algorithm}
 var predictionDataInvert = {};
 
 var graphsEnabled = false;
 
 function updateGraphs() {
-  showGraphs(meter=currentMeter,
-    date_time=(currentDate+" "+currentTime),
-    predict_range=currentPredictRange,
-    algorithm=currentAlgo);
+  if (currentFilter == "radio-date") {
+    $("#date-selector").css('visibility', 'visible');
+    $("#time-selector").css('visibility', 'collapse');
+    $("#meter-selector").css('visibility', 'visible');
+    $("#region-selector").css('visibility', 'collapse');
+    showGraphsDaily(meter=currentMeter,
+      date=(currentDate),
+      predict_range=currentPredictRange,
+      algorithm=currentAlgo);
+  } else if (currentFilter == "radio-time") {
+    $("#date-selector").css('visibility', 'collapse');
+    $("#time-selector").css('visibility', 'visible');
+    $("#meter-selector").css('visibility', 'visible');
+    $("#region-selector").css('visibility', 'collapse');
+
+    showGraphsHourly(meter=currentMeter,
+      time=(currentTime),
+      predict_range=currentPredictRange,
+      algorithm=currentAlgo);
+  } else if (currentFilter == "radio-month") {
+    $("#date-selector").css('visibility', 'collapse');
+    $("#time-selector").css('visibility', 'collapse');
+    $("#meter-selector").css('visibility', 'visible');
+    $("#region-selector").css('visibility', 'collapse');
+    showGraphs(meter=currentMeter,
+      date_time=(currentDate+" "+currentTime),
+      predict_range=currentPredictRange,
+      algorithm=currentAlgo);
+    } else if (currentFilter == "radio-region") {
+      $("#date-selector").css('visibility', 'collapse');
+      $("#time-selector").css('visibility', 'collapse');
+      $("#meter-selector").css('visibility', 'collapse');
+      $("#region-selector").css('visibility', 'visible');
+      showGraphs(meter=currentMeter,
+        date_time=(currentDate+" "+currentTime),
+        predict_range=currentPredictRange,
+        algorithm=currentAlgo);
+  }
 }
+
+// function updateGraphsTime() {
+// }
+
 
 function showGraphs(meter, date_time, predict_range, algorithm) {
   if (!graphsEnabled) {
@@ -364,18 +425,225 @@ function showGraphs(meter, date_time, predict_range, algorithm) {
   truth = trueValuesInvert[meter];
   predicted = ((predictionDataInvert[algorithm])[predict_range])[meter];
   difference = new Array(truth.length);
+  mape_list = new Array(trueFiltered.length+1);
+  mape_list[0] = ["Sample", "Mape"];
+  rms_list = new Array(trueFiltered.length+1);
+  rms_list[0] = ["Sample", "RMS"];
+
   for (index = 0; index < truth.length; index += 1) {
-    difference[index] = [index,(predicted[index][1] - truth[index][1])];
+    diff = (predicted[index][1] - truth[index][1]);
+    difference[index] = [index,diff];
+    mape_list[index+1] = ["Hour " +index+"",Math.abs(diff / truth[index][1])];
+    rms_list[index+1] = ["Hour " +index+"",Math.pow(diff,2)];
   }
+  console.log(rms_list);
+
+  data = google.visualization.arrayToDataTable(mape_list);
+  var options = {
+          title: 'Mape Error By Frequency',
+          legend: { position: 'none' },
+        };
+
+  var chart = new google.visualization.Histogram(document.getElementById('graph2'));
+  chart.draw(data, options);
+
+  data2 = google.visualization.arrayToDataTable(rms_list);
+  var options2 = {
+          title: 'RMS Error By Frequency',
+          legend: { position: 'none' },
+        };
+
+  var chart2 = new google.visualization.Histogram(document.getElementById('graph3'));
+  chart2.draw(data2, options2);
+
+
   // console.log(difference);
   $.plot("#graph0", [truth, predicted]);
   $.plot("#graph1", [difference]);
   // drawChart(trueValuesInvert[0], 0);
 }
 
+function showGraphsDaily(meter, date, predict_range, algorithm) {
+  if (!graphsEnabled) {
+    console.log("Try again soon");
+    return;
+  }
+  console.log("Updating graph for meter: " +meter + ", date: " + date +
+  ", predict_range: "+ predict_range + ", algorithm: " + algorithm);
+  // console.log(trueValuesInvert[meter]);
+
+  i = 0
+  trueFiltered = new Array();
+  for (key in trueValues) {
+    if(key.split(' ')[0] == date) {
+      trueFiltered.push([i, trueValues[key][meter]]);
+      i += 1;
+    }
+  }
+  i = 0
+  predictFiltered = new Array();
+  predictionValues = predictionData[algorithm][predict_range]
+  for (key in predictionValues) {
+    if(key.split(' ')[0] == date) {
+      predictFiltered.push([i, predictionValues[key][meter]]);
+      i += 1;
+    }
+  }
+
+
+  // for (key in trueFiltered) {
+  //   console.log(key + " " + trueFiltered[key]);
+  // }
+  // for (key in predictFiltered) {
+  //   console.log(key + " " + predictFiltered[key]);
+  // }
+  difference = new Array(trueFiltered.length);
+  mape_runner = 0;
+  rms_runner = 0;
+  mape_list = new Array(trueFiltered.length+1);
+  mape_list[0] = ["Sample", "Mape"];
+  rms_list = new Array(trueFiltered.length+1);
+  rms_list[0] = ["Sample", "RMS"];
+
+  for (index = 0; index < trueFiltered.length; index += 1) {
+    diff = (predictFiltered[index][1] - trueFiltered[index][1]);
+    difference[index] = [index,diff];
+    console.log(mape_runner + ", " + rms_runner + " " + diff);
+    mape_runner += diff / trueFiltered[index][1];
+    rms_runner += Math.pow(diff,2);
+    mape_list[index+1] = ["Hour " +index+"",Math.abs(diff / trueFiltered[index][1])];
+    rms_list[index+1] = ["Hour " +index+"",Math.pow(diff,2)];
+
+  }
+  mape = (mape_runner * 100) /  trueFiltered.length;
+  rms2 = rms_runner / trueFiltered.length;
+  rms = Math.sqrt(rms2);
+  console.log(mape_list);
+
+  data = google.visualization.arrayToDataTable(mape_list);
+  var options = {
+          title: 'Mape Error By Frequency',
+          legend: { position: 'none' },
+        };
+
+  var chart = new google.visualization.Histogram(document.getElementById('graph2'));
+  chart.draw(data, options);
+
+  data2 = google.visualization.arrayToDataTable(rms_list);
+  var options2 = {
+          title: 'RMS Error By Frequency',
+          legend: { position: 'none' },
+        };
+
+  var chart2 = new google.visualization.Histogram(document.getElementById('graph3'));
+  chart2.draw(data2, options2);
+
+
+  // console.log("mape: "+ mape +" rms: " + rms);
+  // console.log(difference);
+  $.plot("#graph0", [trueFiltered, predictFiltered]);
+  $.plot("#graph1", [difference]);
+
+  // var data33 = [ ["January", 10], ["February", 8], ["March", 4], ["April", 13], ["May", 17], ["June", 9] ];
+  //
+	// 	$.plot("#graph2", [ data33 ], {
+	// 		series: {
+	// 			bars: {
+	// 				show: true,
+	// 				barWidth: 0.6,
+	// 				align: "center"
+	// 			}
+	// 		},
+	// 		xaxis: {
+	// 			mode: "categories",
+	// 			tickLength: 0
+	// 		}
+	// 	});
+  // var d2 = [[0, 3], [4, 8], [8, 5], [9, 13]];
+  // $.plot("#graph2", {
+	// 		data: d2,
+	// 		bars: { show: true }
+	// 	});
+  // drawChart(trueValuesInvert[0], 0);
+}
+
+
+function showGraphsHourly(meter, time, predict_range, algorithm) {
+  if (!graphsEnabled) {
+    console.log("Try again soon");
+    return;
+  }
+  console.log("Updating graph for meter: " +meter + ", time: " + time +
+  ", predict_range: "+ predict_range + ", algorithm: " + algorithm);
+  // console.log(trueValuesInvert[meter]);
+
+  i = 0
+  trueFiltered = new Array();
+  for (key in trueValues) {
+    if(key.split(' ')[1] == time) {
+      trueFiltered.push([i, trueValues[key][meter]]);
+      i += 1;
+    }
+  }
+  i = 0
+  predictFiltered = new Array();
+  predictionValues = predictionData[algorithm][predict_range]
+  for (key in predictionValues) {
+    if(key.split(' ')[1] == time) {
+      predictFiltered.push([i, predictionValues[key][meter]]);
+      i += 1;
+    }
+  }
+
+
+  // for (key in trueFiltered) {
+  //   console.log(key + " " + trueFiltered[key]);
+  // }
+  // for (key in predictFiltered) {
+  //   console.log(key + " " + predictFiltered[key]);
+  // }
+
+  mape_list = new Array(trueFiltered.length+1);
+  mape_list[0] = ["Sample", "Mape"];
+  rms_list = new Array(trueFiltered.length+1);
+  rms_list[0] = ["Sample", "RMS"];
+
+  difference = new Array(trueFiltered.length);
+  for (index = 0; index < trueFiltered.length; index += 1) {
+    diff = (predictFiltered[index][1] - trueFiltered[index][1])
+    difference[index] = [index,diff];
+    mape_list[index+1] = ["Hour " +index+"",Math.abs(diff / trueFiltered[index][1])];
+    rms_list[index+1] = ["Hour " +index+"",Math.pow(diff,2)];
+
+  }
+
+  data = google.visualization.arrayToDataTable(mape_list);
+  var options = {
+          title: 'Mape Error By Frequency',
+          legend: { position: 'none' },
+        };
+
+  var chart = new google.visualization.Histogram(document.getElementById('graph2'));
+  chart.draw(data, options);
+
+  data2 = google.visualization.arrayToDataTable(rms_list);
+  var options2 = {
+          title: 'RMS Error By Frequency',
+          legend: { position: 'none' },
+        };
+
+  var chart2 = new google.visualization.Histogram(document.getElementById('graph3'));
+  chart2.draw(data2, options2);
+
+
+  // console.log(difference);
+  $.plot("#graph0", [trueFiltered, predictFiltered]);
+  $.plot("#graph1", [difference]);
+  // drawChart(trueValuesInvert[0], 0);
+}
 
 $( function() {
-
+  google.charts.load("current", {packages:["corechart"]});
 });
 
 
@@ -423,7 +691,7 @@ $( function() {
         predictionData[algo] = {};
         predictionDataInvert[algo] = {};
         hoursInDay.forEach(function (hour) {
-          ((predictionData[algo])[hour]) = {};
+          ((predictionData[algo])[hour]) = new Array(720);
           ((predictionDataInvert[algo])[hour]) = new Array(100);
           for(index = 0; index < 100; index +=1) {
             ((predictionDataInvert[algo])[hour])[index] = new Array(720);
@@ -444,16 +712,21 @@ $( function() {
                         flo = parseFloat(parsed[datum])
                        numbered[datum-1] = flo;
                        (((predictionDataInvert[algo])[hour])[datum-1])[index-1] = [index-1,flo];
+
                       }
+                      // console.log(numbered);
                       ((predictionData[algo])[hour])[parsed[0]] = numbered;
 
                     }
                     // console.log(lines[0]);
 
 
-                    (predictionData[algo])[hour] = data;
+                    // (predictionData[algo])[hour] = data;
                     // console.log(temperature);
                     graphsEnabled = true;
+                    if(algo=="OLS" && hour == 1) {
+                      updateGraphs();
+                    }
                   }
                });
         })
@@ -512,10 +785,25 @@ $( function() {
 
 
 $( function() {
-  $( "#zips" ).selectmenu({
-    change: function( event, data ) { currentZip = data.item.value; updateGraphs(); }});
+  // $( "#zips" ).selectmenu({
+  //   change: function( event, data ) { currentZip = data.item.value; updateGraphs(); }});
   $( "#algors" ).selectmenu({
     change: function( event, data ) { currentAlgo = data.item.value; updateGraphs(); }});
+    $( ".datetimeradio" ).checkboxradio({
+      icon: false,
+    }).click(function() {
+        currentFilter = $("input[name=radio-1]:checked")[0].id;
+        updateGraphs();
+        // alert($("input[name=radio-1]:checked").val());
+    });
+
+    $( ".regionradio" ).checkboxradio({
+      icon: false,
+    }).click(function() {
+        currentRegion = $("input[name=radio-region]:checked")[0].id;
+        updateGraphs();
+        // alert($("input[name=radio-1]:checked").val());
+    });
 //     var availableTags = [
 // 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99    ];
 //     $( "#tags" ).val('4').selectmenu({
@@ -559,35 +847,39 @@ $( "#time-slider" ).slider({
             slide: function(e, ui) {
                 var hours1 = Math.floor(ui.values[0] / 60);
                 var minutes1 = ui.values[0] - (hours1 * 60);
-                if(hours1.length == 1) hours1 = '0' + hours1;
+                var minutesDisplay = minutes1,
+                    hoursDisplay = hours1;
+                if(hours1.length == 1) hoursDisplay = '0' + hours1;
                 if(minutes1.length == 1) minutes1 = '0' + minutes1;
                 if(minutes1 == 0) minutes1 = '00';
 
                 if(hours1 >= 12){
 
                     if (hours1 == 12){
-                        hours1 = hours1;
-                        minutes1 = minutes1 + " PM";
+                        hoursDisplay = hours1;
+                        minutesDisplay = minutes1 + " PM";
                     } else if (hours1 == 24){
-                        hours1 = hours1;
-                        minutes1 = minutes1 + " AM";
+                        hoursDisplay = hours1;
+                        minutesDisplay = minutes1 + " AM";
                     } else{
-                        hours1 = hours1 - 12;
-                        minutes1 = minutes1 + " PM";
+                        hoursDisplay = hours1 - 12;
+                        minutesDisplay = minutes1 + " PM";
                     }
                 }
 
                 else{
 
-                    hours1 = hours1;
-                    minutes1 = minutes1 + " AM";
+                    hoursDisplay = hours1;
+                    minutesDisplay = minutes1 + " AM";
                 }
                 if (hours1 == 0){
-                    hours1 = 12;
-                    minutes1 = minutes1;
+                    hoursDisplay = 12;
+                    minutesDisplay = minutes1 + " AM";
                 }
-                currentTime = hours1+':'+minutes1+":00";
-                $('.custom-handle').html(hours1+':'+minutes1);
+                if(hours1 < 10) {
+                  currentTime = "0"+hours1+':'+minutes1+":00";
+                } else { currentTime = hours1+':'+minutes1+":00"; }
+                $('.custom-handle').html(hoursDisplay+':'+minutesDisplay);
                 updateGraphs();
             }
     });
@@ -616,29 +908,29 @@ function onEachFeature(feature, layer) {
 }
 
 
-var geojson;
-function populateRegions(region_geo_json, layerGroup) {
-  console.log("Populate" + region_geo_json);
-  geojson=L.geoJSON(region_geo_json, {
-      style: function(feature) {
-          switch (feature.properties.region) {
-              case '1': return {color: "#ff0000"};
-              case '2':   return {color: "#0000ff"};
-          }
-      },
-      onEachFeature: function(feature, layer) {
-        layer.on({
-            mouseover: highlightFeature,
-            mouseout: resetHighlight,
-            click: clickDrawGraph
-        });
-      }
-  });
-  console.log("Populate Created");
-  layerGroup.addLayer(geojson);
-
-
-}
+// var geojson;
+// function populateRegions(region_geo_json, layerGroup) {
+//   console.log("Populate" + region_geo_json);
+//   geojson=L.geoJSON(region_geo_json, {
+//       style: function(feature) {
+//           switch (feature.properties.region) {
+//               case '1': return {color: "#ff0000"};
+//               case '2':   return {color: "#0000ff"};
+//           }
+//       },
+//       onEachFeature: function(feature, layer) {
+//         layer.on({
+//             mouseover: highlightFeature,
+//             mouseout: resetHighlight,
+//             click: clickDrawGraph
+//         });
+//       }
+//   });
+//   console.log("Populate Created");
+//   layerGroup.addLayer(geojson);
+//
+//
+// }
 
 
 // maps.forEach(function(map){

@@ -17,7 +17,7 @@ $(document).ready(function() {
         }
     });
 
-    ylabel = 'power(W)'
+    ylabel = 'power(kW)'
 
     var margin = {top: 20, right: 20, bottom: 30, left: 50},
         width = $("#canvas_dahs").width() - margin.left - margin.right,
@@ -44,7 +44,6 @@ $(document).ready(function() {
         .tickPadding(5);
 
     var line = d3.svg.area().interpolate("basis").x(function(d) { return x(d.x); }).y0(height).y1(function(d) { return y(d.y); });
-    d3.select("svg").remove();
     var svg = d3.select("#canvas_dahs").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
@@ -75,5 +74,20 @@ $(document).ready(function() {
     x.domain(d3.extent(supply, function(d) { return d.x; }));
     y.domain([0, d3.max(supply, function(d) { return d.y; })*1.05]);
     svg.append('path').datum(supply).attr('class', 'supply').attr('d', line);
+
+    $('#total-power-generation').replaceWith('<div id = "total-power-generation" class="count">' + addCommas(Math.floor(supply[supply.length-1].y)) + ' <small><small><small>kW</small></small></small></div>');
+    $('#total-demand').replaceWith('<div id = "total-power-generation" class="count">' + addCommas(Math.floor(demand[demand.length-1].y)) + ' <small><small><small>kW</small></small></small></div>');
 });
+
+function addCommas(nStr) {
+    nStr += '';
+    var x = nStr.split('.');
+    var x1 = x[0];
+    var x2 = x.length > 1 ? '.' + x[1] : '';
+    var rgx = /(\d+)(\d{3})/;
+    while (rgx.test(x1)) {
+        x1 = x1.replace(rgx, '$1' + ',' + '$2');
+    }
+    return x1 + x2;
+}
 </script>

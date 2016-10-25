@@ -12,7 +12,6 @@ function getHistoryData(dataset, simulation_name, database, table, field, condit
         dataType: 'json',
         async: false,
         success: function(data) {
-            console.log(data.length);
             //interval = Math.ceil(Math.max(1, data.length / 200));
             //console.log(interval)
             for (var i = 0, j = 0; i < data.length; i++) {
@@ -112,8 +111,7 @@ function graphHistory(table, name, column) {
 
     var line = (style == 'line' ? d3.svg.line().interpolate("basis").x(function(d) { return x(d.x); }).y(function(d) { return y(d.y); })
         : d3.svg.area().interpolate("basis").x(function(d) { return x(d.x); }).y0(height).y1(function(d) { return y(d.y); }));
-    d3.select("svg").remove();
-    var svg = d3.select(".modal-body").append("svg")
+    var svg = d3.select("#graphArea").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
       .append("g")
@@ -196,7 +194,7 @@ function graphLiveFormat(name, column, title, style, ylabel, widthAbs, heightAbs
 
     var line = (style == 'line' ? d3.svg.line().interpolate("basis").x(function(d) { return x(d.x); }).y(function(d) { return y(d.y); })
         : d3.svg.area().interpolate("basis").x(function(d) { return x(d.x); }).y0(height).y1(function(d) { return y(d.y); }));
-    var svg = d3.select(".modal-body").append("svg")
+    var svg = d3.select("#graphArea").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
       .append("g")
@@ -230,7 +228,6 @@ function graphLiveFormat(name, column, title, style, ylabel, widthAbs, heightAbs
 
     realTimeInterval.push(setInterval(function() {
         var result = getLiveData(name, column);
-        console.log(result)
         if (result != '') {
             dataset.push({x: i++, y: Number(result)});
             if (dataset.length > 40)

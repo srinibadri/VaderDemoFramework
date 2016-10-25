@@ -534,9 +534,9 @@ maps.forEach(function(map_obj){
   // layerControl.addTo(map_obj.map);
 
   // Can't figure out how to do the map click popups, but they are annoying anyway
-  // map_obj.map.on('click', function(e, map_obj) {
-  //   onMapClick(e, map_obj);
-  // });
+  map_obj.map.on('click', function(e, map_obj) {
+    onMapClick(e, map_obj);
+  });
   // map_obj.map.on('popupopen', function(e) {
   //   pop_up(e);
   // });

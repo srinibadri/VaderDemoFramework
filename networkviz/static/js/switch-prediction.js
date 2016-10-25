@@ -457,7 +457,7 @@ function populateLayerSwitches(endpoint, layerGroup, highlightMonitored, element
         marker = L.marker(latlong, {
           icon: icon,
           alt:JSON.stringify({"type":element_type,"name":element['name']})
-        }).bindPopup(element['name'] + " loading..."); //.bindTooltip(element['name']);
+        }).bindPopup(element['name'] + switchStateList[element['name']] ); //.bindTooltip(element['name']);
         if (priority == 1) {
           marker.setZIndexOffset(700);
         }
@@ -592,273 +592,194 @@ Sub2 ---> sw450to451 ---> region6
 
 Sub3 ---> sw95to195 ---> region6
 */
-var closedStr = "CLOSED";
+
+var SW1  = 'sw15001to149';
+var SW2  = 'sw250to251';
+var SW3  = 'sw300to350';
+var SW4  = 'sw450to451';
+var SW5  = 'sw95to195';
+var SW6  = 'sw13to152';
+var SW7  = 'sw18to135';
+var SW8  = 'sw60to160';
+var SW9  = 'sw61to6101';
+var SW10 = 'sw97to197';
+var SW11 = 'sw54to94';
+var SW12 = 'sw151to300';
+
 function getConnectedRegions(map_obj) {
-  region = ["","","","","","",""];
-  closedStr = "CLOSED";
   blueSet = new Set();
-  if ((map_obj['switchStateList'])['sw15001to149'] == closedStr) {
-    // console.log("SWITCH CLOSED");
-
-    blueSet.add(0);
-    if((map_obj['switchStateList'])['sw13to152'] == closedStr) {
-      blueSet.add(1);
-      if((map_obj['switchStateList'])['sw18to135'] == closedStr) {
-        blueSet.add(3);
-        if((map_obj['switchStateList'])['sw250to251'] == closedStr) {
-          console.log("ERROR. Path from Blue to Green");
-        }
-        blueSet.add(4);
-        if((map_obj['switchStateList'])['sw151to300'] == closedStr) {
-          blueSet.add(6);
-          if((map_obj['switchStateList'])['sw97to197'] == closedStr) {
-            blueSet.add(7);
-            if((map_obj['switchStateList'])['sw450to451'] == closedStr) {
-              console.log("ERROR. Path from Blue to Red");
-            }
-            blueSet.add(8);
-            if((map_obj['switchStateList'])['sw95to195'] == closedStr) {
-              console.log("ERROR. Path from Blue to Yellow");
-            }
-            if((map_obj['switchStateList'])['sw60to160'] == closedStr) {
-              blueSet.add(5);
-            }
-          }
-        }// End 4
-      }// End 1
-
-      blueSet.add(2);
-      if((map_obj['switchStateList'])['sw54to94'] == closedStr) {
-        blueSet.add(4);
-        if((map_obj['switchStateList'])['sw151to300'] == closedStr) {
-          blueSet.add(6);
-          if((map_obj['switchStateList'])['sw97to197'] == closedStr) {
-            blueSet.add(7);
-            if((map_obj['switchStateList'])['sw450to451'] == closedStr) {
-              console.log("ERROR. Path from Blue to Red");
-            }
-            blueSet.add(8);
-            if((map_obj['switchStateList'])['sw95to195'] == closedStr) {
-              console.log("ERROR. Path from Blue to Yellow");
-            }
-            if((map_obj['switchStateList'])['sw60to160'] == closedStr) {
-              blueSet.add(5);
-            }
-          }
-        }// End 4
-
-        blueSet.add(5);
-        if((map_obj['switchStateList'])['sw60to160'] == closedStr) {
-          blueSet.add(8);
-          if((map_obj['switchStateList'])['sw95to195'] == closedStr) {
-            console.log("ERROR. Path from Blue to Yellow");
-          }
-
-          if((map_obj['switchStateList'])['sw97to197'] == closedStr) {
-            blueSet.add(6);
-
-            blueSet.add(7);
-            if((map_obj['switchStateList'])['sw450to451'] == closedStr) {
-              console.log("ERROR. Path from Blue to Red");
-            }
-            console.log("ERROR. Path from Blue to Yellow");
-          }
-        }
-      }
-    }
-  }
-
-
   greenSet = new Set();
-  if ((map_obj['switchStateList'])['sw250to251'] == closedStr) {
-    // console.log("SWITCH CLOSED");
-
-    greenSet.add(3);
-    if ((map_obj['switchStateList'])['sw18to135'] == closedStr) {
-      greenSet.add(1);
-      if ((map_obj['switchStateList'])['sw13to152'] == closedStr) {
-        greenSet.add(0);
-        if((map_obj['switchStateList'])['sw15001to149'] == closedStr) {
-          console.log("ERROR. Path from Blue to Red");
-        }
-        greenSet.add(2);
-        if((map_obj['switchStateList'])['sw54to94'] == closedStr) {
-          greenSet.add(5);
-        }
-      }// End 1
-
-      greenSet.add(4);
-      if((map_obj['switchStateList'])['sw54to94'] == closedStr) {
-        greenSet.add(5);
-        if((map_obj['switchStateList'])['sw60to160'] == closedStr) {
-          greenSet.add(8);
-          if((map_obj['switchStateList'])['sw95to195'] == closedStr) {
-            console.log("ERROR. Path from green to Yellow");
-          }
-          if((map_obj['switchStateList'])['sw97to197'] == closedStr) {
-            greenSet.add(6);
-            greenSet.add(7);
-            if((map_obj['switchStateList'])['sw450to451'] == closedStr) {
-              console.log("ERROR. Path from green to Red");
-            }
-          }
-        } // End 5
-
-      }
-      if((map_obj['switchStateList'])['sw151to300'] == closedStr) {
-        greenSet.add(6);
-        if((map_obj['switchStateList'])['sw97to197'] == closedStr) {
-          greenSet.add(7);
-          if((map_obj['switchStateList'])['sw450to451'] == closedStr) {
-            console.log("ERROR. Path from green to Red");
-          }
-          greenSet.add(8);
-          if((map_obj['switchStateList'])['sw95to195'] == closedStr) {
-            console.log("ERROR. Path from green to Yellow");
-          }
-          if((map_obj['switchStateList'])['sw60to160'] == closedStr) {
-            greenSet.add(5);
-          }
-        }
-      }// End 4
-    }
-  }
-
-
-
-
   redSet = new Set();
-  if ((map_obj['switchStateList'])['sw450to451'] == closedStr) {
-    // console.log("SWITCH CLOSED");
-
-    redSet.add(7);
-    if ((map_obj['switchStateList'])['sw97to197'] == closedStr) {
-      redSet.add(6);
-      if ((map_obj['switchStateList'])['sw151to300'] == closedStr) {
-        redSet.add(4);
-        if((map_obj['switchStateList'])['sw54to94'] == closedStr) {
-          redSet.add(5);
-          redSet.add(2);
-          if((map_obj['switchStateList'])['sw13to152'] == closedStr) {
-            redSet.add(0);
-            if((map_obj['switchStateList'])['sw15001to149'] == closedStr) {
-              console.log("ERROR. Path from Red to Blue");
-            }
-            redSet.add(1);
-          }
-        }
-        if((map_obj['switchStateList'])['sw18to135'] == closedStr) {
-          redSet.add(3);
-          if((map_obj['switchStateList'])['sw250to251'] == closedStr) {
-            console.log("ERROR. Path from Red to Green");
-          }
-          redSet.add(1);
-          if((map_obj['switchStateList'])['sw13to152'] == closedStr) {
-            redSet.add(0);
-            if((map_obj['switchStateList'])['sw15001to149'] == closedStr) {
-              console.log("ERROR. Path from Red to Blue");
-            }
-            redSet.add(2);
-          }
-        }
-      }
-
-      // End 6
-
-      redSet.add(8);
-      if((map_obj['switchStateList'])['sw95to195'] == closedStr) {
-        console.log("ERROR. Path from Red to Yellow");
-      }
-      if((map_obj['switchStateList'])['sw60to160'] == closedStr) {
-        redSet.add(5);
-        if((map_obj['switchStateList'])['sw54to94'] == closedStr) {
-          redSet.add(2);
-          if((map_obj['switchStateList'])['sw13to152'] == closedStr) {
-            redSet.add(0);
-            if((map_obj['switchStateList'])['sw15001to149'] == closedStr) {
-              console.log("ERROR. Path from Red to Blue");
-            }
-            redSet.add(1);
-          }
-
-          redSet.add(4);
-          if((map_obj['switchStateList'])['sw18to135'] == closedStr) {
-            redSet.add(1);
-            redSet.add(3);
-            if((map_obj['switchStateList'])['sw250to251'] == closedStr) {
-              console.log("ERROR. Path from Red to Green");
-            }
-          }
-        }
-      }
-      // End 8
+  yellowSet = new Set();
+  stateList = (map_obj['switchStateList']);
+  closedList = {};
+  for (key in stateList) {
+    // console.log(key + ": " + stateList[key]);
+    if (stateList[key] == "CLOSED") {
+      // console.log(key + ": " + stateList[key] + " CLOSED");
+      closedList["" + key] = true;
+    } else {
+      closedList["" + key] = false;
     }
   }
 
-  yellowSet = new Set();
-  if ((map_obj['switchStateList'])['sw95to195'] == closedStr) {
-    // console.log("SWITCH CLOSED");
-
-    yellowSet.add(8);
-    if((map_obj['switchStateList'])['sw60to160'] == closedStr) {
-      yellowSet.add(5);
-      if((map_obj['switchStateList'])['sw54to94'] == closedStr) {
-        yellowSet.add(2);
-        if((map_obj['switchStateList'])['sw13to152'] == closedStr) {
-          yellowSet.add(0);
-          if((map_obj['switchStateList'])['sw15001to149'] == closedStr) {
-            console.log("ERROR. Path from yellowSet to Blue");
-          }
-          yellowSet.add(1);
+  // console.log(stateList);
+  // console.log(closedList);
+  // Blue Traversal
+  if (closedList[SW1]) {
+    console.log("BLUE is Connected");
+    blueSet.add(1);
+    if(closedList[SW2]) {
+      console.log("ERROR. Path from Blue to Green");
+    }
+    if (closedList[SW6]) {
+      blueSet.add(4);
+      if (closedList[SW8] || closedList[SW11]) {
+        blueSet.add(5);
+        if (closedList[SW5] || closedList[SW4]) {
+          console.log("ERROR. Path from Blue to Red or YELLOW");
         }
-
-        yellowSet.add(4);
-        if((map_obj['switchStateList'])['sw18to135'] == closedStr) {
-          yellowSet.add(1);
-          yellowSet.add(3);
-          if((map_obj['switchStateList'])['sw250to251'] == closedStr) {
-            console.log("ERROR. Path from yellowSet to Green");
+        if (closedList[SW10]) {
+          blueSet.add(3);
+          if (closedList[SW12]) {
+            blueSet.add(2);
           }
         }
       }
     }
-
-    if((map_obj['switchStateList'])['sw97to197'] == closedStr) {
-      yellowSet.add(7);
-      if((map_obj['switchStateList'])['sw450to451'] == closedStr) {
-        console.log("ERROR. Path from Yellow to Red");
-      }
-
-      yellowSet.add(6);
-      if ((map_obj['switchStateList'])['sw151to300'] == closedStr) {
-        yellowSet.add(4);
-        if((map_obj['switchStateList'])['sw54to94'] == closedStr) {
-          yellowSet.add(5);
-          yellowSet.add(2);
-          if((map_obj['switchStateList'])['sw13to152'] == closedStr) {
-            yellowSet.add(0);
-            if((map_obj['switchStateList'])['sw15001to149'] == closedStr) {
-              console.log("ERROR. Path from yellowSet to Blue");
-            }
-            yellowSet.add(1);
+    if (closedList[SW7]) {
+      blueSet.add(2);
+      if (closedList[SW12]) {
+        blueSet.add(3);
+        if (closedList[SW10]) {
+          blueSet.add(5);
+          if (closedList[SW5] || closedList[SW4]) {
+            console.log("ERROR. Path from Blue to RED or YELLOW");
+          }
+          if (closedList[SW8] || closedList[SW11]) {
+            blueSet.add(4);
           }
         }
-        if((map_obj['switchStateList'])['sw18to135'] == closedStr) {
-          yellowSet.add(3);
-          if((map_obj['switchStateList'])['sw250to251'] == closedStr) {
-            console.log("ERROR. Path from yellowSet to Green");
+      }
+    }
+  }
+
+  // Green Traversal
+  if (closedList[SW2]) {
+    console.log("GREEN is Connected");
+    greenSet.add(1);
+    if(closedList[SW1]) {
+      console.log("ERROR. Path from Blue to Green");
+    }
+    if (closedList[SW6]) {
+      greenSet.add(4);
+      if (closedList[SW8] || closedList[SW11]) {
+        greenSet.add(5);
+        if (closedList[SW5] || closedList[SW4]) {
+          console.log("ERROR. Path from Blue to Red or YELLOW");
+        }
+        if (closedList[SW10]) {
+          greenSet.add(3);
+          if (closedList[SW12]) {
+            greenSet.add(2);
           }
+        }
+      }
+    }
+    if (closedList[SW7]) {
+      greenSet.add(2);
+      if (closedList[SW12]) {
+        greenSet.add(3);
+        if (closedList[SW10]) {
+          greenSet.add(5);
+          if (closedList[SW5] || closedList[SW4]) {
+            console.log("ERROR. Path from Blue to RED or YELLOW");
+          }
+          if (closedList[SW8] || closedList[SW11]) {
+            greenSet.add(4);
+          }
+        }
+      }
+    }
+  }
+
+  // Red Traversal
+  if(closedList[SW4]) {
+    console.log("RED is Connected");
+    redSet.add(5);
+    if(closedList[SW5]) {
+      console.log("ERROR. Path from Red to Yellow");
+    }
+    if(closedList[SW10]) {
+      redSet.add(3);
+      if(closedList[SW12]) {
+        redSet.add(2);
+        if(closedList[SW7]) {
+          redSet.add(1);
+          if(closedList[SW1] || closedList[SW2]) {
+            console.log("ERROR. Path from Red to BLUE or GREEN");
+          }
+          if(closedList[SW6]) {
+            redSet.add(4);
+          }
+        }
+
+      }
+    }
+    if(closedList[SW8] || closedList[SW11]) {
+      redSet.add(4);
+      if(closedList[SW6]) {
+        redSet.add(1);
+        if(closedList[SW1] || closedList[SW2]) {
+          console.log("ERROR. Path from Red to GREEN or BLUE");
+        }
+        if(closedList[SW7]) {
+          redSet.add(2);
+          if(closedList[SW12]) {
+            redSet.add(3);
+          }
+        }
+      }
+    }
+  }
+
+  // Yellow Traversal
+  if(closedList[SW5]) {
+    console.log("YELLOW is Connected");
+    yellowSet.add(5);
+    if(closedList[SW4]) {
+      console.log("ERROR. Path from Yellow to Red");
+    }
+    if(closedList[SW10]) {
+      yellowSet.add(3);
+      if(closedList[SW12]) {
+        yellowSet.add(2);
+        if(closedList[SW7]) {
           yellowSet.add(1);
-          if((map_obj['switchStateList'])['sw13to152'] == closedStr) {
-            yellowSet.add(0);
-            if((map_obj['switchStateList'])['sw15001to149'] == closedStr) {
-              console.log("ERROR. Path from yellowSet to Blue");
-            }
-            yellowSet.add(2);
+          if(closedList[SW1] || closedList[SW2]) {
+            console.log("ERROR. Path from Red to BLUE or GREEN");
+          }
+          if(closedList[SW6]) {
+            yellowSet.add(4);
+          }
+        }
+
+      }
+    }
+    if(closedList[SW8] || closedList[SW11]) {
+      yellowSet.add(4);
+      if(closedList[SW6]) {
+        yellowSet.add(1);
+        if(closedList[SW1] || closedList[SW2]) {
+          console.log("ERROR. Path from Red to GREEN or BLUE");
+        }
+        if(closedList[SW7]) {
+          yellowSet.add(2);
+          if(closedList[SW12]) {
+            yellowSet.add(3);
           }
         }
       }
-
     }
   }
 
@@ -874,6 +795,8 @@ function getConnectedRegions(map_obj) {
     if(yellowSet.has(value)){
       console.log("ERROR, OVERLAPPING YELLOW AND BLUE " + value);
     }
+    // if(value == 4) blueSet.add(0);
+    // if(value == 5) blueSet.add(6);
     // console.log("BlueSet Item: " + value);
   }
   for (value of greenSet) {
@@ -886,6 +809,8 @@ function getConnectedRegions(map_obj) {
     if(yellowSet.has(value)){
       console.log("ERROR, OVERLAPPING YELLOW AND GREEN " + value);
     }
+    // if(value == 4) greenSet.add(0);
+    // if(value == 5) greenSet.add(6);
     // console.log("greenSet Item: " + value);
   }
   for (value of redSet) {
@@ -898,6 +823,8 @@ function getConnectedRegions(map_obj) {
     if(yellowSet.has(value)){
       console.log("ERROR, OVERLAPPING YELLOW AND RED " + value);
     }
+    // if(value == 4) redSet.add(0);
+    // if(value == 5) redSet.add(6);
     // console.log("redSet Item: " + value);
   }
 
@@ -911,6 +838,8 @@ function getConnectedRegions(map_obj) {
     if(redSet.has(value)){
       console.log("ERROR, OVERLAPPING RED AND YELLOW " + value);
     }
+    // if(value == 4) yellowSet.add(0);
+    // if(value == 5) yellowSet.add(6);
     // console.log("yellowSet Item: " + value);
   }
 
@@ -937,9 +866,8 @@ function getConnectedRegions(map_obj) {
     regionsList[region].setStyle({color: "yellow"}).redraw();
   })
 
-
-
 }
+
 
 
 function setSwitchStates(config, time) {
@@ -959,12 +887,14 @@ function setSwitchStates(config, time) {
       element['value'].setIcon(switchIconMonitoredClosed);
       (maps[0]['switchStateList'])[swName] = "CLOSED";
       // (map_obj['switchStateList'])[swName] = "CLOSED";
+
     }
     if (switchSet[swName] == "0") {
       // console.log("Found Match" + swName);
       element['value'].setIcon(switchIconMonitoredOpen);
       (maps[0]['switchStateList'])[swName] = "OPEN";
       // (map_obj['switchStateList'])[swName] = "OPEN";
+
     }
 
   });
@@ -978,11 +908,13 @@ function setSwitchStates(config, time) {
         // console.log("Found Match" + swName);
         element['value'].setIcon(switchIconMonitoredClosed);
         (maps[1]['switchStateList'])[swName] = "CLOSED";
+
       }
       if (switchSet[swName] == "0") {
         // console.log("Found Match" + swName);
         element['value'].setIcon(switchIconMonitoredOpen);
         (maps[1]['switchStateList'])[swName] = "OPEN";
+
       }
     } else {
       // console.log(element);
@@ -1000,6 +932,17 @@ function setSwitchStates(config, time) {
     }
 
   });
+
+  // Configure Popups
+  mapSwitches = ((maps[0]['switches']));
+  for(index = 0; index < mapSwitches.length; index+= 1) {
+    (mapSwitches[index].value).bindPopup(mapSwitches[index].key + " " + (maps[0]['switchStateList'])[mapSwitches[index].key]);
+  }
+  mapSwitches = ((maps[1]['switches']));
+  for(index = 0; index < mapSwitches.length; index+= 1) {
+    (mapSwitches[index].value).bindPopup(mapSwitches[index].key + " " + (maps[1]['switchStateList'])[mapSwitches[index].key]);
+  }
+
 
   //   Time to shade the regions!
   getConnectedRegions(maps[0]);
@@ -1116,9 +1059,9 @@ maps.forEach(function(map_obj){
   // layerControl.addTo(map_obj.map);
 
   // Can't figure out how to do the map click popups, but they are annoying anyway
-  map_obj.map.on('click', function(e, map_obj) {
-    onMapClick(e, map_obj);
-  });
+  // map_obj.map.on('click', function(e, map_obj) {
+  //   onMapClick(e, map_obj);
+  // });
   // map_obj.map.on('popupopen', function(e) {
   //   pop_up(e);
   // });
@@ -1167,7 +1110,7 @@ $( function() {
   var handle = $( "#starting-slider-handle" );
   $( "#starting-slider" ).slider({
     min: 0,
-    max: 87,
+    max: 44,
     step: 1,
     create: function() {
       handle.text( $( this ).slider( "value" ) );

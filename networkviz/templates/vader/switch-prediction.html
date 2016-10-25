@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-{% include "vader/_navbar.html" %}
+{% include "vader/_navbar-logo.html" %}
 <style type="text/css">
     /*#topo-select { width: 3%; height: 87%; float: left; margin-right: 1%;}*/
     .map { width: 49%; height: 87%; float: left; margin-right: 1%;}
@@ -21,31 +21,48 @@
     <div class="page-content-wrapper">
 
       <div class="jumbotron text-center" style="padding: 35px; padding-bottom: 20px; margin-bottom: 0px;">
-        <p>This demo presents a machine learning tool that can predict switch configurations and region connectivity with minimal data.</p>
+        <p>
+          Topology Identification using:<br>
+          1 - Real Time Line Sensing<br>
+          2 - Delayed Smart Meter Data (and forecasts)</p>
+      </div>
 
-        <p><b>Left side is actual state</b> populated from complete information, the <b>right side is predicted</b> using data from a small number of sensors</p>
+        <!-- <p>This demo presents a machine learning tool that can predict switch configurations and region connectivity with minimal data.</p>
 
-      <!--   <div class="container">
+        <p><b>Left side is actual state</b> populated from complete information, the <b>right side is predicted</b> using data from a small number of sensors</p> -->
+
+         <!-- <div class="container">
         <img class="card-img-top" src="{% static 'images/pvdisagg.png' %}" alt="PV DisAgg" width="80%">
         </div> -->
-      </div>
+
 
 <!-- <div class="row"> -->
   <div class="col-md-6 left_col" role="main">
-    <label for="minbeds" class="slider-label">Starting Switch Configuration: </label><br>
+
+    <label for="minbeds" class="slider-label">Starting Switch Configuration: </label>
+    <!-- <button type="button" class="btn btn-primary" style="height=2em;">Previous</button>
+    <button type="button" class="btn btn-primary" style="height=2em;">Next</button> -->
+    <span onclick="sliderPrev">Previous</span>
+    <span onclick="sliderNext">Next</span>
+    <!-- <button type="button" class="starting-slider-button" id="starting-slider-prev" onclick="sliderPrev">Previous</button> -->
+    <!-- <button type="button" class="starting-slider-button" id="starting-slider-next" onclick="sliderNext">Next</button> -->
+<br>
+    <!-- <div class="row"> -->
     <!-- <form id="starting-slider">
 <label for="minbeds">Starting Switch Configuration: </label>
 <select name="minbeds" id="minbeds">
   <option>1</option>
 </select>
 </form> -->
+<!-- <div> -->
 <div id="starting-slider">
 <div id="starting-slider-handle" class="ui-slider-handle custom-handle"></div>
 </div>
-
+<!-- </div> -->
+<!-- </div> -->
   </div>
   <div class="col-md-6 right_col" role="main">
-    <label for="minbeds" class="">Prediction Time: </label><br>
+    <label for="minbeds" class="">Delay from AMI Data: </label><br>
     <div id="time-slider">
     <div id="time-slider-handle" class="ui-slider-handle custom-handle"></div>
     </div>
