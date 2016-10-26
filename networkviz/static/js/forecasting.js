@@ -331,6 +331,7 @@ var currentMeter = 0;
 var currentAlgo = "OLS";
 var currentFilter = "radio-date";
 var currentZip = "all-zips";
+var currentRegion = 1;
 var currentPredictRange = 1;
 var meterToZip = [
   93309,93309,93309,93309,93309,93309,93309,93309,93309,93309,93309,93309,93309,
@@ -355,6 +356,7 @@ for(index = 0; index < secondTrue.length; index +=1) {
 }
 
 var secondData = {};
+var regionData = {};
 var secondDataInvert = {};
 
 // [meter_0[hour_0,hour_1],meter_1[hour_0,hour_1]]
@@ -382,6 +384,7 @@ var predictionDataInvert = {};
 var graphsEnabled = false;
 
 function updateGraphs() {
+  console.log("currentFilter: " + currentFilter);
   if (currentFilter == "radio-date") {
     $("#date-selector").css('visibility', 'visible');
     $("#time-selector").css('visibility', 'collapse');
@@ -421,7 +424,8 @@ function updateGraphs() {
       showGraphs(meter=currentMeter,
         date_time=(currentDate+" "+currentTime),
         predict_range=currentPredictRange,
-        algorithm=currentAlgo);
+        algorithm=currentAlgo,
+        regionName=currentRegion);
   }
 }
 
@@ -429,7 +433,7 @@ function updateGraphs() {
 // }
 
 graphsEnabled = true;
-function showGraphs(meter, date_time, predict_range, algorithm) {
+function showGraphs(meter, date_time, predict_range, algorithm, regionName="") {
   if (!graphsEnabled) {
     console.log("Try again soon");
     return;
@@ -440,7 +444,12 @@ function showGraphs(meter, date_time, predict_range, algorithm) {
 
   // truth = trueValuesInvert[meter];
   // predicted = ((predictionDataInvert[algorithm])[predict_range])[meter];
-  meterData2D = ((secondData[algorithm])[meter]);
+  if (regionName == "") {
+    meterData2D = ((secondData[algorithm])[meter]);
+  } else {
+    meterData2D = ((regionData[algorithm])[regionName]);
+  }
+
   meterData = new Array(720);
 
 
@@ -457,9 +466,21 @@ function showGraphs(meter, date_time, predict_range, algorithm) {
   //   rms_list[index+1] = ["Hour " +index+"",Math.pow(diff,2)];
   // }
 
-  for (index = 0; index < meterData.length; index += 1) {
-    meterData[index] = [index, meterData2D[index][predict_range]];
+  if(regionName != "") {
+    for (index = 0; index < meterData.length; index += 1) {
+      if (regionName == "1" || regionName == "4") {
+        meterData[index] = [index, meterData2D[index][predict_range]/242];
+      } else {
+        meterData[index] = [index, meterData2D[index][predict_range]/121];
+      }
+    }
+
+  } else {
+    for (index = 0; index < meterData.length; index += 1) {
+      meterData[index] = [index, meterData2D[index][predict_range]];
+    }
   }
+
   trueData = new Array(720);
   for (index = 0; index < trueData.length; index += 1) {
     trueData[index] = [index, secondTrue[meter][index][predict_range]];
@@ -526,7 +547,7 @@ function showGraphs(meter, date_time, predict_range, algorithm) {
 
 }
 
-function showGraphsDaily(meter, date, predict_range, algorithm) {
+function showGraphsDaily(meter, date, predict_range, algorithm, regionName="") {
   if (!graphsEnabled) {
     console.log("Try again soon");
     return;
@@ -553,7 +574,11 @@ function showGraphsDaily(meter, date, predict_range, algorithm) {
   //   }
   // }
 
-  meterData2D = ((secondData[algorithm])[meter]);
+  if (regionName == "") {
+    meterData2D = ((secondData[algorithm])[meter]);
+  } else {
+    meterData2D = ((regionData[algorithm])[regionName]);
+  }
   meterData = new Array(24);
   trueData = new Array(meterData.length);
 
@@ -666,7 +691,7 @@ function showGraphsDaily(meter, date, predict_range, algorithm) {
 }
 
 
-function showGraphsHourly(meter, time, predict_range, algorithm) {
+function showGraphsHourly(meter, time, predict_range, algorithm, regionName="") {
   if (!graphsEnabled) {
     console.log("Try again soon");
     return;
@@ -695,7 +720,11 @@ function showGraphsHourly(meter, time, predict_range, algorithm) {
 
   // console.log(time.split(":")[0]);
   hour = parseInt(time.split(":")[0]);
-  meterData2D = ((secondData[algorithm])[meter]);
+  if (regionName == "") {
+    meterData2D = ((secondData[algorithm])[meter]);
+  } else {
+    meterData2D = ((regionData[algorithm])[regionName]);
+  }
   mape_list = new Array(30+1);
   mape_list[0] = ["Sample", "Mape"];
   rms_list = new Array(30+1);
@@ -887,6 +916,7 @@ $( function() {
     // }, 2000);
 
     numMeters = 123;
+    numRegions = 5;
     // Load all the data
     setTimeout(function (){
       secondTrue = new Array(numMeters);
@@ -953,6 +983,37 @@ $( function() {
             });
         }
 
+
+        regionData[algo] = new Array(numRegions);
+        for (met = 1; met <= numRegions; met+=1) {
+          ((regionData[algo])[met]) = new Array(720);
+          for(hourOfMonth = 0; hourOfMonth < 720; hourOfMonth +=1) {
+            ((regionData[algo])[met])[hourOfMonth] = new Array(24);
+          }
+          $.ajax({
+                  type: "GET",
+                  url: secondUrl+"test_island_"+met+"_"+algo+".csv",
+                  dataType: "text",
+                  indexValue: met,
+                  success: function(data) {
+
+                    lines = data.split('\n');
+                    for (index = 0; index < lines.length; index += 1) {
+                      parsed = lines[index].split(',');
+                      hourOfMonthArray = new Array(24);
+                      for (hourPredict = 0; hourPredict < parsed.length; hourPredict += 1) {
+                        hourPredictFloat = parseFloat(parsed[hourPredict]);
+                        hourOfMonthArray[hourPredict] = hourPredictFloat;
+                      }
+                      // console.log(numbered);
+                      ((regionData[algo])[this.indexValue])[index] = hourOfMonthArray;
+                    }
+
+                    //Month down, day right
+                    // Hour of Day, start column hours ahead, down skipping by 24
+                  }
+            });
+        }
         // hoursInDay.forEach(function (hour) {
         //   ((predictionData[algo])[hour]) = new Array(720);
         //   ((predictionDataInvert[algo])[hour]) = new Array(100);
@@ -1055,7 +1116,7 @@ $( function() {
     $( ".datetimeradio" ).checkboxradio({
       icon: false,
     }).click(function() {
-        currentFilter = $("input[name=radio-1]:checked")[0].id;
+        currentFilter = $("input[name=radio-fil]:checked")[0].id;
         updateGraphs();
         // alert($("input[name=radio-1]:checked").val());
     });
@@ -1063,9 +1124,11 @@ $( function() {
     $( ".regionradio" ).checkboxradio({
       icon: false,
     }).click(function() {
-        currentRegion = $("input[name=radio-region]:checked")[0].id;
+        currentRegion0 = $("input[name=radio-region]:checked")[0].id;
+        currentRegion = parseInt(currentRegion0.split("-")[1]);
+        console.log(currentRegion);
         updateGraphs();
-        // alert($("input[name=radio-1]:checked").val());
+
     });
 //     var availableTags = [
 // 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99    ];
