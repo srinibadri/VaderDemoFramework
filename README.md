@@ -43,3 +43,11 @@ You can also replace the '8000's above with whatever port number you would like.
 
 For example, you could run on a public-facing webserver using:
 $ docker run -p 80:8000 app python VaderDemoFramework/manage.py runserver 0.0.0.0:8000
+
+
+### Live Version
+
+To see a live version without live simulation connection:
+http://bendraffin.com:8000/vader/
+or the map:
+http://bendraffin.com:8000/vader/map
