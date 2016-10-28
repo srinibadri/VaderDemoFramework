@@ -16,7 +16,6 @@ import json
 
 # Create your views here.
 
-### Routes for Core Pages
 
 def index(request):
     return render(request,'landing.html')
@@ -31,59 +30,40 @@ def console(request):
     context = {}
     return HttpResponse(template.render(context, request))
 
-def map(request):
-    template = loader.get_template('vader/map.html')
+def demo(request):
+    template = loader.get_template('networkviz/simple.html')
     context = {}
     return HttpResponse(template.render(context, request))
 
 
-### Routes for Demos
-
-def forecasting(request):
-    return render(request,'forecasting.html')
-
-def forecasting_pge(request):
-    return render(request,'forecasting-pge.html')
-
-def pvdisagg(request):
-    return render(request,'disagg.html')
-
-def planning(request):
-    return render(request,'planning.html')
-
-def realtime(request):
-    return render(request,'real-time.html')
-
-def topology(request):
-    return render(request,'vader/topology.html')
-    # template = loader.get_template('vader/topology.html')
-    # context = {}
-    # return HttpResponse(template.render(context, request))
-
-def mlpowerflow(request):
-    return render(request,'mlpowerflow.html')
-
-# HTML Serving
-def dataplug(request):
-    return render(request,'vader/dataplug.html')
-    # template = loader.get_template('vader/dataplug.html')
-    # context = {}
-    # return HttpResponse(template.render(context, request))
-
-def switch_prediction(request):
-    return render(request,'vader/switch-prediction.html')
-    # template = loader.get_template('vader/switch-prediction.html')
-    # context = {}
-    # return HttpResponse(template.render(context, request))
-
-def dualmap(request):
-    return render(request,'vader/dualmap.html')
-    # template = loader.get_template('vader/dualmap.html')
-    # context = {}
-    # return HttpResponse(template.render(context, request))
+def medium(request):
+    template = loader.get_template('networkviz/medium.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
 
 
-### Routes for Apis
+def gent(request):
+    template = loader.get_template('networkviz/board.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
+
+
+def cmu(request):
+    template = loader.get_template('networkviz/cmu.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
+
+
+def d3(request):
+    template = loader.get_template('networkviz/d3.js')
+    context = {}
+    return HttpResponse(template.render(context, request))
+
+
+def ieee123(request):
+    template = loader.get_template('networkviz/ieee123.xml')
+    context = {}
+    return HttpResponse(template.render(context, request))
 
 def get_live_data(request):
     result = ''
@@ -95,7 +75,7 @@ def get_live_data(request):
         result = ''
     return HttpResponse(result)
 
-def structure(request):
+def structure(requeest):
     return HttpResponse(json.dumps(analyze.analyze_table('ieee123', 'scada', 'capacitor')));
 
 def get_total_power(request):
@@ -117,9 +97,27 @@ def get_history_data(request):
     result = helper.convert_decimal_list_to_float(database.query_database(simulation_name, db, field, table, condition), 0)
     return HttpResponse(json.dumps(result));
 
+def forecasting(request):
+    return render(request,'forecasting.html')
+def forecasting_pge(request):
+    return render(request,'forecasting-pge.html')
+
+def topology(request):
+    template = loader.get_template('vader/topology.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
 
 
-def disaggregateRegion(request, simulation_name, region_id):
+
+def pvdisagg(request):
+    ##data=disaggregateRegion(region_id)
+    return render(request,'disagg.html')
+def planning(request):
+    return render(request,'planning.html')
+def realtime(request):
+    return render(request,'real-time.html')
+
+def disaggregateRegion(request, region_id):
         #Generates random values to send via websocket
         ## Need to turn this into the message we will be appending to each visualization
         #with open(static_loc+'objs.pickle') as f:  # Python 3: open(..., 'rb')
@@ -204,8 +202,11 @@ def disaggregateRegion(request, simulation_name, region_id):
         ### rewrite
         return JsonResponse(json.dumps(overall),safe=False)
 
+def mlpowerflow(request):
+    ##data=disaggregateRegion(region_id)
+    return render(request,'mlpowerflow.html')
 
-def voltageWarning(request, simulation_name, region_id=0, bus_id=7):
+def voltageWarning(request, region_id=0, bus_id=7):
     """
     For voltage warning demo
     :param request:
@@ -272,6 +273,36 @@ def voltageWarning(request, simulation_name, region_id=0, bus_id=7):
 
 ################### DataPlug #####################
 
+# HTML Serving
+def dataplug(request):
+    template = loader.get_template('vader/dataplug.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
+
+
+
+################### Switch Prediction ###############
+
+# HTML Serving
+def switch_prediction(request):
+    template = loader.get_template('vader/switch-prediction.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
+
+
+################### APIs for Maps ###################
+
+# HTML Serving
+def dualmap(request):
+    template = loader.get_template('vader/dualmap.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
+
+
+def map(request):
+    template = loader.get_template('vader/map.html')
+    context = {}
+    return HttpResponse(template.render(context, request))
 
 # API Serving
 
@@ -320,42 +351,43 @@ def api_objects(request, element_prefix, elements_list, element_query="list"):
         return JsonResponse(obj)
 
 
-def api_meters(request, simulation_name, element_query="list"):
+def api_meters(request, element_query="list"):
+    simulation_name = request.GET.get('simulation_name')
     elements_list = analyze.categorize_object_name(simulation_name)['meter']
     # import pdb; pdb.set_trace()
     return api_objects(request, "meter_", elements_list, element_query)
 
-def api_switches(request, simulation_name, element_query="list"):
-    elements_list = analyze.categorize_object_name(simulation_name)['sw']
+def api_switches(request, element_query="list"):
+    elements_list = analyze.categorize_object_name("ieee123")['sw']
     return api_objects(request, "sw", elements_list, element_query)
 
-def api_loads(request, simulation_name, element_query="list"):
-    elements_list = analyze.categorize_object_name(simulation_name)['load']
+def api_loads(request, element_query="list"):
+    elements_list = analyze.categorize_object_name("ieee123")['load']
     return api_objects(request, "load_", elements_list, element_query)
 
-def api_nodes(request, simulation_name, element_query="list"):
-    elements_list = analyze.categorize_object_name(simulation_name)['node']
+def api_nodes(request, element_query="list"):
+    elements_list = analyze.categorize_object_name("ieee123")['node']
     return api_objects(request, "node_", elements_list, element_query)
 
-def api_houses(request, simulation_name, element_query="list"):
-    elements_list = analyze.categorize_object_name(simulation_name)['house']
+def api_houses(request, element_query="list"):
+    elements_list = analyze.categorize_object_name("ieee123")['house']
     return api_objects(request, "house_", elements_list, element_query)
 
-def api_lines(request, simulation_name, element_query="list"):
-    elements_list = analyze.categorize_object_name(simulation_name)['line']
+def api_lines(request, element_query="list"):
+    elements_list = analyze.categorize_object_name("ieee123")['line']
     return api_objects(request, "line", elements_list, element_query)
 
-def api_sensors(request, simulation_name, element_query="list"):
-    elements_list = analyze.categorize_object_name(simulation_name)['sensor']
+def api_sensors(request, element_query="list"):
+    elements_list = analyze.categorize_object_name("ieee123")['sensor']
     return api_objects(request, "sensor", elements_list, element_query)
 
 
-def api_capacitors(request, simulation_name, element_query="list"):
-    elements_list = analyze.categorize_object_name(simulation_name)['cap']
-    # print elements_list
+def api_capacitors(request, element_query="list"):
+    elements_list = analyze.categorize_object_name("ieee123")['cap']
+    print elements_list
     return api_objects(request, "cap", elements_list, element_query)
 
-def api_regions(request, simulation_name, element_query="list"):
+def api_regions(request, element_query="list"):
     regions = '''[
     {"group_num":0,"points":[[35.38503, -118.99987]]},
     {"group_num":1,"points":[
@@ -384,7 +416,7 @@ def api_regions(request, simulation_name, element_query="list"):
     return HttpResponse(regions)
 
 
-def api_regions_old(request, simulation_name, element_query="list"):
+def api_regions_old(request, element_query="list"):
     regions = '''[
     {"group_num":0,"points":[[35.38762, -118.99994],[35.38396, -118.99992],[35.38384, -119.00294], [35.38755, -119.00262]]},
     {"group_num":1,"points":[[35.38752, -118.9998],[35.38534, -118.99973],[35.38536, -118.99929],[35.38751, -118.99931]]},
@@ -402,7 +434,7 @@ def api_regions_old(request, simulation_name, element_query="list"):
 
 
 
-def api_switch_state(request, simulation_name, actual=''):
+def api_switch_state(request, actual=''):
     '''
     Get list of all switch states (Actual or Predicted)
     Returns something like this:
@@ -410,7 +442,7 @@ def api_switch_state(request, simulation_name, actual=''):
     [{"sw13to152": {"phase_C_state": "CLOSED", "phase_B_state": "CLOSED", "phase_A_state": "CLOSED"}}, {"sw61to6101": {"phase_C_state": "CLOSED", "phase_B_state": "CLOSED", "phase_A_state": "CLOSED"}}, {"sw18to135": {"phase_C_state": "CLOSED", "phase_B_state": "CLOSED", "phase_A_state": "CLOSED"}}]
     '''
     switch_state = {}
-    elements_list = analyze.categorize_object_name(simulation_name)['sw']
+    elements_list = analyze.categorize_object_name("ieee123")['sw']
     if actual.lower() == 'actual':
         switch_state = analyze.get_actual_switch_states(elements_list)
         return JsonResponse(switch_state, safe=False)
@@ -430,9 +462,8 @@ def is_int(s):
         return False
 
 
-### Queries
-
-def query_for_datatable(request, simulation_name):
+def query_for_datatable(request):
+    simulation_name = request.GET.get('simulation_name')
     category_name = request.GET.get('category')
     object_list = analyze.get_object_list(simulation_name, category_name)
     data = []
@@ -448,20 +479,23 @@ def query_for_datatable(request, simulation_name):
     return HttpResponse(json.dumps(data_list), content_type="application/json")
 
 
-def query_for_feeder(request, simulation_name):
+def query_for_feeder(request):
+    simulation_name = request.GET.get('simulation_name')
     sw_list = analyze.get_object_list(simulation_name, "sw")
     cap_list = analyze.get_object_list(simulation_name, "cap")
     context = {"sw_list": sw_list, "cap_list": cap_list}
     return render(request, 'vader/_console-feeder.html', context)
 
 
-def query_for_climate(request, simulation_name):
-    climate_json = climate.query_climate(simulation_name)
+def query_for_climate(request):
+    climate_json = climate.query_climate()
     return HttpResponse(climate_json, content_type="application/json")
 
 
-def query_for_cards(request, simulation_name):
+def query_for_cards(request):
     print request
+    print "come in"
+    simulation_name = request.GET.get('simulation_name')
     object_dictionary = helper.convert_dictionary_to_json(analyze.categorize_object_amount(simulation_name))
     print object_dictionary
     return JsonResponse(object_dictionary, safe=False)

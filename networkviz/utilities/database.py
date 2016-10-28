@@ -79,10 +79,13 @@ def query_database(simulation_name, database, fields='', table='', conditions=''
     else:
         query = raw_query
     database_name = simulation_name + '_' + database
-    try:
-        cursor = connections[database_name].cursor()
-    except KeyError:
-        raise KeyError("Connection to " + database_name + " has not been established")
+    if database_name not in connections:
+        connect_to_database(simulation_name, database)
+    cursor = connections[database_name].cursor()
+    # try:
+    #     cursor = connections[database_name].cursor()
+    # except KeyError:
+    #     raise KeyError("Connection to " + database_name + " has not been established")
     cursor.execute(query)
     res = []
     for info in cursor:
