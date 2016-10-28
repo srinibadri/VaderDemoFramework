@@ -49,7 +49,7 @@ def set_property(simulation_name, category, name, value):
     return get_property(simulation_name, category, name)
 
 
-def get_object(simulation_name, object_name, useJson=True):
+def get_object(simulation_name, object_name, use_json=True):
     obj = {}
     url = generate_base_url(simulation_name).replace('xml', 'json') + object_name + "/*"
     print(url)
@@ -58,9 +58,9 @@ def get_object(simulation_name, object_name, useJson=True):
         # Fix the trailing comma in some of the lists
         info = clean_json(info)
         # Fix the list of objects that GridlabD returns
-        if useJson:
-            badObj = json.loads(info)
-            obj = helper.merge_dicts(*badObj)
+        if use_json:
+            bad_obj = json.loads(info)
+            obj = helper.merge_dicts(*bad_obj)
         else:
             obj = {}
     except ValueError:
@@ -69,15 +69,14 @@ def get_object(simulation_name, object_name, useJson=True):
 
 
 def get_objects(simulation_name, element_prefix, func_get_elements, element_query="list"):
-    '''
+    """
 
-    Single handler method for gathering lists of elements (meters, switches, nodes, houses, etc).
-    Arguments:
-        request             -- Django Request object
-        element_prefix      -- Element name prefix (so that meter/meter_1 and meter/1 both work)
-        func_get_elements   -- A function object that can be used to retrieve a list of all the elements of that type in the simulation
-        element_query       -- Which collection of data requested. See below.
-
+    :param simulation_name: e.g., 'ieee123'
+    :param element_prefix: Element name prefix (so that meter/meter_1 and meter/1 both work)
+    :param func_get_elements: A function object that can be used to retrieve a list of all
+                              the elements of that type in the simulation
+    :param element_query: Which collection of data requested. See below.
+    :return:
     Note: You can replace 'meter' with switch, load, node, house, etc.
     Handles a few types of queries in the "element_query" field:
 
@@ -88,7 +87,7 @@ def get_objects(simulation_name, element_prefix, func_get_elements, element_quer
     /*          --> Returns a list containing full data on each of the elements in the /list
 
     If it fails, it will return None
-    '''
+    """
     print("%s query requested: %s" % (element_prefix, element_query))
     # List all of the names of the elements
     if element_query == "list":
