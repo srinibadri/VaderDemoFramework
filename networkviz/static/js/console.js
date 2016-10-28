@@ -5,7 +5,7 @@ $(document).ready(function(){
 
     function queryFeeder(){
         $.ajax({
-            "url" : "api/feeder",
+            "url" : "api/"+simulationName+"feeder",
             "contentType" : "application/json",
             "type" : "GET",
             "data" : {
