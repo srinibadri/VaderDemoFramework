@@ -8,26 +8,22 @@ GLDSetGlobal => get_global
 GLDGetGlobal => set_global
 
 """
-from __future__ import print_function
-import re
-import sys
 import json
+import re
 import token
 import tokenize
 import urllib
 import urllib2
-from xml.dom import minidom
 from StringIO import StringIO
+from xml.dom import minidom
 
 from networkviz.utilities import helper
 from vaderviz import settings
 
-return_type = 'xml'
-base_url = settings.HOSTNAME + ':' + str(settings.PORT) + '/' + return_type.lower() + '/'
-
 
 def generate_base_url(simulation_name):
-    return settings.HOSTNAME + ':' + str(settings.SIMULATION_PORT[simulation_name]) + '/' + return_type.lower() + '/'
+    return settings.HOSTNAME + ':' + str(
+        settings.SIMULATION_PORT[simulation_name]) + '/' + settings.HTTP_RETURN_TYPE.lower() + '/'
 
 
 def get_global(simulation_name, name):
@@ -47,7 +43,8 @@ def set_global(simulation_name, name, value):
 
 
 def set_property(simulation_name, category, name, value):
-    url = generate_base_url(simulation_name) + urllib.quote(category) + '/' + urllib.quote(name) + '=' + urllib.quote(value)
+    url = generate_base_url(simulation_name) + urllib.quote(category) + '/' + urllib.quote(name) + '=' + urllib.quote(
+        value)
     set_data(url)
     return get_property(simulation_name, category, name)
 
@@ -67,7 +64,7 @@ def get_object(object_name, useJson=True):
         else:
             obj = {}
     except ValueError:
-        eprint("%s not found" % (object_name))
+        helper.eprint("%s not found" % (object_name))
     return obj
 
 

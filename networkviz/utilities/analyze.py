@@ -9,6 +9,7 @@ import re
 
 from networkviz.utilities import database, connection
 categorized_object_name = None
+categorized_object_amount = None
 
 
 def get_object_list(simulation_name, category):
@@ -60,9 +61,13 @@ def categorize_object_name(simulation_name):
 
 
 def categorize_object_amount(simulation_name):
+    global categorized_object_amount
+    if categorized_object_amount is not None:
+        return categorized_object_amount
     res = categorize_object_name(simulation_name)
     for item in res.keys():
         res[item] = len(res[item])
+    categorized_object_amount = res
     return res
 
 

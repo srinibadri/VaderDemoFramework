@@ -155,4 +155,6 @@ SIMULATION_PORT = {
     'ieee123zs':    6268
 }
 
+HTTP_RETURN_TYPE = 'xml'
+
 PICKLE_FOLDER = os.path.join(BASE_DIR, 'networkviz/static/data/')
