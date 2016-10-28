@@ -148,4 +148,11 @@ DATABASES_CONFIGURATIONS = {
     }
 }
 
+SIMULATION_PORT = {
+    'ieee123':      6268,
+    'ieee123s':     6268,
+    'ieee123z':     6268,
+    'ieee123zs':    6268
+}
+
 PICKLE_FOLDER = os.path.join(BASE_DIR, 'networkviz/static/data/')

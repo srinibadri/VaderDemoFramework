@@ -8,6 +8,7 @@ e.g. analyze.obtain_object_name_list("ieee123")
 import re
 
 from networkviz.utilities import database, connection
+categorized_object_name = None
 
 
 def get_object_list(simulation_name, category):
@@ -44,6 +45,9 @@ def categorize_object_name(simulation_name):
            u'sensor', u'tc', u'scada', u'ami', u'line', u'xfrm', u'xfmr', u'cap', u'sw', u'reg', u'ulc', u'trans']
 
     """
+    global categorized_object_name
+    if categorized_object_name is not None:
+        return categorized_object_name
     res = obtain_object_name_list(simulation_name)
     categorized_res = {}
     for item in res:
@@ -51,6 +55,7 @@ def categorize_object_name(simulation_name):
         if info[0] not in categorized_res:
             categorized_res[info[0]] = []
         categorized_res[info[0]].append(item)
+    categorized_object_name = categorized_res
     return categorized_res
 
 

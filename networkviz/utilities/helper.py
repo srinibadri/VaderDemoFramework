@@ -1,5 +1,9 @@
-import json
+from __future__ import print_function
+
 import datetime
+import json
+import sys
+
 from networkviz.utilities import database
 
 
@@ -16,9 +20,10 @@ def convert_decimal_list_to_float(input_arg, index):
 
 
 def get_demand_and_energy_by_time(simulation_name):
+    fields = 't, SUM(cast(measured_demand as decimal(8,1))), SUM(cast(measured_real_power as decimal(8,1)))'
     database.connect_to_database(simulation_name, 'ami')
     res = database.query_database(simulation_name, 'ami',
-                                  fields='t, SUM(cast(measured_demand as decimal(8,1))), SUM(cast(measured_real_power as decimal(8,1)))',
+                                  fields=fields,
                                   table='meter',
                                   conditions='group by t order by t DESC')
     database.close_connection(simulation_name, 'ami')
@@ -84,3 +89,18 @@ def wrapper_lists_and_add_name(name_list, *lists):
     for i in range(0, len(name_list)):
         dic[name_list[i]] = lists[i]
     return dic
+
+
+def merge_dicts(*dict_args):
+    '''
+    Given any number of dicts, shallow copy and merge into a new dict,
+    precedence goes to key value pairs in latter dicts.
+    '''
+    result = {}
+    for dictionary in dict_args:
+        result.update(dictionary)
+    return result
+
+
+def eprint(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)

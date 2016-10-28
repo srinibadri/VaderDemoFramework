@@ -19,35 +19,39 @@ import urllib2
 from xml.dom import minidom
 from StringIO import StringIO
 
+from networkviz.utilities import helper
 from vaderviz import settings
 
 return_type = 'xml'
 base_url = settings.HOSTNAME + ':' + str(settings.PORT) + '/' + return_type.lower() + '/'
 
 
-def get_global(name):
-    url = base_url + urllib.quote(name)
+def generate_base_url(simulation_name):
+    return settings.HOSTNAME + ':' + str(settings.SIMULATION_PORT[simulation_name]) + '/' + return_type.lower() + '/'
+
+
+def get_global(simulation_name, name):
+    url = generate_base_url(simulation_name) + urllib.quote(name)
     return get_data(url)
 
 
-def get_property(category, name):
-    url = base_url + urllib.quote(category) + '/' + urllib.quote(name)
+def get_property(simulation_name, category, name):
+    url = generate_base_url(simulation_name) + urllib.quote(category) + '/' + urllib.quote(name)
     return get_data(url)
 
 
-def set_global(name, value):
-    url = base_url + urllib.quote(name) + '=' + urllib.quote(value)
+def set_global(simulation_name, name, value):
+    url = generate_base_url(simulation_name) + urllib.quote(name) + '=' + urllib.quote(value)
     set_data(url)
-    return get_global(name)
+    return get_global(simulation_name, name)
 
 
-def set_property(category, name, value):
-    url = base_url + urllib.quote(category) + '/' + urllib.quote(name) + '=' + urllib.quote(value)
+def set_property(simulation_name, category, name, value):
+    url = generate_base_url(simulation_name) + urllib.quote(category) + '/' + urllib.quote(name) + '=' + urllib.quote(value)
     set_data(url)
-    return get_property(category, name)
+    return get_property(simulation_name, category, name)
 
 
-#TODO: Add XML support
 def get_object(object_name, useJson=True):
     obj = {}
     url = base_url.replace('xml', 'json') + object_name + "/*"
@@ -59,12 +63,13 @@ def get_object(object_name, useJson=True):
         # Fix the list of objects that GridlabD returns
         if useJson:
             badObj = json.loads(info)
-            obj = merge_dicts(*badObj)
+            obj = helper.merge_dicts(*badObj)
         else:
             obj = {}
     except ValueError:
         eprint("%s not found" % (object_name))
     return obj
+
 
 def get_objects(element_prefix, func_get_elements, element_query="list"):
     '''
@@ -95,7 +100,7 @@ def get_objects(element_prefix, func_get_elements, element_query="list"):
     elif element_query == "*":
         list_elements = []
         for element in func_get_elements():
-            obj = connection.get_object(element)
+            obj = get_object(element)
             if not obj:
                 return None
             list_elements.append(obj)
@@ -104,11 +109,10 @@ def get_objects(element_prefix, func_get_elements, element_query="list"):
     else:
         if element_prefix not in element_query:
             element_query = element_prefix + element_query
-        obj = connection.get_object(element_query)
+        obj = get_object(element_query)
         if not obj:
             return None
         return obj
-
 
 
 def set_data(url):
@@ -140,22 +144,12 @@ def get_data(url):
         item_list = xml_doc.getElementsByTagName('value')
         return item_list[0].childNodes[0].data
 
-def merge_dicts(*dict_args):
-    '''
-    Given any number of dicts, shallow copy and merge into a new dict,
-    precedence goes to key value pairs in latter dicts.
-    '''
-    result = {}
-    for dictionary in dict_args:
-        result.update(dictionary)
-    return result
-
 
 def clean_json(string):
     string = re.sub(",[ \t\r\n]+}", "}", string)
     string = re.sub(",[ \t\r\n]+\]", "]", string)
-
     return string
+
 
 def fix_lazy_json(in_text):
     token_gen = tokenize.generate_tokens(StringIO(in_text).readline)
@@ -184,6 +178,3 @@ def fix_lazy_json(in_text):
 
         result.append((tok_id, tok_val))
     return tokenize.untokenize(result)
-
-def eprint(*args, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)

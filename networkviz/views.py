@@ -352,7 +352,8 @@ def api_objects(request, element_prefix, elements_list, element_query="list"):
 
 
 def api_meters(request, element_query="list"):
-    elements_list = analyze.categorize_object_name("ieee123")['meter']
+    simulation_name = request.GET.get('simulation_name')
+    elements_list = analyze.categorize_object_name(simulation_name)['meter']
     # import pdb; pdb.set_trace()
     return api_objects(request, "meter_", elements_list, element_query)
 
