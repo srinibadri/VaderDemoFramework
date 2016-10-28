@@ -10,8 +10,8 @@ import re
 from networkviz.utilities import database, connection
 from vaderviz import settings
 
-categorized_object_name = None
-categorized_object_amount = None
+categorized_object_name = {}
+categorized_object_amount = {}
 
 
 def get_simulations():
@@ -53,8 +53,8 @@ def categorize_object_name(simulation_name):
 
     """
     global categorized_object_name
-    if categorized_object_name is not None:
-        return categorized_object_name
+    if simulation_name in categorized_object_name:
+        return categorized_object_name[simulation_name]
     res = obtain_object_name_list(simulation_name)
     categorized_res = {}
     for item in res:
@@ -62,18 +62,18 @@ def categorize_object_name(simulation_name):
         if info[0] not in categorized_res:
             categorized_res[info[0]] = []
         categorized_res[info[0]].append(item)
-    categorized_object_name = categorized_res
+    categorized_object_name[simulation_name] = categorized_res
     return categorized_res
 
 
 def categorize_object_amount(simulation_name):
     global categorized_object_amount
-    if categorized_object_amount is not None:
-        return categorized_object_amount
+    if simulation_name in categorized_object_amount:
+        return categorized_object_amount[simulation_name]
     res = categorize_object_name(simulation_name)
     for item in res.keys():
         res[item] = len(res[item])
-    categorized_object_amount = res
+    categorized_object_amount[simulation_name] = res
     return res
 
 
@@ -92,18 +92,18 @@ def analyze_table(simulation_name, db_name, table):
 
 
     """
-    database.connect_to_database(simulation_name, db_name)
+    # database.connect_to_database(simulation_name, db_name)
     res = database.query_database(simulation_name, db_name,
                                   raw_query='describe ' + table)
-    database.close_connection(simulation_name, db_name)
+    # database.close_connection(simulation_name, db_name)
     return list(item[0] for item in res)
 
 
 def obtain_object_name_raw(simulation_name):
-    database.connect_to_database(simulation_name, 'model')
+    # database.connect_to_database(simulation_name, 'model')
     res = database.query_database(simulation_name, 'model',
                                   raw_query='select name from objects where name is not NULL')
-    database.close_connection(simulation_name, 'model')
+    # database.close_connection(simulation_name, 'model')
     return res
 
 

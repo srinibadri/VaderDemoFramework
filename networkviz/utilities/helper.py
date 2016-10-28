@@ -21,12 +21,12 @@ def convert_decimal_list_to_float(input_arg, index):
 
 def get_demand_and_energy_by_time(simulation_name):
     fields = 't, SUM(cast(measured_demand as decimal(8,1))), SUM(cast(measured_real_power as decimal(8,1)))'
-    database.connect_to_database(simulation_name, 'ami')
+    # database.connect_to_database(simulation_name, 'ami')
     res = database.query_database(simulation_name, 'ami',
                                   fields=fields,
                                   table='meter',
                                   conditions='group by t order by t DESC')
-    database.close_connection(simulation_name, 'ami')
+    # database.close_connection(simulation_name, 'ami')
     return res
 
 
