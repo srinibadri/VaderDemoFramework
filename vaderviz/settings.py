@@ -124,7 +124,6 @@ STATIC_URL = '/static/'
 #
 
 HOSTNAME = 'http://gridlabd.slac.stanford.edu'
-PORT = 6268
 
 DATABASES_BASIC_CONFIG = {
     'user': 'gridlabd_ro',
@@ -133,27 +132,17 @@ DATABASES_BASIC_CONFIG = {
     'raise_on_warnings': False,
 }
 
-DATABASES_CONFIGURATIONS = {
-    'ieee123s': {
-        'ami', 'model', 'scada', 'data'
-    },
-    'ieee123z': {
-        'ami', 'model', 'scada', 'data'
-    },
-    'ieee123': {
-        'ami', 'model', 'scada', 'data'
-    },
-    'ieee123zs': {
-        'ami', 'model', 'scada', 'data'
-    }
+DATABASES_NAME = {
+    'ami', 'model', 'scada', 'data'
 }
 
 SIMULATION_PORT = {
-    'ieee123':      6268,
+    'ieee123':      6267,
     'ieee123s':     6268,
-    'ieee123z':     6268,
-    'ieee123zs':    6268
+    'ieee123z':     6266,
+    'ieee123zs':    6269
 }
+
 
 HTTP_RETURN_TYPE = 'xml'
 

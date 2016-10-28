@@ -29,9 +29,9 @@ def connect_to_database(simulation_name, database):
     if database_name in connections:
         print('This database has already been connected.')
         return
-    if simulation_name not in settings.DATABASES_CONFIGURATIONS:
+    if simulation_name not in settings.SIMULATION_PORT:
         raise LookupError("There is no such simulation name.")
-    if database not in settings.DATABASES_CONFIGURATIONS[simulation_name]:
+    if database not in settings.DATABASES_NAME:
         raise LookupError("There is no such database name.")
     connections[database_name] = mysql.connector.connect(database=database_name,
                                                          **settings.DATABASES_BASIC_CONFIG)

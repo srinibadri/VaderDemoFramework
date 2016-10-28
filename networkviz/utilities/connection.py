@@ -49,9 +49,9 @@ def set_property(simulation_name, category, name, value):
     return get_property(simulation_name, category, name)
 
 
-def get_object(object_name, useJson=True):
+def get_object(simulation_name, object_name, useJson=True):
     obj = {}
-    url = base_url.replace('xml', 'json') + object_name + "/*"
+    url = generate_base_url(simulation_name).replace('xml', 'json') + object_name + "/*"
     print(url)
     try:
         info = get_raw_data_from_connection(url)
@@ -68,7 +68,7 @@ def get_object(object_name, useJson=True):
     return obj
 
 
-def get_objects(element_prefix, func_get_elements, element_query="list"):
+def get_objects(simulation_name, element_prefix, func_get_elements, element_query="list"):
     '''
 
     Single handler method for gathering lists of elements (meters, switches, nodes, houses, etc).
@@ -97,7 +97,7 @@ def get_objects(element_prefix, func_get_elements, element_query="list"):
     elif element_query == "*":
         list_elements = []
         for element in func_get_elements():
-            obj = get_object(element)
+            obj = get_object(simulation_name, element)
             if not obj:
                 return None
             list_elements.append(obj)
@@ -106,7 +106,7 @@ def get_objects(element_prefix, func_get_elements, element_query="list"):
     else:
         if element_prefix not in element_query:
             element_query = element_prefix + element_query
-        obj = get_object(element_query)
+        obj = get_object(simulation_name, element_query)
         if not obj:
             return None
         return obj
@@ -131,7 +131,7 @@ def get_raw_data_from_connection(url):
 
 def get_data(url):
     info = get_raw_data_from_connection(url)
-    if return_type.lower() == 'json':
+    if settings.HTTP_RETURN_TYPE.lower() == 'json':
         try:
             return json.loads(info)['value']
         except ValueError:

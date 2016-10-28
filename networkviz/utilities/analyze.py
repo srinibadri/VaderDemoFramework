@@ -8,8 +8,14 @@ e.g. analyze.obtain_object_name_list("ieee123")
 import re
 
 from networkviz.utilities import database, connection
+from vaderviz import settings
+
 categorized_object_name = None
 categorized_object_amount = None
+
+
+def get_simulations():
+    return list(settings.SIMULATION_PORT.keys())
 
 
 def get_object_list(simulation_name, category):
@@ -101,8 +107,6 @@ def obtain_object_name_raw(simulation_name):
     return res
 
 
-
-
 #### For the 'Switch Configuration Detection' research
 
 def get_predicted_switch_states(switches, simulation_name="ieee123"):
@@ -114,9 +118,10 @@ def get_predicted_switch_states(switches, simulation_name="ieee123"):
     switch_states = []
     for switch in switches:
         switch_states.append({switch:
-            {"phase_A_state":"CLOSED", "phase_B_state": "CLOSED", "phase_C_state": "OPEN"}
-        })
+                                  {"phase_A_state": "CLOSED", "phase_B_state": "CLOSED", "phase_C_state": "OPEN"}
+                              })
     return switch_states
+
 
 def get_actual_switch_states(switches, simulation_name="ieee123"):
     """
@@ -126,8 +131,9 @@ def get_actual_switch_states(switches, simulation_name="ieee123"):
     """
     switch_states = []
     for switch in switches:
-        obj = connection.get_object(switch)
+        obj = connection.get_object(simulation_name, switch)
         switch_states.append({switch:
-            {"phase_A_state":obj['phase_A_state'], "phase_B_state": obj['phase_B_state'], "phase_C_state": obj['phase_C_state']}
-        })
+                                  {"phase_A_state": obj['phase_A_state'], "phase_B_state": obj['phase_B_state'],
+                                   "phase_C_state": obj['phase_C_state']}
+                              })
     return switch_states

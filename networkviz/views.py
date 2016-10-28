@@ -276,7 +276,7 @@ def voltageWarning(request, simulation_name, region_id=0, bus_id=7):
 # API Serving
 
 
-def api_objects(request, element_prefix, elements_list, element_query="list"):
+def api_objects(request, simulation_name, element_prefix, elements_list, element_query="list"):
     '''
 
     Single handler method for gathering lists of elements (meters, switches, nodes, houses, etc).
@@ -305,55 +305,62 @@ def api_objects(request, element_prefix, elements_list, element_query="list"):
     elif element_query == "*":
         list_elements = []
         for element in elements_list:
-            obj = connection.get_object(element)
+            obj = connection.get_object(simulation_name, element)
             if not obj:
-                return JsonResponse({'status':'false','message':'%s not found' % element}, status=500)
+                return JsonResponse({'status': 'false', 'message': '%s not found' % element}, status=500)
             list_elements.append(obj)
         return JsonResponse(list_elements, safe=False)
     # Attempt to get details of a single element
     else:
         if element_prefix not in element_query:
             element_query = element_prefix + element_query
-        obj = connection.get_object(element_query)
+        obj = connection.get_object(simulation_name, element_query)
         if not obj:
-            return JsonResponse({'status':'false','message':'%s not found' % element_query}, status=500)
+            return JsonResponse({'status': 'false', 'message': '%s not found' % element_query}, status=500)
         return JsonResponse(obj)
 
 
 def api_meters(request, simulation_name, element_query="list"):
-    elements_list = analyze.categorize_object_name(simulation_name)['meter']
+    elements_list = analyze.get_object_list(simulation_name, 'meter')
     # import pdb; pdb.set_trace()
-    return api_objects(request, "meter_", elements_list, element_query)
+    return api_objects(request, simulation_name, "meter_", elements_list, element_query)
+
 
 def api_switches(request, simulation_name, element_query="list"):
-    elements_list = analyze.categorize_object_name(simulation_name)['sw']
-    return api_objects(request, "sw", elements_list, element_query)
+    elements_list = analyze.get_object_list(simulation_name, 'sw')
+    return api_objects(request, simulation_name,  "sw", elements_list, element_query)
+
 
 def api_loads(request, simulation_name, element_query="list"):
     elements_list = analyze.categorize_object_name(simulation_name)['load']
-    return api_objects(request, "load_", elements_list, element_query)
+    return api_objects(request, simulation_name,  "load_", elements_list, element_query)
+
 
 def api_nodes(request, simulation_name, element_query="list"):
-    elements_list = analyze.categorize_object_name(simulation_name)['node']
-    return api_objects(request, "node_", elements_list, element_query)
+    elements_list = analyze.get_object_list(simulation_name, 'node')
+    return api_objects(request, simulation_name,  "node_", elements_list, element_query)
+
 
 def api_houses(request, simulation_name, element_query="list"):
-    elements_list = analyze.categorize_object_name(simulation_name)['house']
-    return api_objects(request, "house_", elements_list, element_query)
+    elements_list = analyze.get_object_list(simulation_name, 'house')
+    return api_objects(request, simulation_name, "house_", elements_list, element_query)
+
 
 def api_lines(request, simulation_name, element_query="list"):
-    elements_list = analyze.categorize_object_name(simulation_name)['line']
-    return api_objects(request, "line", elements_list, element_query)
+    elements_list = analyze.get_object_list(simulation_name, 'line')
+    return api_objects(request, simulation_name, "line", elements_list, element_query)
+
 
 def api_sensors(request, simulation_name, element_query="list"):
-    elements_list = analyze.categorize_object_name(simulation_name)['sensor']
-    return api_objects(request, "sensor", elements_list, element_query)
+    elements_list = analyze.get_object_list(simulation_name, 'sensor')
+    return api_objects(request, simulation_name, "sensor", elements_list, element_query)
 
 
 def api_capacitors(request, simulation_name, element_query="list"):
-    elements_list = analyze.categorize_object_name(simulation_name)['cap']
+    elements_list = analyze.get_object_list(simulation_name, 'cap')
     # print elements_list
-    return api_objects(request, "cap", elements_list, element_query)
+    return api_objects(request, simulation_name, "cap", elements_list, element_query)
+
 
 def api_regions(request, simulation_name, element_query="list"):
     regions = '''[
@@ -399,7 +406,6 @@ def api_regions_old(request, simulation_name, element_query="list"):
     ]'''
     # print(regions)
     return HttpResponse(regions)
-
 
 
 def api_switch_state(request, simulation_name, actual=''):
