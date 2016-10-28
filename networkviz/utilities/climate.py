@@ -11,10 +11,10 @@ XML supports return value in different units. (Default)
 
 Usage:
 1. Query combined information (returns json)
-    e.g. query_climate()
+    e.g. query_climate('ieee123')
          :returns: a Json object including all information of climate
 
-         query_climate('cth')
+         query_climate('ieee123', 'cth')
          :returns a Json object including information of city, temperature and humidity
 
     example return json:
@@ -41,17 +41,17 @@ Usage:
     g -- wind gust
 
 2. Query single information (returns string)
-    e.g. print climate.city()
+    e.g. print climate.city('ieee123')
          Berkley
     Available callings:
-         climate.city()
-         climate.temperature()
-         climate.humidity()
-         climate.clouds()
-         climate.pressure()
-         climate.wind_speed()
-         climate.wind_heading()
-         climate.wind_gust()
+         climate.city('ieee123')
+         climate.temperature('ieee123')
+         climate.humidity('ieee123')
+         climate.clouds('ieee123')
+         climate.pressure('ieee123')
+         climate.wind_speed('ieee123')
+         climate.wind_heading('ieee123')
+         climate.wind_gust('ieee123')
 
 """
 from networkviz.utilities.connection import *
@@ -60,7 +60,7 @@ from networkviz.utilities.simulation import clock
 query_category = 'weather'
 
 
-def query_climate(args=''):
+def query_climate(simulation_name, args=''):
     """
     :arg: the information to retrieve
     :return: a Json object including information
@@ -71,41 +71,41 @@ def query_climate(args=''):
     return_value = {}
     for c in args:
         if c in valid_key:
-            return_value[valid_key[c]['alias']] = valid_key[c]['callback']()
-    return_value['clock'] = clock()
+            return_value[valid_key[c]['alias']] = valid_key[c]['callback'](simulation_name)
+    return_value['clock'] = clock(simulation_name)
     return json.dumps(return_value)
 
 
-def city():
-    return query('c')
+def city(simulation_name):
+    return query(simulation_name, 'c')
 
 
-def temperature():
-    return query('t')
+def temperature(simulation_name):
+    return query(simulation_name, 't')
 
 
-def humidity():
-    return query('h')
+def humidity(simulation_name):
+    return query(simulation_name, 'h')
 
 
-def clouds():
-    return query('l')
+def clouds(simulation_name):
+    return query(simulation_name, 'l')
 
 
-def pressure():
-    return query('p')
+def pressure(simulation_name):
+    return query(simulation_name, 'p')
 
 
-def wind_speed():
-    return query('s')
+def wind_speed(simulation_name):
+    return query(simulation_name, 's')
 
 
-def wind_heading():
-    return query('d')
+def wind_heading(simulation_name):
+    return query(simulation_name, 'd')
 
 
-def wind_gust():
-    return query('g')
+def wind_gust(simulation_name):
+    return query(simulation_name, 'g')
 
 
 valid_key = {
@@ -144,8 +144,8 @@ valid_key = {
 }
 
 
-def query(key):
-    if return_type.lower() == 'json' or key == 'c':
-        return get_property(query_category, valid_key[key]['basic'])
+def query(simulation_name, key):
+    if settings.HTTP_RETURN_TYPE.lower() == 'json' or key == 'c':
+        return get_property(simulation_name, query_category, valid_key[key]['basic'])
     else:
-        return get_property(query_category, valid_key[key]['extended'])
+        return get_property(simulation_name, query_category, valid_key[key]['extended'])

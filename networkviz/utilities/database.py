@@ -33,13 +33,19 @@ def connect_to_database(simulation_name, database):
         raise LookupError("There is no such simulation name.")
     if database not in settings.DATABASES_NAME:
         raise LookupError("There is no such database name.")
+    print("Connecting to" + database_name)
     connections[database_name] = mysql.connector.connect(pool_name=database_name,
                                                          pool_size=10,
                                                          database=database_name,
+                                                         connection_timeout=10,
                                                          **settings.DATABASES_BASIC_CONFIG)
 
 
 def close_connection(simulation_name, database):
+    """
+    Avoid closing any connection to database.
+    Just make this function as empty one to avoid modify other part of code.
+    """
     pass
     # global connections
     # database_name = simulation_name + '_' + database
@@ -90,7 +96,6 @@ def query_database(simulation_name, database, fields='', table='', conditions=''
     for info in cursor:
         res.append(info)
     cursor.close()
-    # connections[database_name].close()
     return res
 
 

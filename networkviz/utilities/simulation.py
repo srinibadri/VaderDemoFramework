@@ -8,7 +8,7 @@ transferred directly.
 
 Usage:
 1. Query combined information (returns json)
-    e.g. query_status()
+    e.g. query_status('ieee123')
          :returns: a Json object including all information of simulation control
 
     example return json:
@@ -40,8 +40,8 @@ Usage:
     i -- server_info
 
 2. Status Change
-    e.g.  simulation.verbose_off()
-          simulation.verbose_on()
+    e.g.  simulation.verbose_off('ieee123')
+          simulation.verbose_on('ieee123')
     Supports:
         verbose
         debug
@@ -52,7 +52,7 @@ Usage:
         warn
 
 3. Query single information (returns string)
-    e.g. print simulation.clock()
+    e.g. print simulation.clock('ieee123')
 
     Available callings:
          simulation.model_name()
@@ -71,7 +71,7 @@ from networkviz.utilities.connection import *
 from vaderviz import settings
 
 
-def query_status(args=''):
+def query_status(simulation_name, args=''):
     """
     :arg: the information to retrieve
     :return: a Json object including information
@@ -82,109 +82,109 @@ def query_status(args=''):
     return_value = {}
     for c in args:
         if c in valid_key:
-            return_value[valid_key[c]['alias']] = valid_key[c]['callback']()
-    return_value['clock'] = clock()
+            return_value[valid_key[c]['alias']] = valid_key[c]['callback'](simulation_name)
+    return_value['clock'] = clock(simulation_name)
     return json.dumps(return_value)
 
 
-def verbose_off():
-    return set_global(valid_key['v']['basic'], '0')
+def verbose_off(simulation_name):
+    return set_global(simulation_name, valid_key['v']['basic'], '0')
 
 
-def verbose_on():
-    return set_global(valid_key['v']['basic'], '1')
+def verbose_on(simulation_name):
+    return set_global(simulation_name, valid_key['v']['basic'], '1')
 
 
-def debug_off():
-    return set_global(valid_key['d']['basic'], '0')
+def debug_off(simulation_name):
+    return set_global(simulation_name, valid_key['d']['basic'], '0')
 
 
-def debug_on():
-    return set_global(valid_key['d']['basic'], '1')
+def debug_on(simulation_name):
+    return set_global(simulation_name, valid_key['d']['basic'], '1')
 
 
-def dumpall_off():
-    return set_global(valid_key['a']['basic'], '0')
+def dumpall_off(simulation_name):
+    return set_global(simulation_name, valid_key['a']['basic'], '0')
 
 
-def dumpall_on():
-    return set_global(valid_key['a']['basic'], '1')
+def dumpall_on(simulation_name):
+    return set_global(simulation_name, valid_key['a']['basic'], '1')
 
 
-def quiet_off():
-    return set_global(valid_key['q']['basic'], '0')
+def quiet_off(simulation_name):
+    return set_global(simulation_name, valid_key['q']['basic'], '0')
 
 
-def quiet_on():
-    return set_global(valid_key['q']['basic'], '1')
+def quiet_on(simulation_name):
+    return set_global(simulation_name, valid_key['q']['basic'], '1')
 
 
-def show_progress_off():
-    return set_global(valid_key['s']['basic'], '0')
+def show_progress_off(simulation_name):
+    return set_global(simulation_name, valid_key['s']['basic'], '0')
 
 
-def show_progress_on():
-    return set_global(valid_key['s']['basic'], '1')
+def show_progress_on(simulation_name):
+    return set_global(simulation_name, valid_key['s']['basic'], '1')
 
 
-def suppress_repeat_messages_off():
-    return set_global(valid_key['u']['basic'], '0')
+def suppress_repeat_messages_off(simulation_name):
+    return set_global(simulation_name, valid_key['u']['basic'], '0')
 
 
-def suppress_repeat_messages_on():
-    return set_global(valid_key['u']['basic'], '1')
+def suppress_repeat_messages_on(simulation_name):
+    return set_global(simulation_name, valid_key['u']['basic'], '1')
 
 
-def warn_off():
-    return set_global(valid_key['w']['basic'], '0')
+def warn_off(simulation_name):
+    return set_global(simulation_name, valid_key['w']['basic'], '0')
 
 
-def warn_on():
-    return set_global(valid_key['w']['basic'], '1')
+def warn_on(simulation_name):
+    return set_global(simulation_name, valid_key['w']['basic'], '1')
 
 
-def clock():
-    return get_global('clock')
+def clock(simulation_name):
+    return get_global(simulation_name, 'clock')
 
 
-def model_name():
-    return get_global(valid_key['m']['basic'])
+def model_name(simulation_name):
+    return get_global(simulation_name, valid_key['m']['basic'])
 
 
-def realtime_metric():
-    return get_global(valid_key['r']['basic'])
+def realtime_metric(simulation_name):
+    return get_global(simulation_name, valid_key['r']['basic'])
 
 
-def verbose():
-    return get_global(valid_key['v']['basic'])
+def verbose(simulation_name):
+    return get_global(simulation_name, valid_key['v']['basic'])
 
 
-def debug():
-    return get_global(valid_key['d']['basic'])
+def debug(simulation_name):
+    return get_global(simulation_name, valid_key['d']['basic'])
 
 
-def dump_all():
-    return get_global(valid_key['a']['basic'])
+def dump_all(simulation_name):
+    return get_global(simulation_name, valid_key['a']['basic'])
 
 
-def quiet():
-    return get_global(valid_key['q']['basic'])
+def quiet(simulation_name):
+    return get_global(simulation_name, valid_key['q']['basic'])
 
 
-def show_progress():
-    return get_global(valid_key['s']['basic'])
+def show_progress(simulation_name):
+    return get_global(simulation_name, valid_key['s']['basic'])
 
 
-def suppress_repeat_messages():
-    return get_global(valid_key['u']['basic'])
+def suppress_repeat_messages(simulation_name):
+    return get_global(simulation_name, valid_key['u']['basic'])
 
 
-def warn():
-    return get_global(valid_key['w']['basic'])
+def warn(simulation_name):
+    return get_global(simulation_name, valid_key['w']['basic'])
 
 
-def server_info():
-    return settings.HOSTNAME + ':' + str(settings.PORT)
+def server_info(simulation_name):
+    return settings.HOSTNAME + ':' + str(settings.SIMULATION_PORT[simulation_name])
 
 
 valid_key = {
