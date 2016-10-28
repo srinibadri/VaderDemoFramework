@@ -9,7 +9,7 @@ urlpatterns = [
     ## Core Visualizations
     url(r'^map', views.map, name='map'),
     url(r'^console', views.console, name='console'),
-    url(r'^dashboard?<simulation_name>', views.dashboard, name='dashboard'),
+    url(r'^dashboard', views.dashboard, name='dashboard'),
 
     ## Base Pages for Demos
     url(r'^dualmap', views.dualmap, name='dualmap'),
@@ -28,7 +28,7 @@ urlpatterns = [
 
     # API for VOLTAGE AND PV DISAGG demos
     url(r'^api/(?P<simulation_name>[a-zA-Z0-9_]+)/voltage/(?P<region_id>[0-9]+)/(?P<bus_id>[0-9]+)$', views.voltageWarning, name='region_disagg'),
-    url(r'^PVAPI/(?P<region_id>[0-9]+)$', views.disaggregateRegion, name='region_disagg'),
+    url(r'^api/(?P<simulation_name>[a-zA-Z0-9_]+)/pv/(?P<region_id>[0-9]+)$', views.disaggregateRegion, name='region_disagg'),
 
 
     # API for Simulation Elements

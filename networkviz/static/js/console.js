@@ -1,19 +1,22 @@
+
+var simulationList = ["ieee123","ieee123s","ieee123z","ieee123zs"];
+var simulationName = "ieee123";
+
+
 $(document).ready(function(){
 
-    var $simulationName = 'ieee123';
+    var $simulationName = simulationName;
     queryFeeder();
 
     function queryFeeder(){
         $.ajax({
-            "url" : "api/"+simulationName+"feeder",
+            "url" : "api/"+simulationName+"/feeder/",
             "contentType" : "application/json",
             "type" : "GET",
-            "data" : {
-                "simulation_name": $simulationName
-            },
             success: function(data) {
                 $('.feeder-panel').html(data);
-            }
+            },
+            timeout: 3000
         });
     }
 
@@ -30,20 +33,20 @@ $(document).ready(function(){
 
     function querySwitch(){
         $.ajax({
-            "url" : "api/switch",
+            "url" : "api/"+simulationName+"/switch/",
             "contentType" : "application/json",
-            "type" : "GET"
+            "type" : "GET",
+            timeout: 3000
         });
-        console.log("haha");
     }
 
     function queryCapacitor(){
         $.ajax({
-            "url" : "api/capacitor",
+            "url" : "api/"+simulationName+"/capacitor/",
             "contentType" : "application/json",
-            "type" : "GET"
+            "type" : "GET",
+            timeout: 3000
         });
-        console.log("hehe");
     }
 
     function appendSwitch(swList){

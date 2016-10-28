@@ -85,30 +85,29 @@ def dualmap(request):
 
 ### Routes for Apis
 
-def get_live_data(request):
+def get_live_data(request, simulation_name):
     result = ''
     try:
         category = request.GET.get('category')
         name = request.GET.get('name')
-        result = connection.get_property(category, name)
+        result = connection.get_property(simulation_name, category, name)
     except:
         result = ''
     return HttpResponse(result)
 
-def structure(request):
-    return HttpResponse(json.dumps(analyze.analyze_table('ieee123', 'scada', 'capacitor')));
+def structure(request, simulation_name):
+    return HttpResponse(json.dumps(analyze.analyze_table(simulation_name, 'scada', 'capacitor')));
 
-def get_total_power(request):
-    res = helper.get_demand_and_energy_by_time('ieee123')
+def get_total_power(request, simulation_name):
+    res = helper.get_demand_and_energy_by_time(simulation_name)
     converted_res = helper.add_column_name_to_result(res, 'time', 'demand', 'real_power')
     # power_list = helper.select_two_column_from_result(res, 0, 1)
     # demand_list = helper.select_two_column_from_result(res, 0, 2)
     # converted_res = helper.wrapper_lists_and_add_name(['power', 'demand'], power_list, demand_list)
     return HttpResponse(json.dumps(converted_res))
 
-def get_history_data(request):
+def get_history_data(request, simulation_name):
     result = []
-    simulation_name = request.GET.get('simulation_name')
     db = request.GET.get('database')
     database.connect_to_database(simulation_name, db);
     table = request.GET.get('table')
@@ -446,7 +445,7 @@ def query_for_datatable(request, simulation_name):
     for object_item in object_list:
         data.append(object_item)
         if category_name == 'meter' or category_name == 'cap':
-            service_status = connection.get_property(object_item, 'service_status')
+            service_status = connection.get_property(simulation_name, object_item, 'service_status')
             data.append(service_status)
         data_list.append(data)
         data = []

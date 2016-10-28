@@ -1,10 +1,12 @@
+var simulationName = "ieee123";
+
 $(".climate-tab").click(function() {
 
     queryWeather();
 
     function queryWeather() {
         $.ajax({
-            "url": "climate",
+            "url": "api/"+simulationName+"/climate",
             "contentType": "application/json",
             "type": "GET",
             success: function (climate) {
@@ -17,7 +19,8 @@ $(".climate-tab").click(function() {
               console.log("Get Climate Failed");
               console.log(err);
                 // alert("Get climate failed. " + err);
-            }
+            },
+            timeout: 3000
         });
     }
 });

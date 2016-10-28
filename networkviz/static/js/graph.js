@@ -2,13 +2,12 @@ function getHistoryData(dataset, simulation_name, database, table, field, condit
     $.ajax({
         type: 'GET',
         data: {
-            simulation_name: simulation_name,
             database: database,
             table: table,
             field: field,
             condition: condition
         },
-        url: '/vader/getdata/history',
+        url: "/vader/getdata/"+simulationName+"/history",
         dataType: 'json',
         async: false,
         success: function(data) {
@@ -17,7 +16,8 @@ function getHistoryData(dataset, simulation_name, database, table, field, condit
             for (var i = 0, j = 0; i < data.length; i++) {
                 dataset.push({x: j++, y: data[i]});
             }
-        }
+        },
+        timeout: 3000
     });
 }
 
@@ -41,12 +41,13 @@ function getLiveData(category, name) {
             category: category,
             name: name
         },
-        url: '/vader/getdata/live',
+        url: "/vader/getdata/"+simulationName+"/live",
         dataType: 'text',
         async: false,
         success: function(data) {
             result = data.substr(0, data.indexOf(' '));
-        }
+        },
+        timeout: 3000
     });
     return result;
 }
@@ -204,10 +205,10 @@ function graphLiveFormat(name, column, title, style, ylabel, widthAbs, heightAbs
           .attr("class", "y axis")
           .call(yAxis)
         .append("text")
-          .attr("x", (width / 2))             
+          .attr("x", (width / 2))
           .attr("y", 0 - (margin.top / 3))
-          .attr("text-anchor", "middle")  
-          .style("font-size", "16px")  
+          .attr("text-anchor", "middle")
+          .style("font-size", "16px")
           .text(title);
     svg.append("g")
           .attr("class", "y axis")
@@ -219,7 +220,7 @@ function graphLiveFormat(name, column, title, style, ylabel, widthAbs, heightAbs
           .attr("font-size", "10px")
           .style("text-anchor", "end")
           .text(ylabel)
-  
+
 
     svg.selectAll("path")
           .data([dataset])

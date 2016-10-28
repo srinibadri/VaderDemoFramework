@@ -17,8 +17,9 @@ var meterApiEndpoint = "/static/data/cache/meters.json",
     lineApiEndpoint = "/static/data/model2.geo.json",
     feederApiEndpoint = "/static/data/cache/feeder.json";
 
-var sensorApiEndpoint = "/vader/api/sensor/",
-    regionApiEndpoint = "/vader/api/region/";
+var sensorApiEndpoint = "/vader/api/"+simulationName+"/sensor/",
+    regionApiEndpoint = "/vader/api/"+simulationName+"/region/",
+    pvApiEndpoint = "/vader/api/"+simulationName+"/pv/";
 var sensor_list = [];
 
 
@@ -59,11 +60,11 @@ var regions = [{
 
 
 //
-// var meterApiEndpoint = "/vader/api/meter/\*",
-//     switchApiEndpoint = "/vader/api/switch/\*",
-//     loadApiEndpoint = "/vader/api/load/\*",
-//     nodeApiEndpoint = "/vader/api/node/\*",
-//     feederApiEndpoint = "/vader/api/feeder/\*";
+// var meterApiEndpoint = "/vader/api/"+simulationName+"/meter/\*",
+//     switchApiEndpoint = "/vader/api/"+simulationName+"/switch/\*",
+//     loadApiEndpoint = "/vader/api/"+simulationName+"/load/\*",
+//     nodeApiEndpoint = "/vader/api/"+simulationName+"/node/\*",
+//     feederApiEndpoint = "/vader/api/"+simulationName+"/feeder/\*";
 
 //---- Styles
 var myStyle = {
@@ -360,13 +361,14 @@ console.log("Done, but waiting on web requests");
 function drawGraphInitial() {
         $.ajax({
             type: 'GET',
-            url: 'PVAPI/1',
+            url: pvApiEndpoint+'1',
             dataType: 'json',
             success: function (data) {
                         $.each(JSON.parse(data), function(key,value) {
                         drawChart(value,key);
                     });
-            }
+            },
+            timeout: 3000
         });
       }
 
@@ -463,7 +465,7 @@ function clickDrawGraph(e) {
         var layer = e.target;
         $.ajax({
             type: 'GET',
-            url: 'PVAPI/'+layer.feature.properties.region,
+            url: pvApiEndpoint+layer.feature.properties.region,
             dataType: 'json',
             success: function (data) {
                         $.each(JSON.parse(data), function(key,value) {
@@ -471,7 +473,8 @@ function clickDrawGraph(e) {
                     });
                 //console.log(data); // do anything you want with your parsed data
                       // for(var i=0; i<2; i++){
-            }
+            },
+            timeout: 3000
         });
       //window.location.href = '/vader/PVDisagg/'+feature.properties.region
       }

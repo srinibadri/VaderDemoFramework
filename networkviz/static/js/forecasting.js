@@ -7,6 +7,9 @@ var maps = [];
 var center = [35.38781, -118.99631];
 var zoom = 15.5;
 
+var simulationList = ["ieee123","ieee123s","ieee123z","ieee123zs"];
+var simulationName = "ieee123";
+
 
 //---- Data and API
 var meterApiEndpoint = "/static/data/cache/meters.json",
@@ -17,8 +20,8 @@ var meterApiEndpoint = "/static/data/cache/meters.json",
     lineApiEndpoint = "/static/data/model2.geo.json",
     feederApiEndpoint = "/static/data/cache/feeder.json";
 
-var sensorApiEndpoint = "/vader/api/sensor/",
-    regionApiEndpoint = "/vader/api/region/";
+var sensorApiEndpoint = "/vader/api/"+simulationName+"/sensor/",
+    regionApiEndpoint = "/vader/api/"+simulationName+"/region/";
 var sensor_list = [];
 
 
@@ -59,11 +62,11 @@ var regions = [{
 
 
 //
-// var meterApiEndpoint = "/vader/api/meter/\*",
-//     switchApiEndpoint = "/vader/api/switch/\*",
-//     loadApiEndpoint = "/vader/api/load/\*",
-//     nodeApiEndpoint = "/vader/api/node/\*",
-//     feederApiEndpoint = "/vader/api/feeder/\*";
+// var meterApiEndpoint = "/vader/api/"+simulationName+"/meter/\*",
+//     switchApiEndpoint = "/vader/api/"+simulationName+"/switch/\*",
+//     loadApiEndpoint = "/vader/api/"+simulationName+"/load/\*",
+//     nodeApiEndpoint = "/vader/api/"+simulationName+"/node/\*",
+//     feederApiEndpoint = "/vader/api/"+simulationName+"/feeder/\*";
 
 //---- Styles
 var myStyle = {
@@ -198,7 +201,6 @@ console.log("Maps Finished");
 
 L.Control.Watermark = L.Control.extend({
     onAdd: function(map) {
-      console.log("Testing");
         var img = L.DomUtil.create('img');
         img.src = '/static/images/logo-slac.png';
         img.style.width = '200px';
@@ -212,7 +214,6 @@ L.Control.Watermark = L.Control.extend({
 });
 
 L.control.watermark = function(opts) {
-  console.log("Testing");
     return new L.Control.Watermark(opts);
 }
 // Add to first map only
@@ -282,7 +283,6 @@ maps.forEach(function(map_obj){
 
   // Add each of the desired layers
   console.log("Overlay meters")
-  console.log(map_obj.overlay["Meters"])
   populateLayer(switchApiEndpoint, (map_obj.overlay["Switches"]), switchIcon, "switch", priority=2);
   populateLayer(meterApiEndpoint, (map_obj.overlay["Meters"]), meterIcon, "meter", priority=1);
   populateLayer(nodeApiEndpoint, (map_obj.overlay["Nodes"]), nodeIcon, "node");
@@ -436,7 +436,6 @@ function showGraphs(meter, date_time, predict_range, algorithm) {
     mape_list[index+1] = ["Hour " +index+"",Math.abs(diff / truth[index][1])];
     rms_list[index+1] = ["Hour " +index+"",Math.pow(diff,2)];
   }
-  console.log(rms_list);
 
   data = google.visualization.arrayToDataTable(mape_list);
   var options = {
@@ -526,7 +525,6 @@ function showGraphsDaily(meter, date, predict_range, algorithm) {
   for (index = 0; index < trueFiltered.length; index += 1) {
     diff = (predictFiltered[index][1] - trueFiltered[index][1]);
     difference[index] = [index,diff];
-    console.log(mape_runner + ", " + rms_runner + " " + diff);
     mape_runner += diff / trueFiltered[index][1];
     rms_runner += Math.pow(diff,2);
     mape_list[index+1] = ["Hour " +index+"",Math.abs(diff / trueFiltered[index][1])];
@@ -536,7 +534,6 @@ function showGraphsDaily(meter, date, predict_range, algorithm) {
   mape = (mape_runner * 100) /  trueFiltered.length;
   rms2 = rms_runner / trueFiltered.length;
   rms = Math.sqrt(rms2);
-  console.log(mape_list);
 
   data = google.visualization.arrayToDataTable(mape_list);
   var options = {
@@ -687,7 +684,8 @@ $( function() {
             // console.log(data);
             temperature = $.csv.toObjects(data);
             // console.log(temperature);
-          }
+          },
+          timeout: 3000
        });
    $.ajax({
            type: "GET",
@@ -714,7 +712,8 @@ $( function() {
             //   });
             //  trueValues = $.csv.toArrays(data);
              // console.log(temperature);
-           }
+           },
+           timeout: 3000
         });
     // Load all the data
     setTimeout(function (){
@@ -758,7 +757,8 @@ $( function() {
                     if(algo=="OLS" && hour == 1) {
                       updateGraphs();
                     }
-                  }
+                  },
+                  timeout: 3000
                });
         })
       });
@@ -840,7 +840,7 @@ $( function() {
 //     $( "#tags" ).val('4').selectmenu({
 //       source: availableTags
 //     });
-    // $.getJSON( "api/meter/", function(data) {
+    // $.getJSON( "api/"+simulationName+"/meter/", function(data) {
     //   availableTags = data;
     //   $( "#tags" ).autocomplete({
     //     source: availableTags
@@ -934,9 +934,9 @@ $('.custom-handle').html("10:00 AM");
 
 
 
-function onEachFeature(feature, layer) {
-  console.console.log("On Each Feature " +feature);
-}
+// function onEachFeature(feature, layer) {
+//   console.log("On Each Feature " +feature);
+// }
 
 
 // var geojson;
@@ -1014,7 +1014,8 @@ function clickDrawGraph(e) {
                     });
                 //console.log(data); // do anything you want with your parsed data
                       // for(var i=0; i<2; i++){
-            }
+            },
+            timeout: 3000
         });
       //window.location.href = '/vader/PVDisagg/'+feature.properties.region
       }

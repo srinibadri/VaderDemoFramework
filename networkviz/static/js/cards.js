@@ -7,12 +7,9 @@ $(document).ready(function(){
     function queryCards($simulationName){
         console.log("query for cards");
         $.ajax({
-            "url" : "cards",
+            "url" : "getdata/"+simulationName+"/cards",
             "contentType" : "application/json",
             "type" : "GET",
-            "data" : {
-                "simulation_name": $simulationName
-            },
             success: function(cardData){
                 console.log($simulationName + "ss");
                 //var $cardDataJson = $.parseJSON(cardData);
@@ -26,7 +23,8 @@ $(document).ready(function(){
             },
             error: function(err){
                 console.log("Get cards data failed. " + err);
-            }
+            },
+            timeout: 3000
         });
     }
 });

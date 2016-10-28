@@ -7,6 +7,9 @@ var maps = [];
 var center = [35.38781, -118.99631];
 var zoom = 15.5;
 
+var simulationList = ["ieee123","ieee123s","ieee123z","ieee123zs"];
+var simulationName = "ieee123";
+
 
 //---- Data and API
 var meterApiEndpoint = "/static/data/cache/meters.json",
@@ -17,8 +20,9 @@ var meterApiEndpoint = "/static/data/cache/meters.json",
     lineApiEndpoint = "/static/data/model2.geo.json",
     feederApiEndpoint = "/static/data/cache/feeder.json";
 
-var sensorApiEndpoint = "/vader/api/sensor/",
-    regionApiEndpoint = "/vader/api/region/";
+var sensorApiEndpoint = "/vader/api/"+simulationName+"/sensor/",
+    regionApiEndpoint = "/vader/api/"+simulationName+"/region/",
+    volatageApiEndpoint = "/vader/api/"+simulationName+"/voltage/";
 var sensor_list = [];
 
 
@@ -59,11 +63,11 @@ var regions = [{
 
 
 //
-// var meterApiEndpoint = "/vader/api/meter/\*",
-//     switchApiEndpoint = "/vader/api/switch/\*",
-//     loadApiEndpoint = "/vader/api/load/\*",
-//     nodeApiEndpoint = "/vader/api/node/\*",
-//     feederApiEndpoint = "/vader/api/feeder/\*";
+// var meterApiEndpoint = "/vader/api/"+simulationName+"/meter/\*",
+//     switchApiEndpoint = "/vader/api/"+simulationName+"/switch/\*",
+//     loadApiEndpoint = "/vader/api/"+simulationName+"/load/\*",
+//     nodeApiEndpoint = "/vader/api/"+simulationName+"/node/\*",
+//     feederApiEndpoint = "/vader/api/"+simulationName+"/feeder/\*";
 
 //---- Styles
 var myStyle = {
@@ -197,7 +201,6 @@ console.log("Maps Finished");
 
 L.Control.Watermark = L.Control.extend({
     onAdd: function(map) {
-      console.log("Testing");
         var img = L.DomUtil.create('img');
         img.src = '/static/images/logo-slac.png';
         img.style.width = '200px';
@@ -211,7 +214,6 @@ L.Control.Watermark = L.Control.extend({
 });
 
 L.control.watermark = function(opts) {
-  console.log("Testing");
     return new L.Control.Watermark(opts);
 }
 // Add to first map only
@@ -258,7 +260,7 @@ maps.forEach(function(map_obj){
     sensor_list = sensorData;
     sensor_layers = [];
     sensor_layers_names = [];
-    console.log(sensor_list);
+    // console.log(sensor_list);
 
     // Then get the list of lines
     $.getJSON( lineApiEndpoint, function(geo_json_data) {
@@ -315,7 +317,7 @@ maps.forEach(function(map_obj){
 
   // Add each of the desired layers
   console.log("Overlay meters")
-  console.log(map_obj.overlay["Meters"])
+  // console.log(map_obj.overlay["Meters"])
   populateLayer(switchApiEndpoint, (map_obj.overlay["Switches"]), switchIcon, "switch", priority=2);
   populateLayer(meterApiEndpoint, (map_obj.overlay["Meters"]), meterIcon, "meter", priority=1);
   populateLayer(nodeApiEndpoint, (map_obj.overlay["Nodes"]), nodeIcon, "node");
@@ -375,7 +377,7 @@ console.log("Done, but waiting on web requests");
 function initialDrawGraph(e) {
         $.ajax({
             type: 'GET',
-            url: 'VoltageAPI/'+1+"/7",
+            url: volatageApiEndpoint+1+"/7",
             dataType: 'json',
             success: function (data) {
                         $.each(JSON.parse(data), function(key,value) {
@@ -387,15 +389,15 @@ function initialDrawGraph(e) {
 
 
 
-
-function onEachFeature(feature, layer) {
-  console.console.log("On Each Feature " +feature);
-}
+//
+// function onEachFeature(feature, layer) {
+//   console.log("On Each Feature " +feature);
+// }
 
 
 var geojson;
 function populateRegions(region_geo_json, layerGroup) {
-  console.log("Populate" + region_geo_json);
+  // console.log("Populate" + region_geo_json);
   geojson=L.geoJSON(region_geo_json, {
       style: function(feature) {
           switch (feature.properties.region) {
@@ -463,10 +465,10 @@ function clickDrawGraph(e) {
         var layer = e.target;
         $.ajax({
             type: 'GET',
-            url: 'VoltageAPI/'+layer.feature.properties.region+"/7",
+            url: volatageApiEndpoint+layer.feature.properties.region+"/7",
             dataType: 'json',
             success: function (data) {
-              console.log(data);
+              // console.log(data);
                         $.each(JSON.parse(data), function(key,value) {
                         drawChart(value,key);
                     });

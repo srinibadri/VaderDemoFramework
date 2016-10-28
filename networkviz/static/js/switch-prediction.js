@@ -7,6 +7,9 @@ var maps = [];
 var center = [35.38781, -118.99631];
 var zoom = 15.5;
 
+var simulationList = ["ieee123","ieee123s","ieee123z","ieee123zs"];
+var simulationName = "ieee123";
+
 
 //---- Data and API
 var meterApiEndpoint = "/static/data/cache/meters.json",
@@ -18,9 +21,9 @@ var meterApiEndpoint = "/static/data/cache/meters.json",
     substationApiEndpoint = "/static/data/cache/substations.json";
 
 var switchConfigFileEndpoint = "/static/data/switch_data/";
-// var switchConfigFileEndpoint = "/vader/api/switch/state/";
-var sensorApiEndpoint = "/vader/api/sensor/",
-    regionApiEndpoint = "/vader/api/region/";
+// var switchConfigFileEndpoint = "/vader/api/"+simulationName+"/switch/state/";
+var sensorApiEndpoint = "/vader/api/"+simulationName+"/sensor/",
+    regionApiEndpoint = "/vader/api/"+simulationName+"/region/";
 var sensor_list = [];
 
 var ignoreList = ["sw61to6101", "node_6101", "line60to61", "node_610", "node_61"];
@@ -41,11 +44,11 @@ var switchConfigs = [{},{},{},{},{},{},{},{},{}];
 var currentConfig = 0;
 var currentTime = 0;
 //
-// var meterApiEndpoint = "/vader/api/meter/\*",
-//     switchApiEndpoint = "/vader/api/switch/\*",
-//     loadApiEndpoint = "/vader/api/load/\*",
-//     nodeApiEndpoint = "/vader/api/node/\*",
-//     feederApiEndpoint = "/vader/api/feeder/\*";
+// var meterApiEndpoint = "/vader/api/"+simulationName+"/meter/\*",
+//     switchApiEndpoint = "/vader/api/"+simulationName+"/switch/\*",
+//     loadApiEndpoint = "/vader/api/"+simulationName+"/load/\*",
+//     nodeApiEndpoint = "/vader/api/"+simulationName+"/node/\*",
+//     feederApiEndpoint = "/vader/api/"+simulationName+"/feeder/\*";
 
 //---- Styles
 var myStyle = {
@@ -358,7 +361,7 @@ function pop_up(e) {
   temp = e;
   e.popup.setContent("Loading...").update();
 
-  $.getJSON( "/vader/api/"+element_details['type']+"/"+element_details['name']+"", function(data) {
+  $.getJSON( "/vader/api/"+simulationName+"/"+element_details['type']+"/"+element_details['name']+"", function(data) {
     e.popup.setContent(JSON.stringify(data['name'])).update();
   });
 

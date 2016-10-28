@@ -33,15 +33,14 @@ $(document).ready(function(){
 
     function queryDataTable($categoryName, $simulationName){
         $.ajax({
-            "url" : "/vader/datatable",
+            "url" : "/vader/getdata/"+simulationName+"/datatable",
             "contentType" : "application/json",
             "type" : "GET",
             "data" : {
-                "simulation_name": $simulationName,
                 "category": $categoryName
             },
             success : function(data){
-                console.log(data);
+                // console.log(data);
                 if($categoryName == 'meter') {
                     for (var i = 0; i < data.length; i++) {
                         data[i].push(buildGraphIcon($categoryName, data[i][0], 'Demand'));
@@ -64,7 +63,7 @@ $(document).ready(function(){
                         });
                 }
                 else if($categoryName == 'cap'){
-                    console.log(data);
+                    // console.log(data);
                     for (i = 0; i < data.length; i++) {
                         data[i].push(buildGraphIcon($categoryName, data[i][0], 'Voltage A'));
                         data[i].push(buildGraphIcon($categoryName, data[i][0], 'Voltage B'));
@@ -86,7 +85,7 @@ $(document).ready(function(){
                         });
                 }
                 else{
-                    console.log(data);
+                    // console.log(data);
                     for (i = 0; i < data.length; i++) {
                         var $icon = buildGraphIcon($categoryName, data[i][0]);
                         data[i].push(buildGraphIcon($categoryName, data[i][0], 'Voltage'));
@@ -113,7 +112,8 @@ $(document).ready(function(){
             error : function(err) {
               console.log("ERROR No Data Found");
                 // alert(err);
-            }
+            },
+            timeout: 8000
         });
     }
 });

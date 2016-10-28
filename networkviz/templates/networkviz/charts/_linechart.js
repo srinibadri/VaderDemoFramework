@@ -1,12 +1,13 @@
 <!-- Flot -->
 <script>
+simulationName = "ieee123";
 $(document).ready(function() {
     var supply = [], demand = [];
     var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
     $.ajax({
         type: 'GET',
         data: {},
-        url: '/vader/getdata/total-power',
+        url: '/vader/getdata/'+simulationName+'/total-power',
         dataType: 'json',
         async: false,
         success: function(data) {
@@ -14,7 +15,8 @@ $(document).ready(function() {
                 supply.push({x: parseDate(data[i].time), y: data[i].real_power/1000});
                 demand.push({x: parseDate(data[i].time), y: data[i].demand/1000})
             }
-        }
+        },
+        timeout: 3000
     });
 
     ylabel = 'power(kW)'
