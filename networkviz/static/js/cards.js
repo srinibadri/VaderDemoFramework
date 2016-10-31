@@ -7,16 +7,16 @@ $(document).ready(function(){
     function queryCards($simulationName){
         console.log("query for cards");
         $.ajax({
-            "url" : "getdata/"+simulationName+"/cards",
+            "url" : "/vader/getdata/" + $simulationName + "/cards",
             "contentType" : "application/json",
             "type" : "GET",
             success: function(cardData){
-                console.log($simulationName + "ss");
-                //var $cardDataJson = $.parseJSON(cardData);
-                var $totalLoads = cardData.load;
-                var $totalHouses = cardData.house;
-                var $totalNodes = cardData.node;
-                console.log($totalHouses);
+                console.log(cardData);
+                var $cardDataJson = cardData;
+                var $totalLoads = $cardDataJson.load;
+                var $totalHouses = $cardDataJson.house;
+                var $totalNodes = $cardDataJson.node;
+                console.log($totalHouses,$totalLoads,$totalNodes);
                 $('.total-load').text($totalLoads);
                 $('.total-house').text($totalHouses);
                 $('.total-node').text($totalNodes);

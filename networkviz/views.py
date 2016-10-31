@@ -449,7 +449,6 @@ def query_for_datatable(request, simulation_name):
             data.append(service_status)
         data_list.append(data)
         data = []
-    print data_list
     return HttpResponse(json.dumps(data_list), content_type="application/json")
 
 
@@ -466,7 +465,5 @@ def query_for_climate(request, simulation_name):
 
 
 def query_for_cards(request, simulation_name):
-    print request
     object_dictionary = helper.convert_dictionary_to_json(analyze.categorize_object_amount(simulation_name))
-    print object_dictionary
-    return JsonResponse(object_dictionary, safe=False)
+    return HttpResponse(object_dictionary, content_type="application/json")
