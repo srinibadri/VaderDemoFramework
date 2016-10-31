@@ -1,54 +1,32 @@
 $(document).ready(function(){
 
     var $simulationName = 'ieee123';
-
-    // Get "meter" when page is rendered default
-    queryDataTable("sensor", $simulationName);
-
-    $('.table-tab').click(function () {
-        $('.nav-tabs').children().removeClass("active");
-        $(this).parent().addClass("active");
-
-        // "meter" "capacitor" "sensor" are available
-        var $categoryName = $(this).text().toLowerCase();
-        if($categoryName == 'capacitor'){
-            $categoryName = 'cap';
-        }
-        console.log("Open " + $categoryName + " table");
-        queryDataTable($categoryName, $simulationName);
+    
+    $('.dataTable').each(function(){
+        var $tableId = $(this).attr('id');
+        queryDataTable($tableId, $simulationName);
     });
-
-    function buildGraphIcon(categoryName, itemName, colName){
-        var icon = '<div class="col-md-6">';
-        icon += '<a onclick="graphHistory(\''+categoryName + '\', \'' + itemName + '\', \'' + colName + '\')" data-toggle="modal" data-target="#graph">';
-        icon += '<i class="fa fa-history graph-icon" aria-hidden="true"></i></a>';
-        icon += '</div>';
-
-        icon += '<div class="col-md-6">';
-        icon += '<a onclick="graphLive(\'' + itemName + '\', \'' + colName + '\')" data-toggle="modal" data-target="#graph">';
-        icon += '<i class="fa fa-line-chart graph-icon" aria-hidden="true"></i></a>';
-        icon += '</div>';
-        return icon;
-    }
 
     function queryDataTable($categoryName, $simulationName){
         $.ajax({
-            "url" : "/vader/getdata/"+simulationName+"/datatable",
+            "url" : "/vader/getdata/"+$simulationName+"/datatable",
             "contentType" : "application/json",
             "type" : "GET",
             "data" : {
                 "category": $categoryName
             },
             success : function(data){
-                // console.log(data);
+                // var $tableId = $categoryName + '-table';
+                console.log($categoryName);
                 if($categoryName == 'meter') {
+                    console.log($categoryName);
                     for (var i = 0; i < data.length; i++) {
                         data[i].push(buildGraphIcon($categoryName, data[i][0], 'Demand'));
                         data[i].push(buildGraphIcon($categoryName, data[i][0], 'Energy'));
                         data[i].push(buildGraphIcon($categoryName, data[i][0], 'Voltage 1'));
                         data[i].push(buildGraphIcon($categoryName, data[i][0], 'Voltage 2'));
                     }
-                    $('#meter-table').DataTable(
+                    $('#' + $categoryName).DataTable(
                         {
                             destroy: true,
                             "columns": [
@@ -63,14 +41,14 @@ $(document).ready(function(){
                         });
                 }
                 else if($categoryName == 'cap'){
-                    // console.log(data);
+                    console.log($categoryName);
                     for (i = 0; i < data.length; i++) {
                         data[i].push(buildGraphIcon($categoryName, data[i][0], 'Voltage A'));
                         data[i].push(buildGraphIcon($categoryName, data[i][0], 'Voltage B'));
                         data[i].push(buildGraphIcon($categoryName, data[i][0], 'Voltage C'));
                         data[i].push(buildGraphIcon($categoryName, data[i][0], 'Voltage C'));
                     }
-                    $('#meter-table').DataTable(
+                    $('#' + $categoryName).DataTable(
                         {
                             destroy: true,
                             "columns": [
@@ -85,16 +63,15 @@ $(document).ready(function(){
                         });
                 }
                 else{
-                    // console.log(data);
+                    console.log($categoryName);
                     for (i = 0; i < data.length; i++) {
-                        var $icon = buildGraphIcon($categoryName, data[i][0]);
                         data[i].push(buildGraphIcon($categoryName, data[i][0], 'Voltage'));
                         data[i].push(buildGraphIcon($categoryName, data[i][0], 'Current'));
                         data[i].push(buildGraphIcon($categoryName, data[i][0], 'Power'));
                         data[i].push(buildGraphIcon($categoryName, data[i][0], 'Power'));
                         data[i].push(buildGraphIcon($categoryName, data[i][0], 'Power'));
                     }
-                    $('#meter-table').DataTable(
+                    $('#' + $categoryName).DataTable(
                         {
                             destroy: true,
                             "columns": [
@@ -115,5 +92,18 @@ $(document).ready(function(){
             },
             timeout: 8000
         });
+    }
+
+    function buildGraphIcon(categoryName, itemName, colName){
+        var icon = '<div class="col-md-6">';
+        icon += '<a onclick="graphHistory(\''+categoryName + '\', \'' + itemName + '\', \'' + colName + '\')" data-toggle="modal" data-target="#graph">';
+        icon += '<i class="fa fa-history graph-icon" aria-hidden="true"></i></a>';
+        icon += '</div>';
+
+        icon += '<div class="col-md-6">';
+        icon += '<a onclick="graphLive(\'' + itemName + '\', \'' + colName + '\')" data-toggle="modal" data-target="#graph">';
+        icon += '<i class="fa fa-line-chart graph-icon" aria-hidden="true"></i></a>';
+        icon += '</div>';
+        return icon;
     }
 });

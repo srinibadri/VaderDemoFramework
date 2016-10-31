@@ -49,7 +49,19 @@
                 <!-- Data table -->
                 <div class="row">
                     <div class="col-md-12">
-                        {% include "vader/meter-table.html" %}
+                        {% include "vader/meter-table.html" with field="meter" only %}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        {% include "vader/meter-table.html" with field="cap" only %}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        {% include "vader/meter-table.html" with field="sensor" only %}
                     </div>
                 </div>
             </div>
