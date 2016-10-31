@@ -1,7 +1,7 @@
 $(document).ready(function(){
 
     var $simulationName = 'ieee123';
-    
+
     $('.dataTable').each(function(){
         var $tableId = $(this).attr('id');
         queryDataTable($tableId, $simulationName);
@@ -16,7 +16,6 @@ $(document).ready(function(){
                 "category": $categoryName
             },
             success : function(data){
-                // var $tableId = $categoryName + '-table';
                 console.log($categoryName);
                 if($categoryName == 'meter') {
                     console.log($categoryName);
@@ -41,7 +40,6 @@ $(document).ready(function(){
                         });
                 }
                 else if($categoryName == 'cap'){
-                    console.log($categoryName);
                     for (i = 0; i < data.length; i++) {
                         data[i].push(buildGraphIcon($categoryName, data[i][0], 'Voltage A'));
                         data[i].push(buildGraphIcon($categoryName, data[i][0], 'Voltage B'));
@@ -63,7 +61,6 @@ $(document).ready(function(){
                         });
                 }
                 else{
-                    console.log($categoryName);
                     for (i = 0; i < data.length; i++) {
                         data[i].push(buildGraphIcon($categoryName, data[i][0], 'Voltage'));
                         data[i].push(buildGraphIcon($categoryName, data[i][0], 'Current'));
@@ -87,8 +84,7 @@ $(document).ready(function(){
                 }
             },
             error : function(err) {
-              console.log("ERROR No Data Found");
-                // alert(err);
+              console.log("ERROR No Data Found " + err);
             },
             timeout: 8000
         });
