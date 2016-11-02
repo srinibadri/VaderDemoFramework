@@ -1,10 +1,8 @@
 $(document).ready(function(){
 
-    var $simulationName = 'ieee123';
+    queryCards();
 
-    queryCards($simulationName);
-
-    function queryCards($simulationName){
+    function queryCards(){
         console.log("query for cards");
         $.ajax({
             "url" : "/vader/getdata/" + $simulationName + "/cards",

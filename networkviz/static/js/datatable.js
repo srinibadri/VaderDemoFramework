@@ -1,15 +1,13 @@
 $(document).ready(function(){
-
-    var $simulationName = 'ieee123';
-
+    
     $('.dataTable').each(function(){
         var $tableId = $(this).attr('id');
-        queryDataTable($tableId, $simulationName);
+        queryDataTable($tableId);
     });
 
-    function queryDataTable($categoryName, $simulationName){
+    function queryDataTable($categoryName){
         $.ajax({
-            "url" : "/vader/getdata/"+$simulationName+"/datatable",
+            "url" : "/vader/getdata/" + $simulationName + "/datatable",
             "contentType" : "application/json",
             "type" : "GET",
             "data" : {

@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import *
 
 from . import views
 
@@ -7,9 +7,9 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
 
     ## Core Visualizations
-    url(r'^map', views.map, name='map'),
-    url(r'^console', views.console, name='console'),
-    url(r'^dashboard', views.dashboard, name='dashboard'),
+    url(r'^dashboard/(?P<simulation_name>[a-zA-Z0-9_]+)/$', views.dashboard, name='dashboard'),
+    url(r'^map/(?P<simulation_name>[a-zA-Z0-9_]+)/$', views.map, name='map'),
+    url(r'^console/(?P<simulation_name>[a-zA-Z0-9_]+)/$', views.console, name='console'),
 
     ## Base Pages for Demos
     url(r'^dualmap', views.dualmap, name='dualmap'),

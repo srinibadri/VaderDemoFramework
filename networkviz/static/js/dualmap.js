@@ -7,8 +7,7 @@ var maps = [];
 var center = [35.38781, -118.99631];
 var zoom = 15.5;
 
-var simulationList = ["ieee123","ieee123s","ieee123z","ieee123zs"];
-var simulationName = "ieee123";
+var $simulationName = "ieee123";
 
 
 //---- Data and API
@@ -20,17 +19,17 @@ var meterApiEndpoint = "/static/data/cache/meters.json",
     lineApiEndpoint = "/static/data/model2.geo.json",
     feederApiEndpoint = "/static/data/cache/feeder.json";
 
-var sensorApiEndpoint = "/vader/api/"+simulationName+"/sensor/",
-    regionApiEndpoint = "/vader/api/"+simulationName+"/region/";
+var sensorApiEndpoint = "/vader/api/"+$simulationName+"/sensor/",
+    regionApiEndpoint = "/vader/api/"+$simulationName+"/region/";
     var sensor_list = [];
 
 
 //
-// var meterApiEndpoint = "/vader/api/"+simulationName+"/meter/\*",
-//     switchApiEndpoint = "/vader/api/"+simulationName+"/switch/\*",
-//     loadApiEndpoint = "/vader/api/"+simulationName+"/load/\*",
-//     nodeApiEndpoint = "/vader/api/"+simulationName+"/node/\*",
-//     feederApiEndpoint = "/vader/api/"+simulationName+"/feeder/\*";
+// var meterApiEndpoint = "/vader/api/"+$simulationName+"/meter/\*",
+//     switchApiEndpoint = "/vader/api/"+$simulationName+"/switch/\*",
+//     loadApiEndpoint = "/vader/api/"+$simulationName+"/load/\*",
+//     nodeApiEndpoint = "/vader/api/"+$simulationName+"/node/\*",
+//     feederApiEndpoint = "/vader/api/"+$simulationName+"/feeder/\*";
 
 //---- Styles
 var myStyle = {
@@ -284,7 +283,7 @@ function pop_up(e) {
   temp = e;
   e.popup.setContent("Loading...").update();
 
-  $.getJSON( "/vader/api/"+simulationName+"/"+element_details['type']+"/"+element_details['name']+"", function(data) {
+  $.getJSON( "/vader/api/"+$simulationName+"/"+element_details['type']+"/"+element_details['name']+"", function(data) {
     e.popup.setContent(JSON.stringify(data['name'])).update();
   });
 

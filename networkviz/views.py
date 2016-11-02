@@ -13,27 +13,41 @@ import datetime
 from vaderviz.settings import PICKLE_FOLDER
 import numpy as np
 import json
+from django.shortcuts import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 
-# Create your views here.
 
 ### Routes for Core Pages
 
+
 def index(request):
-    return render(request,'landing.html')
+    return render(request, 'landing.html')
 
-def dashboard(request):
+
+def dashboard(request, simulation_name):
+    simulation_list = ['ieee123', 'ieee123s', 'ieee123z', 'ieee123zs']
+    context = {
+                "simulation_name": simulation_name,
+                "simulation_list": simulation_list
+               }
     template = loader.get_template('vader/board.html')
-    context = {}
+    # return HttpResponseRedirect(reverse('dashboard'), args=[simulation_name])
     return HttpResponse(template.render(context, request))
 
-def console(request):
+
+def console(request, simulation_name):
+    if simulation_name is "":
+        simulation_name = "ieee123"
+    context = {"simulation_name": simulation_name}
     template = loader.get_template('vader/console.html')
-    context = {}
     return HttpResponse(template.render(context, request))
 
-def map(request):
+
+def map(request, simulation_name):
+    if simulation_name is "":
+        simulation_name = "ieee123"
+    context = {"simulation_name": simulation_name}
     template = loader.get_template('vader/map.html')
-    context = {}
     return HttpResponse(template.render(context, request))
 
 
@@ -442,6 +456,7 @@ def query_for_datatable(request, simulation_name):
     object_list = analyze.get_object_list(simulation_name, category_name)
     data = []
     data_list = []
+    print object_list
     for object_item in object_list:
         data.append(object_item)
         if category_name == 'meter' or category_name == 'cap':
@@ -461,6 +476,7 @@ def query_for_feeder(request, simulation_name):
 
 def query_for_climate(request, simulation_name):
     climate_json = climate.query_climate(simulation_name)
+    print climate_json
     return HttpResponse(climate_json, content_type="application/json")
 
 

@@ -17,9 +17,9 @@ var meterApiEndpoint = "/static/data/cache/meters.json",
     lineApiEndpoint = "/static/data/model2.geo.json",
     feederApiEndpoint = "/static/data/cache/feeder.json";
 
-var sensorApiEndpoint = "/vader/api/"+simulationName+"/sensor/",
-    regionApiEndpoint = "/vader/api/"+simulationName+"/region/",
-    pvApiEndpoint = "/vader/api/"+simulationName+"/pv/";
+var sensorApiEndpoint = "/vader/api/"+$simulationName+"/sensor/",
+    regionApiEndpoint = "/vader/api/"+$simulationName+"/region/",
+    pvApiEndpoint = "/vader/api/"+$simulationName+"/pv/";
 var sensor_list = [];
 
 
@@ -60,11 +60,11 @@ var regions = [{
 
 
 //
-// var meterApiEndpoint = "/vader/api/"+simulationName+"/meter/\*",
-//     switchApiEndpoint = "/vader/api/"+simulationName+"/switch/\*",
-//     loadApiEndpoint = "/vader/api/"+simulationName+"/load/\*",
-//     nodeApiEndpoint = "/vader/api/"+simulationName+"/node/\*",
-//     feederApiEndpoint = "/vader/api/"+simulationName+"/feeder/\*";
+// var meterApiEndpoint = "/vader/api/"+$simulationName+"/meter/\*",
+//     switchApiEndpoint = "/vader/api/"+$simulationName+"/switch/\*",
+//     loadApiEndpoint = "/vader/api/"+$simulationName+"/load/\*",
+//     nodeApiEndpoint = "/vader/api/"+$simulationName+"/node/\*",
+//     feederApiEndpoint = "/vader/api/"+$simulationName+"/feeder/\*";
 
 //---- Styles
 var myStyle = {

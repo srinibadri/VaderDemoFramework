@@ -1,14 +1,13 @@
-var simulationName = "ieee123";
-
 $(".climate-tab").click(function() {
 
     queryWeather();
 
     function queryWeather() {
+        console.log($simulationName);
         $.ajax({
-            "url": "api/"+simulationName+"/climate",
-            "contentType": "application/json",
-            "type": "GET",
+            url: '/vader/api/' + $simulationName + '/climate',
+            contentType: "application/json",
+            type: "GET",
             success: function (climate) {
                 $.each(climate,function(item) {
                     var idName = '#climate-' + item;
@@ -18,7 +17,6 @@ $(".climate-tab").click(function() {
             error: function(err){
               console.log("Get Climate Failed");
               console.log(err);
-                // alert("Get climate failed. " + err);
             },
             timeout: 3000
         });

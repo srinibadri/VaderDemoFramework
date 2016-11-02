@@ -4,14 +4,14 @@
 <!-- Collect the nav links, forms, and other content for toggling -->
             <ul class="nav navbar-nav navbar-left">
                 <li>
-                    <a href="{% url 'dashboard' %}"><span class="fa fa-bar-chart"></span> Dashboard</a>
+                    <a href="{% url 'dashboard' simulation_name %}"><span class="fa fa-bar-chart"></span> Dashboard</a>
                 </li>
 
                 <li>
-                    <a href="{% url 'map' %}"><span class="fa fa-map-marker"></span> Map</a>
+                    <a href="{% url 'map' simulation_name %}"><span class="fa fa-map-marker"></span> Map</a>
                 </li>
                 <li>
-                    <a href="{% url 'console' %}"><span class="fa fa-desktop"></span> Console</a>
+                    <a href="{% url 'console' simulation_name %}"><span class="fa fa-desktop"></span> Console</a>
                 </li>
                 <li>
                     {% include "vader/_climate.html" %}

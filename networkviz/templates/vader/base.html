@@ -15,10 +15,13 @@
 
 <body>
     {% block content %}{% endblock %}
-    <script src="{% static 'js/libraries/jquery.min.js' %} "></script>
-    <script src="{% static 'js/libraries/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/libraries/leaflet.js' %}"></script>
-    <script src="{% static 'js/climate.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/libraries/jquery.min.js' %} "></script>
+    <script type="text/javascript" src="{% static 'js/libraries/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/libraries/leaflet.js' %}"></script>
+
+    <!-- Initial function -->
+    <script type="text/javascript" src="{% static 'js/init.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/climate.js' %}"></script>
     {% block script %}{% endblock %}
 </body>
 </html>
