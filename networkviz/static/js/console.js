@@ -3,8 +3,9 @@ $(document).ready(function(){
     queryFeeder();
 
     function queryFeeder(){
+        console.log("{{simulation_name}}");
         $.ajax({
-            "url" : "api/" + $simulationName + "/feeder/",
+            "url" : "/vader/api/" + $simulationName + "/feeder/",
             "contentType" : "application/json",
             "type" : "GET",
             success: function(data) {

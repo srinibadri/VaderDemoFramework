@@ -2,7 +2,7 @@
 {% load staticfiles %}
 {% block tab %}
 <!-- Collect the nav links, forms, and other content for toggling -->
-            <ul class="nav navbar-nav navbar-left">
+            <ul class="nav navbar-nav navbar-left simulation-name" id={{ simulation_name }}>
                 <li>
                     <a href="{% url 'dashboard' simulation_name %}"><span class="fa fa-bar-chart"></span> Dashboard</a>
                 </li>
