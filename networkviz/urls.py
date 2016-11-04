@@ -59,6 +59,7 @@ urlpatterns = [
     url(r'^api/(?P<simulation_name>[a-zA-Z0-9_]+)/region/(?P<element_query>[a-zA-Z0-9_\*]+)', views.api_regions),
 
     url(r'^api/(?P<simulation_name>[a-zA-Z0-9_]+)/capacitor/$', views.api_capacitors),
+    url(r'^api/(?P<simulation_name>[a-zA-Z0-9_]+)/status', views.api_status, name='status'),
 
     url(r'^api/(?P<simulation_name>[a-zA-Z0-9_]+)/feeder/$', views.query_for_feeder, name='feeder'),
     url(r'^api/(?P<simulation_name>[a-zA-Z0-9_]+)/climate', views.query_for_climate, name='climate'),
