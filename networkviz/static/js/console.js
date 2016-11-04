@@ -22,7 +22,7 @@ $(document).ready(function(){
                     var html = '<div class="col-md-4 col-sm-4 col-xs-12 console-item">';
                     html += items[i].text;
                     html += '</div><div class="col-md-4 col-sm-4 col-xs-12 console-item">'
-                    html += (data[items[i].name] == TRUE ? 'open' : 'closed');
+                    html += (data[items[i].name] == 'TRUE' ? 'open' : 'closed');
                     html += '</div><div class="col-md-4 col-sm-4 col-xs-12 console-item"><label class="toggle"><input type="checkbox"><div class="slider round"></div></label></div>';
                     $('.status-items').append(html);
                 }
@@ -30,7 +30,6 @@ $(document).ready(function(){
         });
     }
     function queryFeeder(){
-        console.log("{{simulation_name}}");
         $.ajax({
             type: 'GET',
             url: '/vader/api/' + $simulationName + '/feeder/',
