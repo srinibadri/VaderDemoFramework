@@ -403,6 +403,8 @@ def api_regions(request, simulation_name, element_query="list"):
     # print(regions)
     return HttpResponse(regions)
 
+def api_status(request, simulation_name):
+    return HttpResponse(simulation.query_status(simulation_name, ''))
 
 def api_regions_old(request, simulation_name, element_query="list"):
     regions = '''[

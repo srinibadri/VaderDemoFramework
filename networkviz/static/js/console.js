@@ -1,12 +1,39 @@
 $(document).ready(function(){
 
+    queryStatus();
     queryFeeder();
 
+    function queryStatus() {
+        $.ajax({
+            type: 'GET',
+            url: '/vader/api/' + $simulationName + '/status',
+            dataType: 'json',
+            success: function(data) {
+                items = [
+                    { name: 'verbose', text: 'Verbose'},
+                    { name: 'debug', text: 'Debug' },
+                    { name: 'dumpall', text: 'Dumpall' },
+                    { name: 'quiet', text: 'Quiet' },
+                    { name: 'show_progress', text: 'Show progress' },
+                    { name: 'suppress_repeat_messages', text: 'Suppress repeat messages' },
+                    { name: 'warn', text: 'Warning' }
+                ];
+                for (var i = 0; i < items.length; i++) {
+                    var html = '<div class="col-md-4 col-sm-4 col-xs-12 console-item">';
+                    html += items[i].text;
+                    html += '</div><div class="col-md-4 col-sm-4 col-xs-12 console-item">'
+                    html += (data[items[i].name] == TRUE ? 'open' : 'closed');
+                    html += '</div><div class="col-md-4 col-sm-4 col-xs-12 console-item"><label class="toggle"><input type="checkbox"><div class="slider round"></div></label></div>';
+                    $('.status-items').append(html);
+                }
+            }
+        });
+    }
     function queryFeeder(){
         $.ajax({
-            "url" : "api/" + $simulationName + "/feeder/",
-            "contentType" : "application/json",
-            "type" : "GET",
+            type: 'GET',
+            url: '/vader/api/' + $simulationName + '/feeder/',
+            contentType: 'application/json',
             success: function(data) {
                 $('.feeder-panel').html(data);
             },
@@ -27,18 +54,18 @@ $(document).ready(function(){
 
     function querySwitch(){
         $.ajax({
-            "url" : "api/"+$simulationName+"/switch/",
-            "contentType" : "application/json",
-            "type" : "GET",
+            type: 'GET',
+            url: '/vader/api/' + $simulationName + '/switch/',
+            contentType: 'application/json',
             timeout: 3000
         });
     }
 
     function queryCapacitor(){
         $.ajax({
-            "url" : "api/"+$simulationName+"/capacitor/",
-            "contentType" : "application/json",
-            "type" : "GET",
+            type: 'GET',
+            url: '/vader/api/' + $simulationName + '/capacitor/',
+            contentType: 'application/json',
             timeout: 3000
         });
     }
