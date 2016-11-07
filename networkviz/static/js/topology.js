@@ -1,7 +1,42 @@
 
 var maps = [];
-var center = [35.38781, -118.99631];
-var zoom = 15;
+var center = [35.38201, -118.99531];
+var zoom = 17;
+
+
+
+var normalIconSize = 20,
+    bigIconSize = 30,
+    megaIconSize = 60;
+var normalIconDimens = [normalIconSize, normalIconSize],
+    normalIconAnchor = [normalIconSize/2, normalIconSize/2],
+    normalIconPopup  = [0, -normalIconSize/2 + 3];
+var NormalGridIcon = L.Icon.extend({
+    options: {
+      iconUrl: '/static/images/icons/meter.png',
+      // shadowUrl: 'leaf-shadow.png',
+      iconSize:     normalIconDimens, // size of the icon
+      // shadowSize:   [50, 64], // size of the shadow
+      iconAnchor:   normalIconAnchor, // point of the icon which will correspond to marker's location
+      // shadowAnchor: [4, 62],  // the same for the shadow
+      popupAnchor:  normalIconPopup // point from which the popup should open relative to the iconAnchor
+    }
+});
+
+
+var meterIcon = new NormalGridIcon({iconUrl: '/static/images/icons/meter.png'}),
+    nodeIcon = new NormalGridIcon({iconUrl: '/static/images/icons/node.png'}),
+    loadIcon = new NormalGridIcon({iconUrl: '/static/images/icons/load.png'}),
+    houseIcon = new NormalGridIcon({iconUrl: '/static/images/icons/house.png'}),
+    switchIcon = new NormalGridIcon({iconUrl: '/static/images/icons/switch.png'});
+
+console.log("General Settings Finished");
+
+
+
+
+
+
 
 var layer1 = L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYmVuZHJhZmZpbiIsImEiOiJjaXRtMmx1NGwwMGE5MnhsNG9kZGJ4bG9xIn0.trghQwlKFrdvueMDquqkJA', {
     maxZoom: 18,
@@ -158,7 +193,7 @@ maps.forEach(function(map){
 
 // load model 1
 
-$.getJSON( "/static/data/model2.geo.json", function(geo_json_data) {
+$.getJSON( "/static/data/model_visualization.geo.json", function(geo_json_data) {
   var myLayer = L.geoJSON(geo_json_data, {
       style: myStyle,
       onEachFeature: onEachFeature,
@@ -166,8 +201,11 @@ $.getJSON( "/static/data/model2.geo.json", function(geo_json_data) {
         element_num = parseInt(feature.properties.name.split("_")[1]);
         hexString = "#"+Math.min(element_num,255).toString(16) +"5400";
         geojsonMarkerOptions.fillColor = hexString;
-        return L.circleMarker(latlng, geojsonMarkerOptions);
-      }
+        marker = L.marker(latlng, {
+          icon: meterIcon,
+        }).bindPopup(feature.properties.name + " loading..."); //.bindTooltip(element['name']);
+        return marker;
+      },
   }).addTo(map1);
 
 });
@@ -194,10 +232,18 @@ var addMap2 = function(geo_json_data){
       style: myStyle2,
       onEachFeature: onEachFeature,
       pointToLayer: function (feature, latlng) {
+        element_type = feature.properties.name.split("_")[1];
         element_num = parseInt(feature.properties.name.split("_")[1]);
         hexString = "#"+Math.min(element_num,255).toString(16) +"5400";
         geojsonMarkerOptions.fillColor = hexString;
-        return L.circleMarker(latlng, geojsonMarkerOptions);
+        markerIcon = meterIcon;
+        if (element_type == "meter") { markerIcon = meterIcon }
+        else if (element_type == "load") { markerIcon = loadIcon }
+
+        marker = L.marker(latlng, {
+          icon: meterIcon,
+        }).bindPopup(feature.properties.name + " loading..."); //.bindTooltip(element['name']);
+        return marker;
       }
   }).addTo(map2);
 };
