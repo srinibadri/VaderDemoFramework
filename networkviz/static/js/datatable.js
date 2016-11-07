@@ -81,10 +81,12 @@ $(document).ready(function(){
                         });
                 }
             },
-            error : function(err) {
+            error : function(data, err, option) {
+                console.log($categoryName);
+              console.log(err.status);
               console.log("ERROR No Data Found " + err);
             },
-            timeout: 8000
+            timeout: 32000
         });
     }
 

@@ -12,6 +12,7 @@ from vaderviz import settings
 
 categorized_object_name = {}
 categorized_object_amount = {}
+query_database = database.QueryDatabase()
 
 
 def get_simulations():
@@ -93,17 +94,19 @@ def analyze_table(simulation_name, db_name, table):
 
     """
     # database.connect_to_database(simulation_name, db_name)
-    res = database.query_database(simulation_name, db_name,
-                                  raw_query='describe ' + table)
-    # database.close_connection(simulation_name, db_name)
+    # query_database = database.QueryDatabase()
+    res = query_database.query_database(simulation_name, db_name,
+                                        raw_query='describe ' + table)
+    query_database.close_connection(simulation_name, db_name)
     return list(item[0] for item in res)
 
 
 def obtain_object_name_raw(simulation_name):
     # database.connect_to_database(simulation_name, 'model')
-    res = database.query_database(simulation_name, 'model',
-                                  raw_query='select name from objects where name is not NULL')
-    # database.close_connection(simulation_name, 'model')
+    # query_database = database.QueryDatabase()
+    res = query_database.query_database(simulation_name, 'model',
+                                        raw_query='select name from objects where name is not NULL')
+    query_database.close_connection(simulation_name, 'model')
     return res
 
 

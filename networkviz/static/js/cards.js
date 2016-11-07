@@ -22,7 +22,7 @@ $(document).ready(function(){
             error: function(err){
                 console.log("Get cards data failed. " + err);
             },
-            timeout: 3000
+            timeout: 16000
         });
     }
 });

@@ -19,6 +19,8 @@ from django.core.urlresolvers import reverse
 
 ### Routes for Core Pages
 
+DEBUG = True
+
 
 def index(request):
     return render(request, 'landing.html')
@@ -458,7 +460,9 @@ def query_for_datatable(request, simulation_name):
     object_list = analyze.get_object_list(simulation_name, category_name)
     data = []
     data_list = []
-    print object_list
+    if DEBUG:
+        print "Object list: "
+        print object_list
     for object_item in object_list:
         data.append(object_item)
         if category_name == 'meter' or category_name == 'cap':
@@ -484,4 +488,6 @@ def query_for_climate(request, simulation_name):
 
 def query_for_cards(request, simulation_name):
     object_dictionary = helper.convert_dictionary_to_json(analyze.categorize_object_amount(simulation_name))
+    if DEBUG:
+        print object_dictionary
     return HttpResponse(object_dictionary, content_type="application/json")
