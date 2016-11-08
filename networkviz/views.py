@@ -20,7 +20,7 @@ from django.core.urlresolvers import reverse
 ### Routes for Core Pages
 
 DEBUG = True
-
+query_database = database.QueryDatabase()
 
 def index(request):
     return render(request, 'landing.html')
@@ -125,11 +125,11 @@ def get_total_power(request, simulation_name):
 def get_history_data(request, simulation_name):
     result = []
     db = request.GET.get('database')
-    database.connect_to_database(simulation_name, db);
+    query_database.connect_to_database(simulation_name, db);
     table = request.GET.get('table')
     field = request.GET.get('field')
     condition = request.GET.get('condition')
-    result = helper.convert_decimal_list_to_float(database.query_database(simulation_name, db, field, table, condition), 0)
+    result = helper.convert_decimal_list_to_float(query_database.query_database(simulation_name, db, field, table, condition), 0)
     return HttpResponse(json.dumps(result));
 
 

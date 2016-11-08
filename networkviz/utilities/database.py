@@ -126,7 +126,8 @@ class QueryDatabase:
             self.lock.release()
         return res
 
-    def generate_query(self, fields, table, conditions=''):
+    @staticmethod
+    def generate_query(fields, table, conditions=''):
         if conditions == '':
             return "SELECT " + fields + " FROM " + table
         else:
