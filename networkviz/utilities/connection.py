@@ -20,20 +20,34 @@ from xml.dom import minidom
 from networkviz.utilities import helper
 from vaderviz import settings
 
+record = {}
+
 
 def generate_base_url(simulation_name):
     return settings.HOSTNAME + ':' + str(
         settings.SIMULATION_PORT[simulation_name]) + '/' + settings.HTTP_RETURN_TYPE.lower() + '/'
 
 
-def get_global(simulation_name, name):
-    url = generate_base_url(simulation_name) + urllib.quote(name)
-    return get_data(url)
+def get_global(simulation_name, name, force_to_update=False):
+    key = simulation_name + '_' + name
+    if force_to_update or (key not in record):
+        url = generate_base_url(simulation_name) + urllib.quote(name)
+        res = get_data(url)
+        record[key] = res
+        return res
+    else:
+        return record[key]
 
 
-def get_property(simulation_name, category, name):
-    url = generate_base_url(simulation_name) + urllib.quote(category) + '/' + urllib.quote(name)
-    return get_data(url)
+def get_property(simulation_name, category, name, force_to_update=False):
+    key = simulation_name + '_' + category + '_' + name
+    if force_to_update or (key not in record):
+        url = generate_base_url(simulation_name) + urllib.quote(category) + '/' + urllib.quote(name)
+        res = get_data(url)
+        record[key] = res
+        return res
+    else:
+        return record[key]
 
 
 def set_global(simulation_name, name, value):
