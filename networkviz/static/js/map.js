@@ -299,7 +299,7 @@ function pop_up(e) {
     element_details = JSON.parse(e.popup._source.getElement()['alt']);
   }
   temp = e;
-  e.popup.setContent("Loading...").update();
+  e.popup.setContent(element_details['name'] + " Loading...").update();
 
   $.getJSON( "/vader/api/"+$simulationName+"/"+element_details['type']+"/"+element_details['name']+"", function(data) {
     e.popup.setContent(
