@@ -28,7 +28,7 @@ def generate_base_url(simulation_name):
         settings.SIMULATION_PORT[simulation_name]) + '/' + settings.HTTP_RETURN_TYPE.lower() + '/'
 
 
-def get_global(simulation_name, name, force_to_update=False):
+def get_global(simulation_name, name, force_to_update=True):
     key = simulation_name + '_' + name
     if force_to_update or (key not in record):
         url = generate_base_url(simulation_name) + urllib.quote(name)
@@ -39,7 +39,7 @@ def get_global(simulation_name, name, force_to_update=False):
         return record[key]
 
 
-def get_property(simulation_name, category, name, force_to_update=False):
+def get_property(simulation_name, category, name, force_to_update=True):
     key = simulation_name + '_' + category + '_' + name
     if force_to_update or (key not in record):
         url = generate_base_url(simulation_name) + urllib.quote(category) + '/' + urllib.quote(name)
