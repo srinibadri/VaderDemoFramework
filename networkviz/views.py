@@ -466,7 +466,7 @@ def query_for_datatable(request, simulation_name):
     for object_item in object_list:
         data.append(object_item)
         if category_name == 'meter' or category_name == 'cap':
-            service_status = connection.get_property(simulation_name, object_item, 'service_status')
+            service_status = connection.get_property(simulation_name, object_item, 'service_status', False)
             data.append(service_status)
         data_list.append(data)
         data = []

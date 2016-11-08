@@ -15,12 +15,14 @@ import tokenize
 import urllib
 import urllib2
 from StringIO import StringIO
+from datetime import datetime, timedelta
 from xml.dom import minidom
 
 from networkviz.utilities import helper
 from vaderviz import settings
 
 record = {}
+delta = timedelta(minutes=30)
 
 
 def generate_base_url(simulation_name):
@@ -30,24 +32,24 @@ def generate_base_url(simulation_name):
 
 def get_global(simulation_name, name, force_to_update=True):
     key = simulation_name + '_' + name
-    if force_to_update or (key not in record):
+    if force_to_update or (key not in record) or (datetime.now() - record[key][1] > delta):
         url = generate_base_url(simulation_name) + urllib.quote(name)
         res = get_data(url)
-        record[key] = res
+        record[key] = (res, datetime.now())
         return res
     else:
-        return record[key]
+        return record[key][0]
 
 
 def get_property(simulation_name, category, name, force_to_update=True):
     key = simulation_name + '_' + category + '_' + name
-    if force_to_update or (key not in record):
+    if force_to_update or (key not in record) or (datetime.now() - record[key][1] > delta):
         url = generate_base_url(simulation_name) + urllib.quote(category) + '/' + urllib.quote(name)
         res = get_data(url)
-        record[key] = res
+        record[key] = (res, datetime.now())
         return res
     else:
-        return record[key]
+        return record[key][0]
 
 
 def set_global(simulation_name, name, value):
