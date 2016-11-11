@@ -1,4 +1,4 @@
-function getHistoryData(dataset, simulation_name, database, table, field, condition) {
+function getHistoryData(dataset, database, table, field, condition) {
     $.ajax({
         type: 'GET',
         data: {
@@ -7,7 +7,7 @@ function getHistoryData(dataset, simulation_name, database, table, field, condit
             field: field,
             condition: condition
         },
-        url: "/vader/getdata/"+simulationName+"/history",
+        url: "/vader/getdata/"+$simulationName+"/history",
         dataType: 'json',
         async: false,
         success: function(data) {
@@ -41,7 +41,7 @@ function getLiveData(category, name) {
             category: category,
             name: name
         },
-        url: "/vader/getdata/"+simulationName+"/live",
+        url: "/vader/getdata/"+$simulationName+"/live",
         dataType: 'text',
         async: false,
         success: function(data) {
@@ -81,7 +81,7 @@ function graphHistory(table, name, column) {
         case 'Voltage C': field = 'cast(voltage_C as decimal(8,2))'; break;
     }
 
-    getHistoryData(dataset, simulation_name, db, table, field, condition);
+    getHistoryData(dataset, db, table, field, condition);
 
     var margin = {top: 20, right: 20, bottom: 30, left: 60},
 
